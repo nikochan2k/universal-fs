@@ -1,5 +1,5 @@
 {
-  "name": "univ-fs-s3v2",
+  "name": "univ-fs-s3",
   "version": "0.8.0",
   "description": "The universal Filesystem API for S3 SDK v2",
   "main": "lib/index.js",
