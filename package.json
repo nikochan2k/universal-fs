@@ -50,6 +50,7 @@
   "workspaces": [
     "core",
     "converter",
-    "filesystems/*"
+    "filesystems/*",
+    "sandbox/*"
   ]
 }
