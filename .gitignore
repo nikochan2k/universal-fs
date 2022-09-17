@@ -4,4 +4,5 @@ node_modules/
 dist/
 lib/
 dist/
+.chrome-karma/
 .DS_Store
