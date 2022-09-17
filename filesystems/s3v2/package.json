@@ -1,0 +1,51 @@
+{
+  "name": "univ-fs-s3v2",
+  "version": "0.8.0",
+  "description": "The universal Filesystem API for S3 SDK v2",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "fs",
+    "filesystem",
+    "storage",
+    "isomorphic",
+    "universal",
+    "s3"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "sanitize": "rimraf ./lib/**/*.json",
+    "release": "npm-run-all clean sanitize compile npm-version npm-publish",
+    "jest": "jest --runInBand",
+    "test": "npm-run-all compile jest",
+    "webpack": "webpack",
+    "web-compile": "npm-run-all compile webpack",
+    "web-build": "npm-run-all clean web-clean web-compile",
+    "webpack-test": "webpack --config webpack.config.test.js",
+    "web-compile-test": "npm-run-all compile webpack-test",
+    "karma": "karma start",
+    "web-test": "npm-run-all web-compile-test karma"
+  },
+  "jest": {
+    "testTimeout": 10000,
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "<rootDir>/lib/__tests__/**/*.spec.js"
+    ]
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1218.0"
+  },
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}
