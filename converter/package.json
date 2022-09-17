@@ -1,0 +1,61 @@
+{
+  "name": "univ-conv",
+  "version": "0.7.21",
+  "description": "The universal binary and text converter",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "converter",
+    "blob",
+    "arraybuffer",
+    "base64",
+    "uint8array",
+    "readable",
+    "readablestream",
+    "utf8",
+    "binary",
+    "hex",
+    "url"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "release": "npm-run-all build npm-version npm-publish",
+    "jest": "jest --runInBand",
+    "test": "npm-run-all compile jest",
+    "web-clean": "rimraf ./dist",
+    "webpack": "webpack",
+    "web-compile": "npm-run-all compile webpack",
+    "web-build": "npm-run-all clean web-clean web-compile",
+    "webpack-test": "webpack --config webpack.config.test.js",
+    "web-compile-test": "npm-run-all compile webpack-test",
+    "karma": "karma start",
+    "web-test": "npm-run-all web-compile-test karma"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "<rootDir>/lib/__tests__/**/*.spec.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/encoding-japanese": "^2.0.0",
+    "@types/fast-text-encoding": "^1.0.1"
+  },
+  "dependencies": {
+    "base64-arraybuffer": "^1.0.2",
+    "fast-text-encoding": "^1.0.3",
+    "node-fetch": "^2.6.7"
+  },
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}

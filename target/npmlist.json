@@ -1,0 +1,1 @@
+{"version":"0.0.1","name":"univ-fs","dependencies":{"tslib":{"version":"2.4.0"},"univ-conv":{"version":"0.7.21","dependencies":{"base64-arraybuffer":{"version":"1.0.2"},"fast-text-encoding":{"version":"1.0.6"},"node-fetch":{"version":"2.6.7"}}},"univ-fs":{"version":"0.8.20","dependencies":{"sha256-uint8array":{"version":"0.10.3"}}}}}

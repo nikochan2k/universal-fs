@@ -1,0 +1,42 @@
+{
+  "name": "univ-fs",
+  "version": "0.8.20",
+  "description": "The universal Filesystem API core",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "fs",
+    "filesystem",
+    "storage",
+    "isomorphic",
+    "universal"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "release": "npm-run-all build npm-version npm-publish",
+    "jest": "jest --runInBand",
+    "test": "npm-run-all compile jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "<rootDir>/lib/__tests__/**/*.spec.js"
+    ]
+  },
+  "dependencies": {
+    "sha256-uint8array": "^0.10.3",
+    "univ-conv": "file:../converter"
+  },
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}
