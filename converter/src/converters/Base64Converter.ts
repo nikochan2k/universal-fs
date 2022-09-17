@@ -47,6 +47,7 @@ class Base64Converter extends AbstractConverter<string> {
         return await urlConverter().toBase64(input, options);
       }
       if (
+        isBrowser &&
         typeof atob === "function" &&
         options.textToBufferCharset === "utf8" &&
         hasNoStartLength(options)
@@ -150,6 +151,7 @@ class Base64Converter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     if (
+      isBrowser &&
       typeof btoa === "function" &&
       options.bufferToTextCharset === "utf8" &&
       hasNoStartLength(options)
