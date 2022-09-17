@@ -144,7 +144,6 @@ export class WfsFileSystem extends AbstractFileSystem {
               createError({
                 ...QuotaExceededError,
                 repository,
-                path: "",
                 e,
               })
             )
@@ -162,7 +161,6 @@ export class WfsFileSystem extends AbstractFileSystem {
               createError({
                 ...QuotaExceededError,
                 repository,
-                path: "",
                 e,
               })
             )
@@ -180,7 +178,6 @@ export class WfsFileSystem extends AbstractFileSystem {
             createError({
               ...NotAllowedError,
               repository,
-              path: "",
               e,
             })
           )

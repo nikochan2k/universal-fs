@@ -301,7 +301,3 @@ export function createError(error: ErrorParams): FileSystemError {
 export function isFileSystemError(e?: unknown): e is FileSystemError {
   return e instanceof FileSystemError;
 }
-
-export function isNotFoundError(e: unknown): e is FileSystemError {
-  return e instanceof FileSystemError && e.name === NotFoundError.name;
-}

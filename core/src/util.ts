@@ -13,7 +13,6 @@ export function getPathParts(path: string) {
         throw createError({
           message: "Illegal path",
           name: SyntaxError.name,
-          repository: "",
           path,
         });
       }
