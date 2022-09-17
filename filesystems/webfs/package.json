@@ -1,0 +1,38 @@
+{
+  "name": "univ-fs-webfs",
+  "version": "0.8.0",
+  "description": "The universal Filesystem for Web File System API",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "fs",
+    "filesystem",
+    "storage",
+    "isomorphic",
+    "universal",
+    "api"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "release": "npm-run-all build npm-version npm-publish",
+    "webpack": "webpack",
+    "web-compile": "npm-run-all compile webpack",
+    "web-build": "npm-run-all clean web-clean web-compile",
+    "webpack-test": "webpack --config webpack.config.test.js",
+    "web-compile-test": "npm-run-all compile webpack-test",
+    "karma": "karma start",
+    "web-test": "npm-run-all web-compile-test karma"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}

@@ -38,7 +38,7 @@ export class IdbDirectory extends AbstractDirectory {
     const path = this.path;
     const idbFS = this.idbFS;
     const db = await idbFS._open();
-    return new Promise<Item[]>((resolve, reject) => {
+    return await new Promise<Item[]>((resolve, reject) => {
       const items: Item[] = [];
       const entryStore = idbFS._getObjectStore(db, ENTRY_STORE, "readonly");
 

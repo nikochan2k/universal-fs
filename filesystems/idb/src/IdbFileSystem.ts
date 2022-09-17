@@ -120,7 +120,7 @@ export class IdbFileSystem extends AbstractFileSystem {
 
   public async _getEntry(path: string): Promise<Stats> {
     const db = await this._open();
-    return new Promise<Stats>((resolve, reject) => {
+    return await new Promise<Stats>((resolve, reject) => {
       const entryStore = this._getObjectStore(db, ENTRY_STORE, "readonly");
       const range = IDBKeyRange.only(path);
       const req = entryStore.get(range);
