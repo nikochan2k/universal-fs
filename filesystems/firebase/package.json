@@ -1,0 +1,57 @@
+{
+  "name": "univ-fs-firebase",
+  "version": "0.8.0",
+  "description": "The universal Filesystem API for Firebase Storage",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "fs",
+    "filesystem",
+    "storage",
+    "isomorphic",
+    "universal",
+    "google",
+    "firebase"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "release": "npm-run-all build npm-version npm-publish",
+    "jest": "jest --runInBand",
+    "test": "npm-run-all compile jest",
+    "web-clean": "rimraf ./dist",
+    "webpack": "webpack",
+    "web-compile": "npm-run-all compile webpack",
+    "web-build": "npm-run-all clean web-clean web-compile",
+    "webpack-test": "webpack --config webpack.config.test.js",
+    "web-compile-test": "npm-run-all compile webpack-test",
+    "karma": "karma start",
+    "web-test": "npm-run-all web-compile-test karma"
+  },
+  "jest": {
+    "testTimeout": 10000,
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "<rootDir>/lib/__tests__/**/*.spec.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/isomorphic-fetch": "^0.0.36"
+  },
+  "dependencies": {
+    "firebase": "^9.10.0",
+    "isomorphic-fetch": "^3.0.0",
+    "univ-fs": "file:../../core"
+  },
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}
