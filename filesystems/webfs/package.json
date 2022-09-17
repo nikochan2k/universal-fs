@@ -32,7 +32,9 @@
     "web-test": "npm-run-all web-compile-test karma"
   },
   "devDependencies": {},
-  "dependencies": {},
+  "dependencies": {
+    "univ-fs": "file:../../core"
+  },
   "author": "Yoshihiro Seki",
   "license": "MIT"
 }
