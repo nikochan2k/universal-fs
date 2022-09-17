@@ -1,0 +1,42 @@
+{
+  "name": "univ-fs-node",
+  "version": "0.8.0",
+  "description": "The universal Filesystem for Node",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "fs",
+    "filesystem",
+    "storage",
+    "isomorphic",
+    "universal",
+    "node"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "release": "npm-run-all build npm-version npm-publish",
+    "jest": "jest --runInBand",
+    "test": "npm-run-all compile jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "<rootDir>/lib/__tests__/**/*.spec.js"
+    ]
+  },
+  "dependencies": {
+    "univ-fs": "file:../../core"
+  },
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}

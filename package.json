@@ -49,6 +49,7 @@
   "private": true,
   "workspaces": [
     "core",
-    "converter"
+    "converter",
+    "filesystems/*"
   ]
 }
