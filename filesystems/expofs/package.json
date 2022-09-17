@@ -1,0 +1,43 @@
+{
+  "name": "univ-fs-expofs",
+  "version": "0.7.0",
+  "description": "The universal Filesystem for Expo Filesystem",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "fs",
+    "filesystem",
+    "storage",
+    "isomorphic",
+    "universal",
+    "expo"
+  ],
+  "scripts": {
+    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "compile": "tsc",
+    "build": "npm-run-all clean compile",
+    "npm-version": "npm version patch",
+    "npm-publish": "npm publish",
+    "release": "npm-run-all build npm-version npm-publish",
+    "jest": "jest --runInBand",
+    "test": "npm-run-all compile jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testMatch": [
+      "<rootDir>/lib/__tests__/**/*.spec.js"
+    ]
+  },
+  "dependencies": {
+    "expo-file-system": "^14.1.0",
+    "univ-fs": "file:../../core"
+  },
+  "author": "Yoshihiro Seki",
+  "license": "MIT"
+}
