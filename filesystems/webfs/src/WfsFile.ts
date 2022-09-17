@@ -2,7 +2,6 @@ import { ConvertOptions, Data, handleReadableStream } from "univ-conv";
 import {
   AbortError,
   AbstractFile,
-  createError,
   ErrorLike,
   joinPaths,
   NoModificationAllowedError,
@@ -119,7 +118,6 @@ export class WfsFile extends AbstractFile {
     resolve: (value: FileWriter | PromiseLike<FileWriter>) => void,
     reject: (reason?: ErrorLike) => void
   ) {
-    const repository = this.fs.repository;
     const path = this.path;
     const removeEvents = () => {
       writer.removeEventListener("abort", null);
@@ -128,9 +126,8 @@ export class WfsFile extends AbstractFile {
     };
     writer.addEventListener("abort", (e: unknown) => {
       reject(
-        createError({
+        this.fs._createError({
           ...AbortError,
-          repository,
           path,
           e,
         })
@@ -139,9 +136,8 @@ export class WfsFile extends AbstractFile {
     });
     writer.addEventListener("error", (e: unknown) => {
       reject(
-        createError({
+        this.fs._createError({
           ...NoModificationAllowedError,
-          repository,
           path,
           e,
         })

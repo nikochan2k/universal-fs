@@ -2,7 +2,6 @@ import { isBrowser } from "univ-conv";
 import {
   AbortError,
   AbstractFileSystem,
-  createError,
   Directory,
   ErrorLike,
   File,
@@ -69,19 +68,16 @@ export class IdbFileSystem extends AbstractFileSystem {
     isDirectory: boolean,
     options: URLOptions
   ): Promise<string> {
-    const repository = this.repository;
     if (options.method !== "GET") {
-      throw createError({
+      throw this._createError({
         ...NotSupportedError,
-        repository,
         path,
         e: { message: `"${options.method ?? ""}" is not supported` },
       });
     }
     if (isDirectory) {
-      throw createError({
+      throw this._createError({
         ...TypeMismatchError,
-        repository,
         path,
         e: { message: `"${path}" is not a file` },
       });
@@ -110,9 +106,8 @@ export class IdbFileSystem extends AbstractFileSystem {
   ) {
     const err = e?.target?.error; // eslint-disable-line
     const error = cause ?? OperationError;
-    return createError({
+    return this._createError({
       ...error,
-      repository: this.repository,
       path,
       e: (err ?? e) as ErrorLike,
     });

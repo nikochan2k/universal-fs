@@ -66,8 +66,7 @@ export class WfsDirectory extends AbstractDirectory {
   public async _doMkcol(): Promise<void> {
     const wfs = this.wfs;
     const path = this.path;
-    const repository = wfs.repository;
-    const fullPath = joinPaths(repository, path);
+    const fullPath = joinPaths(wfs.repository, path);
 
     const fs = await wfs._getFS();
     return await new Promise<void>((resolve, reject) => {

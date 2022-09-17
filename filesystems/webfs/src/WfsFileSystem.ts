@@ -1,6 +1,5 @@
 import {
   AbstractFileSystem,
-  createError,
   Directory,
   File,
   FileSystemOptions,
@@ -63,19 +62,16 @@ export class WfsFileSystem extends AbstractFileSystem {
     options: URLOptions
   ): Promise<string> {
     options = { method: "GET", ...options };
-    const repository = this.repository;
     if (options.method !== "GET") {
-      throw createError({
+      throw this._createError({
         ...NotSupportedError,
-        repository,
         path,
         e: { message: `"${options.method}" is not supported` }, // eslint-disable-line
       });
     }
     if (isDirectory) {
-      throw createError({
+      throw this._createError({
         ...TypeMismatchError,
-        repository,
         path,
         e: { message: `"${path}" is not a directory` },
       });
@@ -116,9 +112,8 @@ export class WfsFileSystem extends AbstractFileSystem {
     _props: Stats, // eslint-disable-line
     _options: PatchOptions // eslint-disable-line
   ): Promise<void> {
-    throw createError({
+    throw this._createError({
       ...NotSupportedError,
-      repository: this.repository,
       path,
       e: { message: "patch is not supported" },
     });
@@ -128,8 +123,6 @@ export class WfsFileSystem extends AbstractFileSystem {
     if (this.fs) {
       return this.fs;
     }
-
-    const repository = this.repository;
 
     /* eslint-disable */
     if ((window as any).webkitStorageInfo) {
@@ -141,9 +134,8 @@ export class WfsFileSystem extends AbstractFileSystem {
           () => resolve(),
           (e: unknown) =>
             reject(
-              createError({
+              this._createError({
                 ...QuotaExceededError,
-                repository,
                 e,
               })
             )
@@ -158,9 +150,8 @@ export class WfsFileSystem extends AbstractFileSystem {
           () => resolve(),
           (e: unknown) =>
             reject(
-              createError({
+              this._createError({
                 ...QuotaExceededError,
-                repository,
                 e,
               })
             )
@@ -175,9 +166,8 @@ export class WfsFileSystem extends AbstractFileSystem {
         (fs) => resolve(fs),
         (e: unknown) =>
           reject(
-            createError({
+            this._createError({
               ...NotAllowedError,
-              repository,
               e,
             })
           )
@@ -185,7 +175,7 @@ export class WfsFileSystem extends AbstractFileSystem {
     });
     await new Promise<void>((resolve, reject) => {
       fs.root.getDirectory(
-        repository,
+        this.repository,
         { create: true },
         () => resolve(),
         (e: unknown) => reject(e)

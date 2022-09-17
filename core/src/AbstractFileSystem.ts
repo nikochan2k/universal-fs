@@ -114,12 +114,16 @@ export abstract class AbstractFileSystem implements FileSystem {
     };
   }
 
+  public _createError(params: ErrorParams) {
+    return createError({ ...params, repository: this.repository });
+  }
+
   public async _handleError(
     params: ErrorParams,
     errors?: FileSystemError[],
     callback?: (error: FileSystemError) => Promise<void>
   ) {
-    const error = createError({ ...params, repository: this.repository });
+    const error = this._createError(params);
     await this._handleFileSystemError(error, errors, callback);
   }
 

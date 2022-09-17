@@ -3,7 +3,6 @@ import {
   AbstractDirectory,
   AbstractFile,
   AbstractFileSystem,
-  createError,
   ErrorLike,
   FileSystemOptions,
   InvalidModificationError,
@@ -88,64 +87,56 @@ export class NodeFileSystem extends AbstractFileSystem {
     if (code) {
       switch (code) {
         case "ENOENT": // No such file or directory
-          return createError({
+          return this._createError({
             ...NotFoundError,
-            repository: this.repository,
             path,
             e,
           });
         case "ENOTDIR": // Not a directory
         case "EISDIR": // Is a directory
-          return createError({
+          return this._createError({
             ...TypeMismatchError,
-            repository: this.repository,
             path,
             e,
           });
         case "EEXIST": // File exists
-          return createError({
+          return this._createError({
             ...PathExistError,
-            repository: this.repository,
             path,
             e,
           });
         case "EDQUOT": // Quota exceeded
-          return createError({
+          return this._createError({
             ...QuotaExceededError,
-            repository: this.repository,
             path,
             e,
           });
         case "EINVAL": // Invalid argument
           if (write) {
-            return createError({
+            return this._createError({
               ...InvalidModificationError,
-              repository: this.repository,
               path,
               e,
             });
           }
       }
       if (0 <= code.indexOf("NOSUPPORT")) {
-        return createError({
+        return this._createError({
           ...NotSupportedError,
-          repository: this.repository,
           path,
           e,
         });
       }
     }
     if (write) {
-      return createError({
+      return this._createError({
         ...NoModificationAllowedError,
-        repository: this.repository,
         path,
         e,
       });
     } else {
-      return createError({
+      return this._createError({
         ...NotReadableError,
-        repository: this.repository,
         path,
         e,
       });
