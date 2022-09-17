@@ -58,7 +58,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       if (options.onExists === ExistsAction.Error) {
         await this.fs._handleError(
           {
-            name: InvalidModificationError.name,
+            ...InvalidModificationError,
             path: this.path,
             from: this.path,
             to: to.path,
@@ -77,6 +77,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       }
     }
 
+    // eslint-disable-next-line
     const data = await this._read(options, errors);
     if (data == null) {
       return false;
@@ -122,7 +123,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
           return true;
         }
         if (options.onExists === ExistsAction.Error) {
-          throw this._createError(PathExistError.name, { path: this.path });
+          throw this._createError(PathExistError);
         }
       } catch (e) {
         if (isFileSystemError(e)) {
@@ -174,12 +175,14 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     errors?: FileSystemError[]
   ): Promise<string | null> {
     options = { ...options };
+    // eslint-disable-next-line
     const data = await this._read(options, errors);
     if (data == null) {
       return null;
     }
 
     const hash = createHash();
+    /* eslint-disable */
     if (readableConverter().typeEquals(data)) {
       await handleReadable(data, async (chunk) => {
         const buffer = await bufferConverter().convert(chunk, {
@@ -200,6 +203,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       const u8 = await uint8ArrayConverter().convert(data);
       hash.update(u8);
     }
+    /* eslint-enable */
 
     return toHex(hash.digest());
   }
@@ -238,6 +242,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     errors?: FileSystemError[]
   ): Promise<ReturnData<T> | null> {
     options = { ...this.fs.defaultReadOptions, ...options };
+    /* eslint-disable */
     const data = await this._read(options, errors);
     if (data === null) {
       return null;
@@ -247,6 +252,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
     const converter = this._getConverter();
     return converter.convert(data, type, options);
+    /* eslint-enable */
   }
 
   public async write(
@@ -269,6 +275,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
   public abstract supportRangeWrite(): boolean;
 
   protected async $read(options: ReadOptions): Promise<Data> {
+    /* eslint-disable */
     if (options.length === 0) {
       return EMPTY_UINT8_ARRAY;
     }
@@ -289,9 +296,11 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
 
     return data;
+    /* eslint-enable */
   }
 
   protected async $write(data: Data, options: WriteOptions): Promise<boolean> {
+    /* eslint-disable */
     const length = options.length;
     if (length === 0) {
       return true;
@@ -342,6 +351,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
         data = await modify(src, { data, start, length });
       }
     }
+    /* eslint-enable */
 
     await this._doWrite(data, this.stats, options);
     return true;
@@ -409,6 +419,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
   }
 
   protected _getConverter() {
+    // eslint-disable-next-line
     return DEFAULT_CONVERTER;
   }
 
@@ -421,6 +432,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     options: ReadOptions,
     errors?: FileSystemError[]
   ): Promise<Data | null> {
+    /* eslint-disable */
     try {
       let data = await this._beforeGet(options);
       if (data) {
@@ -438,4 +450,5 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       return null;
     }
   }
+  /* eslint-enable */
 }

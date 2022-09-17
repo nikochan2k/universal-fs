@@ -55,7 +55,7 @@ export abstract class AbstractDirectory
       if (options.onExists === ExistsAction.Error) {
         await this.fs._handleError(
           {
-            name: InvalidModificationError.name,
+            ...InvalidModificationError,
             path: this.path,
             from: this.path,
             to: to.path,
@@ -313,7 +313,8 @@ export abstract class AbstractDirectory
     try {
       await this._validate(options);
       if (options.onExists === ExistsAction.Error) {
-        throw this._createError(PathExistError.name, {
+        throw this._createError({
+          ...PathExistError,
           message: `"${this.path}" has already existed`,
         });
       }

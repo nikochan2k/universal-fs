@@ -30,7 +30,8 @@ if (hasReadable) {
 }
 
 export async function modify(src: BlockData, ...mods: Modification[]) {
-  const u8 = await DEFAULT_CONVERTER.convert(src, "uint8array"); // eslint-disable-line @typescript-eslint/no-unsafe-argument
+  /* eslint-disable */
+  const u8 = await DEFAULT_CONVERTER.convert(src, "uint8array");
   const size = u8.length;
   for (const mod of mods) {
     const start = mod.start ?? 0;
@@ -50,4 +51,5 @@ export async function modify(src: BlockData, ...mods: Modification[]) {
     u8.set(data, start);
   }
   return u8;
+  /* eslint-enable */
 }

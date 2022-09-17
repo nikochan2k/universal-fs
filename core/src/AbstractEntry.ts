@@ -13,6 +13,7 @@ import {
 } from "./core";
 import {
   createError,
+  ErrorLike,
   FileSystemError,
   isFileSystemError,
   NoModificationAllowedError,
@@ -21,17 +22,6 @@ import {
   TypeMismatchError,
 } from "./errors";
 import { getParentPath } from "./util";
-
-interface ErrorParams {
-  code?: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  e?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  message?: string;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-}
 
 export abstract class AbstractEntry implements Entry {
   public stats: Stats | undefined | null;
@@ -205,64 +195,63 @@ export abstract class AbstractEntry implements Entry {
     return null;
   }
 
-  protected _createError(name: string, params?: ErrorParams) {
+  protected _createError(error: ErrorLike) {
     return createError({
-      name,
+      ...error,
       repository: this.fs.repository,
       path: this.path,
-      ...params,
     });
   }
 
-  protected _createNoModificationAllowedError(params?: ErrorParams) {
-    return this._createError(NoModificationAllowedError.name, params);
+  protected _createNoModificationAllowedError(additional?: Partial<ErrorLike>) {
+    return this._createError({ ...NoModificationAllowedError, ...additional });
   }
 
-  protected _createNotFoundError(params?: ErrorParams) {
-    return this._createError(NotFoundError.name, params);
+  protected _createNotFoundError(additional?: Partial<ErrorLike>) {
+    return this._createError({ ...NotFoundError, ...additional });
   }
 
-  protected _createNotReadableError(params?: ErrorParams) {
-    return this._createError(NotReadableError.name, params);
+  protected _createNotReadableError(additional?: Partial<ErrorLike>) {
+    return this._createError({ ...NotReadableError, ...additional });
   }
 
-  protected _createTypeMismatchError(params?: ErrorParams) {
-    return this._createError(TypeMismatchError.name, params);
+  protected _createTypeMismatchError(additional?: Partial<ErrorLike>) {
+    return this._createError({ ...TypeMismatchError, ...additional });
   }
 
   protected async _handleNoModificationAllowedError(
-    params: ErrorParams,
+    cause: Partial<ErrorLike>,
     errors?: FileSystemError[],
     callback?: (e: FileSystemError) => Promise<void>
   ) {
-    const error = this._createNoModificationAllowedError(params);
+    const error = this._createNoModificationAllowedError(cause);
     return this.fs._handleFileSystemError(error, errors, callback);
   }
 
   protected _handleNotFoundError(
-    params: ErrorParams,
+    cause: Partial<ErrorLike>,
     errors?: FileSystemError[],
     callback?: (e: FileSystemError) => Promise<void>
   ) {
-    const error = this._createNotFoundError(params);
+    const error = this._createNotFoundError(cause);
     return this.fs._handleFileSystemError(error, errors, callback);
   }
 
   protected _handleNotReadableError(
-    params: ErrorParams,
+    cause: Partial<ErrorLike>,
     errors?: FileSystemError[],
     callback?: (e: FileSystemError) => Promise<void>
   ) {
-    const error = this._createNotReadableError(params);
+    const error = this._createNotReadableError(cause);
     return this.fs._handleFileSystemError(error, errors, callback);
   }
 
   protected async _handleTypeMismatchError(
-    params: ErrorParams,
+    cause: Partial<ErrorLike>,
     errors?: FileSystemError[],
     callback?: (e: FileSystemError) => Promise<void>
   ) {
-    const error = this._createTypeMismatchError(params);
+    const error = this._createTypeMismatchError(cause);
     return this.fs._handleFileSystemError(error, errors, callback);
   }
 }

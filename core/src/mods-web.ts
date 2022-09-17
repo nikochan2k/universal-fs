@@ -40,6 +40,7 @@ export default function createModifiedReadableStream(
                 const start = iStart - mStart;
                 const length = size;
                 controller.enqueue(
+                  // eslint-disable-next-line
                   DEFAULT_CONVERTER.slice(mod.data, { start, length })
                 );
                 return;
@@ -85,6 +86,7 @@ export default function createModifiedReadableStream(
                   */
                   const modLen = mEnd - mStart;
                   controller.enqueue(
+                    // eslint-disable-next-line
                     DEFAULT_CONVERTER.slice(mod.data, {
                       start: 0,
                       length: modLen,
@@ -138,6 +140,7 @@ export default function createModifiedReadableStream(
                   length = iEnd - iStart;
                 }
                 controller.enqueue(
+                  // eslint-disable-next-line
                   DEFAULT_CONVERTER.slice(mod.data, { start, length })
                 );
                 return;
@@ -152,10 +155,12 @@ export default function createModifiedReadableStream(
       } while (!done);
       controller.close();
       reader.releaseLock();
+      // eslint-disable-next-line
       closeStream(src);
     },
     cancel: (e) => {
       reader.releaseLock();
+      // eslint-disable-next-line
       closeStream(src, e);
     },
   });

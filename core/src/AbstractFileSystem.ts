@@ -26,6 +26,7 @@ import {
 } from "./core";
 import {
   createError,
+  ErrorParams,
   FileSystemError,
   isFileSystemError,
   NoModificationAllowedError,
@@ -39,19 +40,6 @@ import { INVALID_CHARS, normalizePath } from "./util";
 interface CopyInfo {
   from: Entry;
   to: Entry;
-}
-
-interface ErrorParams {
-  code?: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  e?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  message?: string;
-  name: string;
-  path: string;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
 }
 
 export abstract class AbstractFileSystem implements FileSystem {
@@ -69,11 +57,13 @@ export abstract class AbstractFileSystem implements FileSystem {
     public readonly options: FileSystemOptions = {}
   ) {
     this.defaultReadOptions = {
+      // eslint-disable-next-line
       bufferSize: DEFAULT_BUFFER_SIZE,
       ignoreHook: false,
       ...options.defaultReadOptions,
     };
     this.defaultWriteOptions = {
+      // eslint-disable-next-line
       bufferSize: DEFAULT_BUFFER_SIZE,
       append: false,
       onExists: ExistsAction.Overwrite,
@@ -102,6 +92,7 @@ export abstract class AbstractFileSystem implements FileSystem {
       ...options.defaultDeleteOptions,
     };
     this.defaultMoveOptions = {
+      // eslint-disable-next-line
       bufferSize: DEFAULT_BUFFER_SIZE,
       append: false,
       onExists: ExistsAction.Error,
@@ -111,6 +102,7 @@ export abstract class AbstractFileSystem implements FileSystem {
       ...options.defaultMoveOptions,
     };
     this.defaultCopyOptions = {
+      // eslint-disable-next-line
       bufferSize: DEFAULT_BUFFER_SIZE,
       append: false,
       onExists: ExistsAction.Error,
@@ -127,7 +119,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     errors?: FileSystemError[],
     callback?: (error: FileSystemError) => Promise<void>
   ) {
-    const error = createError({ repository: this.repository, ...params });
+    const error = createError({ ...params, repository: this.repository });
     await this._handleFileSystemError(error, errors, callback);
   }
 
@@ -328,7 +320,7 @@ export abstract class AbstractFileSystem implements FileSystem {
       const opts = options;
       await this._handleError(
         {
-          name: NotReadableError.name,
+          ...NotReadableError,
           path,
           e,
         },
@@ -442,7 +434,7 @@ export abstract class AbstractFileSystem implements FileSystem {
       const opts = options;
       await this._handleError(
         {
-          name: NoModificationAllowedError.name,
+          ...NoModificationAllowedError,
           path,
           e,
         },
@@ -555,7 +547,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     }
     if (errorMessage) {
       throw createError({
-        name: TypeMismatchError.name,
+        ...TypeMismatchError,
         repository: this.repository,
         path,
         message: errorMessage,

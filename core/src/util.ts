@@ -11,6 +11,7 @@ export function getPathParts(path: string) {
       // Go up one level.
       if (pathParts.length === 0) {
         throw createError({
+          message: "Illegal path",
           name: SyntaxError.name,
           repository: "",
           path,
