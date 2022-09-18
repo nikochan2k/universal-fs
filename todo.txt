@@ -1,5 +1,10 @@
 □add glob to find/delete method.
 ☑︎Azure
-□Check logic if supportDirectory is false
+■Check logic if supportDirectory is false
+　☑︎s3
+　☑︎s3v3
+　☑︎Azure
+　□Firebase
+　□GCS
 □Delete Version Management on S3, etc...
 □Readable to NodeJS.ReadableStream
