@@ -8,6 +8,7 @@ import {
   AbstractDirectory,
   AbstractFile,
   AbstractFileSystem,
+  createMetadata,
   EntryType,
   ErrorLike,
   FileSystemOptions,
@@ -66,15 +67,6 @@ export class S3FileSystem extends AbstractFileSystem {
   ) {
     super(repository, options);
     this.canCreateDirectory = options?.canCreateDirectory ?? true;
-  }
-
-  public _createMetadata(props: Stats) {
-    const metadata: { [key: string]: string } = {};
-    for (const [key, value] of Object.entries(props)) {
-      if (!value) continue;
-      metadata[key] = "" + value; // eslint-disable-line
-    }
-    return metadata;
   }
 
   public _createParams(path: string, isDirectory: boolean): Params {
@@ -183,7 +175,7 @@ export class S3FileSystem extends AbstractFileSystem {
           Bucket: this.bucket,
           CopySource: this.bucket + "/" + key,
           Key: key,
-          Metadata: this._createMetadata(props),
+          Metadata: createMetadata(props),
         })
         .promise();
       /* eslint-enable */

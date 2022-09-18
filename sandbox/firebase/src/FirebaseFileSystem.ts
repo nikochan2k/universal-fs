@@ -13,6 +13,7 @@ import {
   AbstractDirectory,
   AbstractFile,
   AbstractFileSystem,
+  createMetadata,
   ErrorLike,
   FileSystemOptions,
   joinPaths,
@@ -42,15 +43,6 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     super(repository, firebaseOptions as FileSystemOptions | undefined);
     // eslint-disable-next-line
     this.app = initializeApp(firebaseConfig);
-  }
-
-  public _createMetadata(props: Stats) {
-    const metadata: { [key: string]: string } = {};
-    for (const [key, value] of Object.entries(props)) {
-      if (!value) continue;
-      metadata[key] = "" + value; // eslint-disable-line
-    }
-    return metadata;
   }
 
   public _doGetDirectory(path: string): AbstractDirectory {
@@ -114,7 +106,7 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     try {
       /* eslint-disable */
       const obj = await this._getMetadata(path, props.size === null);
-      obj.customMetadata = this._createMetadata(props);
+      obj.customMetadata = createMetadata(props);
       const entry = await this._getEntry(path, props.size === null);
       await updateMetadata(entry, obj);
       /* eslint-enable */

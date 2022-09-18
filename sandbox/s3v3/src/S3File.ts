@@ -14,7 +14,13 @@ import {
   readableConverter,
   readableStreamConverter,
 } from "univ-conv";
-import { AbstractFile, ReadOptions, Stats, WriteOptions } from "univ-fs";
+import {
+  AbstractFile,
+  createMetadata,
+  ReadOptions,
+  Stats,
+  WriteOptions,
+} from "univ-fs";
 import { S3FileSystem } from "./S3FileSystem";
 
 export class S3File extends AbstractFile {
@@ -94,7 +100,7 @@ export class S3File extends AbstractFile {
 
       let metadata: { [key: string]: string } | undefined;
       if (stats) {
-        metadata = s3fs._createMetadata(stats);
+        metadata = createMetadata(stats);
       }
 
       /* eslint-disable */

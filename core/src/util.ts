@@ -1,3 +1,4 @@
+import { DEFAULT_STATS_KEYS, Stats } from "./core";
 import { createError, SyntaxError } from "./errors";
 
 // eslint-disable-next-line no-control-regex
@@ -58,6 +59,16 @@ export function normalizePath(path: string, leadingSlash = true) {
 
 export function isIllegalFileName(name: string) {
   return /[\x00-\x1f\x7f-\x9f\\/:*?"<>|]/.test(name); // eslint-disable-line
+}
+
+export function createMetadata(props: Stats) {
+  const metadata: { [key: string]: string } = {};
+  for (const [key, value] of Object.entries(props)) {
+    if (0 <= DEFAULT_STATS_KEYS.indexOf(key)) continue;
+    if (value == null) continue;
+    metadata[key] = value.toString();
+  }
+  return metadata;
 }
 
 const LUT_HEX_4b = new Array(0x10);

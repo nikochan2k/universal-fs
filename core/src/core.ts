@@ -1,6 +1,14 @@
 import { ConvertOptions, Data, DataType, ReturnData } from "univ-conv";
 import { FileSystemError } from "./errors";
 
+export const DEFAULT_STATS_KEYS = [
+  "accessed",
+  "created",
+  "modified",
+  "size",
+  "etag",
+];
+
 type Primitive = boolean | number | string | null | undefined;
 
 export interface Times {

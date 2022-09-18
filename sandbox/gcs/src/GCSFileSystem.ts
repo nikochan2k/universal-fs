@@ -3,6 +3,7 @@ import {
   AbstractDirectory,
   AbstractFile,
   AbstractFileSystem,
+  createMetadata,
   ErrorLike,
   FileSystemOptions,
   joinPaths,
@@ -33,15 +34,6 @@ export class GCSFileSystem extends AbstractFileSystem {
     options?: FileSystemOptions
   ) {
     super(repository, options);
-  }
-
-  public _createMetadata(props: Stats) {
-    const metadata: { [key: string]: string } = {};
-    for (const [key, value] of Object.entries(props)) {
-      if (!value) continue;
-      metadata[key] = "" + value; // eslint-disable-line
-    }
-    return metadata;
   }
 
   public _doGetDirectory(path: string): AbstractDirectory {
@@ -106,7 +98,7 @@ export class GCSFileSystem extends AbstractFileSystem {
     const entry = this._getEntry(path, props.size === null);
     try {
       const [obj] = await entry.getMetadata(); // eslint-disable-line
-      obj.metadata = this._createMetadata(props); // eslint-disable-line
+      obj.metadata = createMetadata(props); // eslint-disable-line
       await entry.setMetadata(obj);
     } catch (e) {
       throw this._error(path, e, true);
