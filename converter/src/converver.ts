@@ -178,7 +178,10 @@ export class DefaultConverter {
     }
   }
 
-  public slice(input: Data, options: Partial<ConvertOptions>): Promise<Data> {
+  public async slice(
+    input: Data,
+    options: Partial<ConvertOptions>
+  ): Promise<Data> {
     if (
       typeof options.start !== "number" &&
       typeof options.length !== "number"
@@ -219,7 +222,7 @@ export class DefaultConverter {
       }
     }
     if (to) {
-      return this._convert(input, to, options);
+      return await this._convert(input, to, options);
     }
 
     throw new Error("Illegal output type: " + typeOf(input));

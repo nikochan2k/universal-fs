@@ -270,7 +270,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     if (stats == null) {
       return null;
     }
-    return this._doGetURL(path, stats.size == null, options);
+    return await this._doGetURL(path, stats.size == null, options);
   }
 
   public async hash(path: string, options?: ReadOptions): Promise<string>;
