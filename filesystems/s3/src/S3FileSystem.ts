@@ -199,7 +199,7 @@ export class S3FileSystem extends AbstractFileSystem {
   ): Promise<string> {
     try {
       /* eslint-disable */
-      options = { method: "GET", expires: SECONDS_OF_DAY, ...options };
+      options = { expires: SECONDS_OF_DAY, ...options };
       const client = await this._getClient();
       const params = this._createParams(path, isDirectory);
       let url: string;

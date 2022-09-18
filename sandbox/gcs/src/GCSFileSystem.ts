@@ -79,9 +79,8 @@ export class GCSFileSystem extends AbstractFileSystem {
 
     const file = this._getEntry(path, false);
     try {
-      const expires = new Date(
-        Date.now() + (options.expires ?? SECONDS_OF_DAY) * 1000
-      );
+      options = { expires: SECONDS_OF_DAY, ...options };
+      const expires = new Date(Date.now() + SECONDS_OF_DAY * 1000);
       const res = await file.getSignedUrl({ action, expires });
       return res[0];
     } catch (e) {

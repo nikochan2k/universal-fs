@@ -75,7 +75,6 @@ export class FirebaseFileSystem extends AbstractFileSystem {
       });
     }
 
-    options = { method: "GET", ...options };
     switch (options.method) {
       case "GET":
         break;

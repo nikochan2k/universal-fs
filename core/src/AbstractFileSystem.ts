@@ -535,10 +535,8 @@ export abstract class AbstractFileSystem implements FileSystem {
     path: string,
     options: HeadOptions
   ): Promise<Stats | null> {
-    if (options.type === EntryType.Directory) {
-      if (!this.supportDirectory()) {
-        return {};
-      }
+    if (options.type === EntryType.Directory && !this.supportDirectory()) {
+      return {};
     }
 
     const stats = await this._doHead(path, options);
