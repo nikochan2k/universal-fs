@@ -3,6 +3,7 @@ import {
   BlobServiceClient,
   ContainerClient,
   generateBlobSASQueryParameters,
+  RestError,
   StorageSharedKeyCredential,
 } from "@azure/storage-blob";
 import {
@@ -24,6 +25,11 @@ import {
 } from "univ-fs";
 import { AzureDirectory } from "./AzureDirectory";
 import { AzureFile } from "./AzureFile";
+
+export interface AzureCredential {
+  accountName: string;
+  accessKey: string;
+}
 
 export interface AzureFileSystemOptions extends FileSystemOptions {
   canCreateDirectory?: boolean;
@@ -61,18 +67,18 @@ export class AzureFileSystem extends AbstractFileSystem {
   constructor(
     public containerName: string,
     repository: string,
-    accountName: string,
-    accessKey: string,
+    credential: AzureCredential,
     options?: AzureFileSystemOptions
   ) {
     super(repository, options);
     this.canCreateDirectory = options?.canCreateDirectory ?? true;
+
     this.sharedKeyCredential = new StorageSharedKeyCredential(
-      accountName,
-      accessKey
+      credential.accountName,
+      credential.accessKey
     );
     this.serviceClient = new BlobServiceClient(
-      `https://${accountName}.blob.core.windows.net`,
+      `https://${credential.accountName}.blob.core.windows.net`,
       this.sharedKeyCredential
     );
     this.containerClient = this.serviceClient.getContainerClient(containerName);
@@ -212,16 +218,15 @@ export class AzureFileSystem extends AbstractFileSystem {
   }
 
   public _error(path: string, e: unknown, write: boolean) {
-    let error: ErrorLike;
-    if (
-      (e as any).name === "NotFound" || // eslint-disable-line
-      (e as any).$metadata?.httpStatusCode === 404 // eslint-disable-line
-    ) {
-      error = NotFoundError;
-    } else if (write) {
-      error = NoModificationAllowedError;
-    } else {
-      error = NotReadableError;
+    let error: ErrorLike | undefined;
+    if (e instanceof RestError) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      if ((e as RestError).statusCode === 404) {
+        error = NotFoundError;
+      }
+    }
+    if (!error) {
+      error = write ? NoModificationAllowedError : NotReadableError;
     }
     return this._createError({
       ...error,
