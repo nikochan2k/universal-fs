@@ -1,3 +1,4 @@
 □add glob to find/delete method.
 □Azure
-□
+□Check logic if supportDirectory is false
+□Delete Version Management on S3, etc...
