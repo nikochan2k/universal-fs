@@ -11,7 +11,9 @@
     "universal"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-converter": "npm run build -w converter",
+    "build-core": "npm run build -w core",
+    "build-essentials": "npm-run-all build-converter build-core"
   },
   "dependencies": {
     "tslib": "^2.4.0"
