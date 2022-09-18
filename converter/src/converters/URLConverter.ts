@@ -61,14 +61,14 @@ class URLConverter extends AbstractConverter<string> {
 
   protected async _getSize(input: string): Promise<number> {
     if (input.startsWith("file:") && getFileSize) {
-      return getFileSize(input);
+      return await getFileSize(input);
     } else if (input.startsWith("blob:") && isBrowser) {
       const res = await fetch(input);
       const blob = await res.blob();
       return blob.size;
     } else if (input.startsWith("data:")) {
       const base64 = dataUrlToBase64(input);
-      return base64Converter().getSize(base64);
+      return await base64Converter().getSize(base64);
     } else {
       const resp = await fetch(input, { method: "HEAD" });
       const str = resp.headers.get("Content-Length");
@@ -137,10 +137,10 @@ class URLConverter extends AbstractConverter<string> {
   ): Promise<ArrayBuffer> {
     if (input.startsWith("file:") && fileURLToReadable) {
       const readable = fileURLToReadable(input);
-      return readableConverter().toArrayBuffer(readable, options);
+      return await readableConverter().toArrayBuffer(readable, options);
     } else {
       const resp = await fetch(input);
-      return readableStreamConverter().toArrayBuffer(
+      return await readableStreamConverter().toArrayBuffer(
         resp.body as ReadableStream<Uint8Array>,
         options
       );
@@ -152,7 +152,7 @@ class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return uint8ArrayConverter().toBase64(u8, deleteStartLength(options));
+    return await uint8ArrayConverter().toBase64(u8, deleteStartLength(options));
   }
 
   protected async _toText(

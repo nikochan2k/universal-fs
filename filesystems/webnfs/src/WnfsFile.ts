@@ -16,7 +16,7 @@ export class WnfsFile extends AbstractFile {
   public async _doRead(_stats: Stats, _options: ReadOptions): Promise<Data> {
     const { parent, name } = await this.wfs._getParent(this.path);
     const fileHandle = await parent.getFileHandle(name);
-    return fileHandle.getFile();
+    return await fileHandle.getFile();
   }
 
   public async _doWrite(

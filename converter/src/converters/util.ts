@@ -174,7 +174,7 @@ export function isWritable(stream: unknown): stream is Writable {
   );
 }
 
-export async function pipeNodeStream(readable: Readable, writable: Writable) {
+export function pipeNodeStream(readable: Readable, writable: Writable) {
   return new Promise<void>((resolve, reject) => {
     readable.once("error", reject);
     writable.once("error", reject);
@@ -248,7 +248,7 @@ try {
 
   getFileSize = async (fileURL: string) => {
     const p = url.fileURLToPath(fileURL);
-    return new Promise<number>((resolve, reject) => {
+    return await new Promise<number>((resolve, reject) => {
       fs.stat(p, (err, stats) => {
         if (err) {
           reject(err);

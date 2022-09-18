@@ -113,31 +113,37 @@ export class DefaultConverter {
     throw new Error("Illegal input: " + typeOf(input));
   }
 
-  public getSize(input: Data, options?: Partial<Options>): Promise<number> {
+  public async getSize(
+    input: Data,
+    options?: Partial<Options>
+  ): Promise<number> {
     if (arrayBufferConverter().typeEquals(input)) {
-      return arrayBufferConverter().getSize(input as ArrayBuffer, options);
+      return await arrayBufferConverter().getSize(
+        input as ArrayBuffer,
+        options
+      );
     } else if (bufferConverter().typeEquals(input)) {
-      return bufferConverter().getSize(input as Buffer, options);
+      return await bufferConverter().getSize(input as Buffer, options);
     } else if (uint8ArrayConverter().typeEquals(input)) {
-      return uint8ArrayConverter().getSize(input as Uint8Array, options);
+      return await uint8ArrayConverter().getSize(input as Uint8Array, options);
     } else if (blobConverter().typeEquals(input)) {
-      return blobConverter().getSize(input, options);
+      return await blobConverter().getSize(input, options);
     } else if (readableConverter().typeEquals(input)) {
-      return readableConverter().getSize(input, options);
+      return await readableConverter().getSize(input, options);
     } else if (readableStreamConverter().typeEquals(input)) {
-      return readableStreamConverter().getSize(input, options);
+      return await readableStreamConverter().getSize(input, options);
     } else if (typeof input === "string") {
       const type = options?.srcStringType;
       if (type == null || type === "text") {
-        return textConverter().getSize(input, options);
+        return await textConverter().getSize(input, options);
       } else if (type === "base64") {
-        return base64Converter().getSize(input, options);
+        return await base64Converter().getSize(input, options);
       } else if (type === "binary") {
-        return binaryConverter().getSize(input, options);
+        return await binaryConverter().getSize(input, options);
       } else if (type === "hex") {
-        return hexConverter().getSize(input, options);
+        return await hexConverter().getSize(input, options);
       } else if (type === "url") {
-        return urlConverter().getSize(input, options);
+        return await urlConverter().getSize(input, options);
       }
     }
 

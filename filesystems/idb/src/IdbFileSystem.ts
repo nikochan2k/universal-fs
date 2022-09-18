@@ -272,7 +272,7 @@ export class IdbFileSystem extends AbstractFileSystem {
 
   public async _putEntry(path: string, props: Stats): Promise<void> {
     const db = await this._open();
-    return new Promise<void>((resolve, reject) => {
+    return await new Promise<void>((resolve, reject) => {
       const entryStore = this._getObjectStore(db, ENTRY_STORE, "readwrite");
       const req = entryStore.put(props, path);
       req.onsuccess = () => resolve();

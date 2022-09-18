@@ -22,7 +22,7 @@ export class WfsFile extends AbstractFile {
     const fullPath = joinPaths(repository, path);
 
     const fs = await wfs._getFS();
-    return new Promise<void>((resolve, reject) => {
+    return await new Promise<void>((resolve, reject) => {
       fs.root.getFile(
         fullPath,
         { create: false },

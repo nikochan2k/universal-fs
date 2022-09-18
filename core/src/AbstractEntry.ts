@@ -187,11 +187,11 @@ export abstract class AbstractEntry implements Entry {
     }
   }
 
-  protected _beforeDelete(options: DeleteOptions) {
+  protected async _beforeDelete(options: DeleteOptions) {
     const fs = this.fs;
     const beforeDelete = fs.options.hook?.beforeDelete;
     if (beforeDelete && !options.ignoreHook) {
-      return beforeDelete(fs.repository, this.path, options);
+      return await beforeDelete(fs.repository, this.path, options);
     }
     return null;
   }

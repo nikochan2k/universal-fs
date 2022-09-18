@@ -361,7 +361,7 @@ export abstract class AbstractDirectory
     const fs = this.fs;
     const beforeList = fs.options.hook?.beforeList;
     if (beforeList && !options.ignoreHook) {
-      return beforeList(fs.repository, this.path, options);
+      return await beforeList(fs.repository, this.path, options);
     }
     return null;
   }
@@ -370,7 +370,7 @@ export abstract class AbstractDirectory
     const fs = this.fs;
     const beforeMkcol = fs.options.hook?.beforeMkcol;
     if (beforeMkcol && !options.ignoreHook) {
-      return beforeMkcol(fs.repository, this.path, options);
+      return await beforeMkcol(fs.repository, this.path, options);
     }
     return null;
   }

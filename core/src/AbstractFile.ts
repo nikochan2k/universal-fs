@@ -251,7 +251,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       return data as ReturnData<T>;
     }
     const converter = this._getConverter();
-    return converter.convert(data, type, options);
+    return await converter.convert(data, type, options);
     /* eslint-enable */
   }
 
@@ -393,11 +393,11 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
   }
 
-  protected _beforeGet(options: ReadOptions) {
+  protected async _beforeGet(options: ReadOptions) {
     const fs = this.fs;
     const beforeGet = fs.options.hook?.beforeGet;
     if (beforeGet && !options.ignoreHook) {
-      return beforeGet(fs.repository, this.path, options);
+      return await beforeGet(fs.repository, this.path, options);
     }
     return null;
   }

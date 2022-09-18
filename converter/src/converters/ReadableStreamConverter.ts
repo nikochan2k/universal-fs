@@ -266,13 +266,13 @@ class ReadableStreamConverter extends AbstractConverter<
     const bufferSize = options.bufferSize;
     if (isBrowser) {
       const blob = await blobConverter().convert(input, { bufferSize });
-      return blobConverter().toBase64(blob, options);
+      return await blobConverter().toBase64(blob, options);
     } else if (isNode) {
       const buffer = await bufferConverter().convert(input, { bufferSize });
-      return bufferConverter().toBase64(buffer, options);
+      return await bufferConverter().toBase64(buffer, options);
     } else {
       const u8 = await uint8ArrayConverter().convert(input, { bufferSize });
-      return uint8ArrayConverter().toBase64(u8, options);
+      return await uint8ArrayConverter().toBase64(u8, options);
     }
   }
 
@@ -283,13 +283,13 @@ class ReadableStreamConverter extends AbstractConverter<
     const bufferSize = options.bufferSize;
     if (isBrowser) {
       const blob = await blobConverter().convert(input, { bufferSize });
-      return blobConverter().toText(blob, options);
+      return await blobConverter().toText(blob, options);
     } else if (isNode) {
       const buffer = await bufferConverter().convert(input, { bufferSize });
-      return bufferConverter().toText(buffer, options);
+      return await bufferConverter().toText(buffer, options);
     } else {
       const u8 = await uint8ArrayConverter().convert(input, { bufferSize });
-      return uint8ArrayConverter().toText(u8, options);
+      return await uint8ArrayConverter().toText(u8, options);
     }
   }
 
@@ -303,7 +303,7 @@ class ReadableStreamConverter extends AbstractConverter<
       return Promise.resolve(true);
     });
     const converter = uint8ArrayConverter();
-    return converter.merge(chunks, options);
+    return await converter.merge(chunks, options);
   }
 }
 

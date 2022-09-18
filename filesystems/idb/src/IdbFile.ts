@@ -83,7 +83,7 @@ export class IdbFile extends AbstractFile {
 
     const path = this.path;
     const db = await idbFS._open();
-    return new Promise<void>((resolve, reject) => {
+    return await new Promise<void>((resolve, reject) => {
       const contentStore = idbFS._getObjectStore(
         db,
         CONTENT_STORE,

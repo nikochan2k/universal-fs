@@ -162,7 +162,7 @@ export abstract class AbstractFileSystem implements FileSystem {
       throw e;
     }
     const { from, to } = info;
-    return from.copy(to, options, errors);
+    return await from.copy(to, options, errors);
   }
 
   public cp = (
@@ -187,7 +187,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     if (!entry) {
       return false;
     }
-    return entry.delete(options);
+    return await entry.delete(options);
   }
 
   public dir(path: string, options?: ListOptions): Promise<string[]>;
@@ -288,7 +288,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     if (file == null) {
       return null;
     }
-    return file.hash(options, errors);
+    return await file.hash(options, errors);
   }
 
   public async head(path: string, options?: HeadOptions): Promise<Stats>;
@@ -349,7 +349,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     errors?: FileSystemError[]
   ): Promise<string[] | null> {
     const dir = this.getDirectory(path);
-    return dir.list(options, errors);
+    return await dir.list(options, errors);
   }
 
   public ls(path: string, options?: ListOptions): Promise<string[]>;
@@ -395,7 +395,7 @@ export abstract class AbstractFileSystem implements FileSystem {
       throw e;
     }
     const { from, to } = info;
-    return from.move(to, options, errors);
+    return await from.move(to, options, errors);
   }
 
   public mv = (
@@ -463,7 +463,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     errors?: FileSystemError[]
   ): Promise<ReturnData<T> | null> {
     const file = this.getFile(path);
-    return file.read(type, options, errors);
+    return await file.read(type, options, errors);
   }
 
   public readdir(
@@ -509,7 +509,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     errors?: FileSystemError[]
   ): Promise<boolean> {
     const file = this.getFile(path);
-    return file.write(data, options, errors);
+    return await file.write(data, options, errors);
   }
 
   public abstract _doGetDirectory(path: string): Directory;
@@ -586,7 +586,7 @@ export abstract class AbstractFileSystem implements FileSystem {
   protected async _beforeHead(path: string, options: HeadOptions) {
     const beforeHead = this.options.hook?.beforeHead;
     if (beforeHead && !options?.ignoreHook) {
-      return beforeHead(this.repository, path, options);
+      return await beforeHead(this.repository, path, options);
     }
     return null;
   }
@@ -598,7 +598,7 @@ export abstract class AbstractFileSystem implements FileSystem {
   ) {
     const beforePatch = this.options.hook?.beforePatch;
     if (beforePatch && !options.ignoreHook) {
-      return beforePatch(this.repository, path, props, options);
+      return await beforePatch(this.repository, path, props, options);
     }
     return null;
   }
