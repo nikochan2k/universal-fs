@@ -95,8 +95,29 @@ export class S3FileSystem extends AbstractFileSystem {
           .promise();
         return this._handleHead(head, false);
       } catch (e) {
+        if ((e as ErrorLike).name !== NotFoundError.name) {
+          throw this._error(path, e, false);
+        }
+      }
+      try {
+        const res = await client
+          .listObjectsV2({
+            Bucket: this.bucket,
+            Delimiter: "/",
+            Prefix: this._getKey(path, true),
+            MaxKeys: 1,
+          })
+          .promise();
+        if (
+          (res.Contents && 0 < res.Contents.length) ||
+          (res.CommonPrefixes && 0 < res.CommonPrefixes.length)
+        ) {
+          return {};
+        }
+      } catch (e) {
         throw this._error(path, e, false);
       }
+      throw this._error(path, NotFoundError, false);
     }
 
     options = { ...options };

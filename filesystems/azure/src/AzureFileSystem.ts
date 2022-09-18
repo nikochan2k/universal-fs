@@ -142,12 +142,16 @@ export class AzureFileSystem extends AbstractFileSystem {
         throw this._error(path, e, false);
       }
     }
-    const list = this.containerClient.listBlobsFlat({
-      prefix: this._getBlobName(path, true),
-    });
-    const res = await list.next();
-    if (res.value) {
-      return {};
+    try {
+      const list = this.containerClient.listBlobsFlat({
+        prefix: this._getBlobName(path, true),
+      });
+      const res = await list.next();
+      if (res.value) {
+        return {};
+      }
+    } catch (e) {
+      throw this._error(path, e, false);
     }
     throw this._error(path, NotFoundError, false);
   }
@@ -167,7 +171,6 @@ export class AzureFileSystem extends AbstractFileSystem {
   }
 
   public _error(path: string, e: unknown, write: boolean) {
-    console.log(e);
     let error: ErrorLike | undefined;
     if (e instanceof RestError) {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
