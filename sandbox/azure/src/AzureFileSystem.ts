@@ -14,7 +14,6 @@ import {
   EntryType,
   ErrorLike,
   FileSystemOptions,
-  HeadOptions,
   joinPaths,
   NoModificationAllowedError,
   NotFoundError,
@@ -27,8 +26,8 @@ import { AzureDirectory } from "./AzureDirectory";
 import { AzureFile } from "./AzureFile";
 
 export interface AzureCredential {
-  accountName: string;
   accessKey: string;
+  accountName: string;
 }
 
 if (!Promise.allSettled) {
@@ -135,65 +134,12 @@ export class AzureFileSystem extends AbstractFileSystem {
     }
   }
 
-  public async _doHead(path: string, options?: HeadOptions): Promise<Stats> {
-    if (!this.supportDirectory()) {
-      try {
-        return await this._getStats(path, EntryType.File);
-      } catch (e) {
-        throw this._error(path, e, false);
-      }
+  public async _doHead(path: string): Promise<Stats> {
+    try {
+      return await this._getStats(path, EntryType.File);
+    } catch (e) {
+      throw this._error(path, e, false);
     }
-
-    options = { ...options };
-    const type = options.type;
-    const isFile = !type || type === EntryType.File;
-    let fileHead: Promise<Stats>;
-    if (isFile) {
-      fileHead = this._getStats(path, EntryType.File);
-    } else {
-      fileHead = Promise.reject();
-    }
-
-    const isDirectory = !type || type === EntryType.Directory;
-    let dirHead: Promise<Stats> | undefined;
-    let dirList: Promise<Stats> | undefined;
-    if (isDirectory) {
-      dirHead = this._getStats(path, EntryType.File);
-      const list = this.containerClient.listBlobsFlat({
-        prefix: this._getBlobName(path, true),
-      });
-      const res = await list.next();
-      if (res.value) {
-        dirList = Promise.resolve({});
-      } else {
-        dirList = Promise.reject();
-      }
-    } else {
-      dirHead = Promise.reject();
-      dirList = Promise.reject();
-    }
-
-    const [fileHeadRes, dirHeadRes, dirListRes] = await Promise.allSettled([
-      fileHead,
-      dirHead,
-      dirList,
-    ]);
-    if (fileHeadRes.status === "fulfilled") {
-      return fileHeadRes.value;
-    } else if (dirHeadRes.status === "fulfilled") {
-      return dirHeadRes.value;
-    } else if (dirListRes.status === "fulfilled") {
-      return {};
-    }
-    if (isFile) {
-      throw this._error(path, fileHeadRes.reason, false);
-    }
-    if (isDirectory) {
-      if (dirHeadRes.reason) {
-        throw this._error(path, dirHeadRes.reason, false);
-      }
-    }
-    throw this._error(path, dirListRes.reason, false);
   }
 
   public async _doPatch(
