@@ -81,7 +81,7 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     /* eslint-disable */
     const file = await this._getEntry(path, isDirectory);
     try {
-      return getDownloadURL(file);
+      return await getDownloadURL(file);
     } catch (e) {
       throw this._error(path, e, false);
     }
@@ -160,7 +160,7 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     /* eslint-disable */
     const entry = await this._getEntry(path, isDirectory);
     try {
-      return getMetadata(entry);
+      return await getMetadata(entry);
     } catch (e) {
       throw this._error(path, e, false);
     }
