@@ -196,12 +196,12 @@ export abstract class AbstractFileSystem implements FileSystem {
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null>;
-  public dir(
+  public async dir(
     path: string,
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null> {
-    return this.list(path, options, errors);
+    return await this.list(path, options, errors);
   }
 
   public getDirectory(path: string): Directory {
@@ -353,12 +353,12 @@ export abstract class AbstractFileSystem implements FileSystem {
   }
 
   public ls(path: string, options?: ListOptions): Promise<string[]>;
-  public ls(
+  public async ls(
     path: string,
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null> {
-    return this.list(path, options, errors);
+    return await this.list(path, options, errors);
   }
 
   public async mkcol(
@@ -367,7 +367,7 @@ export abstract class AbstractFileSystem implements FileSystem {
     errors?: FileSystemError[]
   ): Promise<boolean> {
     const dir = this.getDirectory(path);
-    return dir.mkcol(options, errors);
+    return await dir.mkcol(options, errors);
   }
 
   public mkdir = (
@@ -491,12 +491,12 @@ export abstract class AbstractFileSystem implements FileSystem {
     options?: HeadOptions,
     errors?: FileSystemError[]
   ): Promise<Stats | null>;
-  public stat(
+  public async stat(
     path: string,
     options?: HeadOptions,
     errors?: FileSystemError[]
   ): Promise<Stats | null> {
-    return this.head(path, options, errors);
+    return await this.head(path, options, errors);
   }
 
   public unlink = (path: string, options?: DeleteOptions) =>

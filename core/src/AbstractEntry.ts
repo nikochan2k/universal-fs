@@ -37,7 +37,7 @@ export abstract class AbstractEntry implements Entry {
     errors?: FileSystemError[]
   ): Promise<boolean> {
     options = { ...this.fs.defaultCopyOptions, ...options };
-    return this._copy(to, options, errors);
+    return await this._copy(to, options, errors);
   }
 
   public cp = (to: Entry, options?: CopyOptions, errors?: FileSystemError[]) =>
@@ -120,18 +120,18 @@ export abstract class AbstractEntry implements Entry {
     this.delete(options, errors);
 
   public stat(options?: HeadOptions): Promise<Stats>;
-  public stat(options?: HeadOptions, errors?: FileSystemError[]) {
-    return this.head(options, errors);
+  public async stat(options?: HeadOptions, errors?: FileSystemError[]) {
+    return await this.head(options, errors);
   }
 
   public toString = () => `${this.fs.repository}:${this.path}`;
 
   public toURL(options?: URLOptions): Promise<string>;
-  public toURL(
+  public async toURL(
     options?: URLOptions,
     errors?: FileSystemError[]
   ): Promise<string | null> {
-    return this.fs.getURL(this.path, options, errors);
+    return await this.fs.getURL(this.path, options, errors);
   }
 
   public abstract _copy(
@@ -161,7 +161,8 @@ export abstract class AbstractEntry implements Entry {
 
     try {
       await this._validate(options);
-      return this._deleteExisting(options, errors);
+      const result = await this._deleteExisting(options, errors);
+      return result;
     } catch (e) {
       if (isFileSystemError(e) && e.name === NotFoundError.name) {
         if (options.onNotExist === NotExistAction.Error) {
@@ -225,25 +226,25 @@ export abstract class AbstractEntry implements Entry {
     callback?: (e: FileSystemError) => Promise<void>
   ) {
     const error = this._createNoModificationAllowedError(cause);
-    return this.fs._handleFileSystemError(error, errors, callback);
+    return await this.fs._handleFileSystemError(error, errors, callback);
   }
 
-  protected _handleNotFoundError(
+  protected async _handleNotFoundError(
     cause: Partial<ErrorLike>,
     errors?: FileSystemError[],
     callback?: (e: FileSystemError) => Promise<void>
   ) {
     const error = this._createNotFoundError(cause);
-    return this.fs._handleFileSystemError(error, errors, callback);
+    return await this.fs._handleFileSystemError(error, errors, callback);
   }
 
-  protected _handleNotReadableError(
+  protected async _handleNotReadableError(
     cause: Partial<ErrorLike>,
     errors?: FileSystemError[],
     callback?: (e: FileSystemError) => Promise<void>
   ) {
     const error = this._createNotReadableError(cause);
-    return this.fs._handleFileSystemError(error, errors, callback);
+    return await this.fs._handleFileSystemError(error, errors, callback);
   }
 
   protected async _handleTypeMismatchError(
@@ -252,6 +253,6 @@ export abstract class AbstractEntry implements Entry {
     callback?: (e: FileSystemError) => Promise<void>
   ) {
     const error = this._createTypeMismatchError(cause);
-    return this.fs._handleFileSystemError(error, errors, callback);
+    return await this.fs._handleFileSystemError(error, errors, callback);
   }
 }

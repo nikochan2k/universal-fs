@@ -56,7 +56,7 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
         input,
         options.textToBufferCharset
       );
-      return this.toUint8Array(u8, options);
+      return await this.toUint8Array(u8, options);
     }
     if (arrayBufferConverter().typeEquals(input)) {
       return await arrayBufferConverter().toUint8Array(input, options);

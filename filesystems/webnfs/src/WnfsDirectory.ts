@@ -39,9 +39,9 @@ export class WnfsDirectory extends AbstractDirectory {
 
   private async _getDirectoryHandle(create: boolean) {
     if (this.path === "/") {
-      return this.wfs._getRoot();
+      return await this.wfs._getRoot();
     }
     const { parent, name } = await this.wfs._getParent(this.path);
-    return parent.getDirectoryHandle(name, { create });
+    return await parent.getDirectoryHandle(name, { create });
   }
 }

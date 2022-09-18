@@ -260,7 +260,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     options?: WriteOptions,
     errors?: FileSystemError[]
   ): Promise<boolean> {
-    return this._write(data, options, errors);
+    return await this._write(data, options, errors);
   }
 
   public abstract _doDelete(): Promise<void>;

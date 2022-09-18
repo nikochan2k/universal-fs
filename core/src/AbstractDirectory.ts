@@ -172,11 +172,11 @@ export abstract class AbstractDirectory
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null>;
-  public dir(
+  public async dir(
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null> {
-    return this.list(options, errors);
+    return await this.list(options, errors);
   }
 
   public head(options?: HeadOptions): Promise<Stats>;
@@ -220,11 +220,11 @@ export abstract class AbstractDirectory
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null>;
-  public ls(
+  public async ls(
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null> {
-    return this.list(options, errors);
+    return await this.list(options, errors);
   }
 
   public async mkcol(
@@ -259,11 +259,11 @@ export abstract class AbstractDirectory
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null>;
-  public readdir(
+  public async readdir(
     options?: ListOptions,
     errors?: FileSystemError[]
   ): Promise<string[] | null> {
-    return this.list(options, errors);
+    return await this.list(options, errors);
   }
 
   public abstract _doDelete(): Promise<void>;

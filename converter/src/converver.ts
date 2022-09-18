@@ -50,12 +50,12 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : Data;
 
 export class DefaultConverter {
-  public convert<T extends DataType>(
+  public async convert<T extends DataType>(
     input: Data,
     to: T,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>> {
-    return this._convert(input, to, options) as Promise<ReturnData<T>>;
+    return await (this._convert(input, to, options) as Promise<ReturnData<T>>);
   }
 
   public empty<T extends DataType>(type?: T): ReturnData<T> {
@@ -225,155 +225,155 @@ export class DefaultConverter {
     throw new Error("Illegal output type: " + typeOf(input));
   }
 
-  public toArrayBuffer(
+  public async toArrayBuffer(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<ArrayBuffer> {
     if (Array.isArray(input)) {
-      return this.merge(input, "arraybuffer", options);
+      return await this.merge(input, "arraybuffer", options);
     } else {
-      return this.convert(input, "arraybuffer", options);
+      return await this.convert(input, "arraybuffer", options);
     }
   }
 
-  public toBase64(
+  public async toBase64(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<string> {
     if (Array.isArray(input)) {
-      return this.merge(input, "base64", options);
+      return await this.merge(input, "base64", options);
     } else {
-      return this.convert(input, "base64", options);
+      return await this.convert(input, "base64", options);
     }
   }
 
-  public toBinary(
+  public async toBinary(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<string> {
     if (Array.isArray(input)) {
-      return this.merge(input, "binary", options);
+      return await this.merge(input, "binary", options);
     } else {
-      return this.convert(input, "binary", options);
+      return await this.convert(input, "binary", options);
     }
   }
 
-  public toBlob(
+  public async toBlob(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<Blob> {
     if (Array.isArray(input)) {
-      return this.merge(input, "blob", options);
+      return await this.merge(input, "blob", options);
     } else {
-      return this.convert(input, "blob", options);
+      return await this.convert(input, "blob", options);
     }
   }
 
-  public toBuffer(
+  public async toBuffer(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<Buffer> {
     if (Array.isArray(input)) {
-      return this.merge(input, "buffer", options);
+      return await this.merge(input, "buffer", options);
     } else {
-      return this.convert(input, "buffer", options);
+      return await this.convert(input, "buffer", options);
     }
   }
 
-  public toHex(
+  public async toHex(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<string> {
     if (Array.isArray(input)) {
-      return this.merge(input, "hex", options);
+      return await this.merge(input, "hex", options);
     } else {
-      return this.convert(input, "hex", options);
+      return await this.convert(input, "hex", options);
     }
   }
 
-  public toReadable(
+  public async toReadable(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<Readable> {
     if (Array.isArray(input)) {
-      return this.merge(input, "readable", options);
+      return await this.merge(input, "readable", options);
     } else {
-      return this.convert(input, "readable", options);
+      return await this.convert(input, "readable", options);
     }
   }
 
-  public toReadableStream(
+  public async toReadableStream(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<ReadableStream<Uint8Array>> {
     if (Array.isArray(input)) {
-      return this.merge(input, "readablestream", options);
+      return await this.merge(input, "readablestream", options);
     } else {
-      return this.convert(input, "readablestream", options);
+      return await this.convert(input, "readablestream", options);
     }
   }
 
-  public toText(
+  public async toText(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<string> {
     if (Array.isArray(input)) {
-      return this.merge(input, "text", options);
+      return await this.merge(input, "text", options);
     } else {
-      return this.convert(input, "text", options);
+      return await this.convert(input, "text", options);
     }
   }
 
-  public toURL(
+  public async toURL(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<string> {
     if (Array.isArray(input)) {
-      return this.merge(input, "url", options);
+      return await this.merge(input, "url", options);
     } else {
-      return this.convert(input, "url", options);
+      return await this.convert(input, "url", options);
     }
   }
 
-  public toUint8Array(
+  public async toUint8Array(
     input: Data | Data[],
     options?: Partial<ConvertOptions>
   ): Promise<Uint8Array> {
     if (Array.isArray(input)) {
-      return this.merge(input, "uint8array", options);
+      return await this.merge(input, "uint8array", options);
     } else {
-      return this.convert(input, "uint8array", options);
+      return await this.convert(input, "uint8array", options);
     }
   }
 
-  protected _convert<T extends DataType>(
+  protected async _convert<T extends DataType>(
     input: Data,
     to: T,
     options?: Partial<ConvertOptions>
   ): Promise<Data> {
     switch (to) {
       case "arraybuffer":
-        return arrayBufferConverter().convert(input, options);
+        return await arrayBufferConverter().convert(input, options);
       case "buffer":
-        return bufferConverter().convert(input, options);
+        return await bufferConverter().convert(input, options);
       case "uint8array":
-        return uint8ArrayConverter().convert(input, options);
+        return await uint8ArrayConverter().convert(input, options);
       case "blob":
-        return blobConverter().convert(input, options);
+        return await blobConverter().convert(input, options);
       case "readable":
-        return readableConverter().convert(input, options);
+        return await readableConverter().convert(input, options);
       case "readablestream":
-        return readableStreamConverter().convert(input, options);
+        return await readableStreamConverter().convert(input, options);
       case "text":
-        return textConverter().convert(input, options);
+        return await textConverter().convert(input, options);
       case "base64":
-        return base64Converter().convert(input, options);
+        return await base64Converter().convert(input, options);
       case "binary":
-        return binaryConverter().convert(input, options);
+        return await binaryConverter().convert(input, options);
       case "hex":
-        return hexConverter().convert(input, options);
+        return await hexConverter().convert(input, options);
       case "url":
-        return urlConverter().convert(input, options);
+        return await urlConverter().convert(input, options);
     }
 
     throw new Error("Illegal output type: " + to);
