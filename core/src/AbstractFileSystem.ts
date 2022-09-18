@@ -317,7 +317,7 @@ export abstract class AbstractFileSystem implements FileSystem {
         return stats;
       }
 
-      stats = await this.$head(path, options);
+      stats = await this.__head(path, options);
       await this._afterHead(path, stats, options);
       return stats;
     } catch (e) {
@@ -531,7 +531,7 @@ export abstract class AbstractFileSystem implements FileSystem {
   public abstract canPatchModified(): boolean;
   public abstract supportDirectory(): boolean;
 
-  protected async $head(
+  protected async __head(
     path: string,
     options: HeadOptions
   ): Promise<Stats | null> {
