@@ -103,7 +103,7 @@ export class GCSFileSystem extends AbstractFileSystem {
     props: Stats,
     _options: PatchOptions // eslint-disable-line
   ): Promise<void> {
-    const entry = this._getEntry(path, props["size"] === null);
+    const entry = this._getEntry(path, props.size === null);
     try {
       const [obj] = await entry.getMetadata(); // eslint-disable-line
       obj.metadata = this._createMetadata(props); // eslint-disable-line

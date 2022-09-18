@@ -113,9 +113,9 @@ export class FirebaseFileSystem extends AbstractFileSystem {
   ): Promise<void> {
     try {
       /* eslint-disable */
-      const obj = await this._getMetadata(path, props["size"] === null);
+      const obj = await this._getMetadata(path, props.size === null);
       obj.customMetadata = this._createMetadata(props);
-      const entry = await this._getEntry(path, props["size"] === null);
+      const entry = await this._getEntry(path, props.size === null);
       await updateMetadata(entry, obj);
       /* eslint-enable */
     } catch (e) {
