@@ -8,7 +8,6 @@ import { Upload } from "@aws-sdk/lib-storage";
 import { Readable } from "stream";
 import {
   Data,
-  EMPTY_BUFFER,
   isBrowser,
   isNode,
   readableConverter,
