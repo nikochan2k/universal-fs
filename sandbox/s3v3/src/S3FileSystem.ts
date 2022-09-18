@@ -206,10 +206,6 @@ export class S3FileSystem extends AbstractFileSystem {
         return {};
       }
     }
-    let dirListReason: unknown | undefined;
-    if (dirListRes.status === "rejected") {
-      dirListReason = dirListRes.reason;
-    }
     if (isFile) {
       throw this._error(path, fileHeadRes.reason, false);
     }
@@ -218,7 +214,7 @@ export class S3FileSystem extends AbstractFileSystem {
         throw this._error(path, dirHeadRes.reason, false);
       }
     }
-    throw this._error(path, dirListReason, false);
+    throw this._error(path, (dirListRes as any).reason, false);
     /* eslint-enable */
   }
 
