@@ -138,8 +138,18 @@ export class AzureFileSystem extends AbstractFileSystem {
     try {
       return await this._getStats(path, EntryType.File);
     } catch (e) {
-      throw this._error(path, e, false);
+      if ((e as ErrorLike).name !== NotFoundError.name) {
+        throw this._error(path, e, false);
+      }
     }
+    const list = this.containerClient.listBlobsFlat({
+      prefix: this._getBlobName(path, true),
+    });
+    const res = await list.next();
+    if (res.value) {
+      return {};
+    }
+    throw this._error(path, NotFoundError, false);
   }
 
   public async _doPatch(
