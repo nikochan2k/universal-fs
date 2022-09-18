@@ -31,10 +31,6 @@ export interface AzureCredential {
   accessKey: string;
 }
 
-export interface AzureFileSystemOptions extends FileSystemOptions {
-  canCreateDirectory?: boolean;
-}
-
 if (!Promise.allSettled) {
   /* eslint-disable */
   (Promise as any).allSettled = (promises: any) =>
@@ -59,8 +55,6 @@ const SECONDS_OF_DAY = 24 * 60 * 60;
 export class AzureFileSystem extends AbstractFileSystem {
   private sharedKeyCredential: StorageSharedKeyCredential;
 
-  public readonly canCreateDirectory: boolean;
-
   public containerClient: ContainerClient;
   public serviceClient: BlobServiceClient;
 
@@ -68,10 +62,9 @@ export class AzureFileSystem extends AbstractFileSystem {
     public containerName: string,
     repository: string,
     credential: AzureCredential,
-    options?: AzureFileSystemOptions
+    options?: FileSystemOptions
   ) {
     super(repository, options);
-    this.canCreateDirectory = options?.canCreateDirectory ?? true;
 
     this.sharedKeyCredential = new StorageSharedKeyCredential(
       credential.accountName,
@@ -218,6 +211,7 @@ export class AzureFileSystem extends AbstractFileSystem {
   }
 
   public _error(path: string, e: unknown, write: boolean) {
+    console.log(e);
     let error: ErrorLike | undefined;
     if (e instanceof RestError) {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -267,7 +261,7 @@ export class AzureFileSystem extends AbstractFileSystem {
   }
 
   public supportDirectory(): boolean {
-    return this.canCreateDirectory;
+    return false;
   }
 
   private async _getStats(path: string, type?: EntryType) {
