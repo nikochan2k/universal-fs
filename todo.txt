@@ -2,3 +2,4 @@
 □Azure
 □Check logic if supportDirectory is false
 □Delete Version Management on S3, etc...
+□Readable to NodeJS.ReadableStream
