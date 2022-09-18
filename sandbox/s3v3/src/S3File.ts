@@ -45,9 +45,6 @@ export class S3File extends AbstractFile {
 
   public async _doRead(_stats: Stats, options: ReadOptions): Promise<Data> {
     const length = options.length;
-    if (length === 0) {
-      return EMPTY_BUFFER;
-    }
     const start = options.start;
     let range: string | undefined;
     if (typeof start === "number" || typeof length === "number") {
