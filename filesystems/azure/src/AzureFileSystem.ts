@@ -2,7 +2,9 @@ import {
   BlobSASPermissions,
   BlobServiceClient,
   ContainerClient,
+  generateBlobSASQueryParameters,
   RestError,
+  StorageSharedKeyCredential,
 } from "@azure/storage-blob";
 import {
   AbstractDirectory,
@@ -24,6 +26,7 @@ import { AzureDirectory } from "./AzureDirectory";
 import { AzureFile } from "./AzureFile";
 
 export interface AzureCredential {
+  accessKey: string;
   accountName: string;
   sasToken: string;
 }
@@ -50,7 +53,8 @@ if (!Promise.allSettled) {
 const SECONDS_OF_DAY = 24 * 60 * 60;
 
 export class AzureFileSystem extends AbstractFileSystem {
-  private sasToken: string;
+  private sasToken?: string;
+  private sharedKeyCredential?: StorageSharedKeyCredential;
 
   public containerClient: ContainerClient;
   public serviceClient: BlobServiceClient;
@@ -63,12 +67,23 @@ export class AzureFileSystem extends AbstractFileSystem {
   ) {
     super(repository, options);
     this.sasToken = credential.sasToken;
-    if (!this.sasToken.startsWith("?")) {
-      this.sasToken = "?" + this.sasToken;
+    if (this.sasToken) {
+      if (!this.sasToken.startsWith("?")) {
+        this.sasToken = "?" + this.sasToken;
+      }
+      this.serviceClient = new BlobServiceClient(
+        `https://${credential.accountName}.blob.core.windows.net${credential.sasToken}`
+      );
+    } else {
+      this.sharedKeyCredential = new StorageSharedKeyCredential(
+        credential.accountName,
+        credential.accessKey
+      );
+      this.serviceClient = new BlobServiceClient(
+        `https://${credential.accountName}.blob.core.windows.net`,
+        this.sharedKeyCredential
+      );
     }
-    this.serviceClient = new BlobServiceClient(
-      `https://${credential.accountName}.blob.core.windows.net${credential.sasToken}`
-    );
     this.containerClient = this.serviceClient.getContainerClient(containerName);
   }
 
@@ -114,7 +129,23 @@ export class AzureFileSystem extends AbstractFileSystem {
       }
       const blobName = this._getBlobName(path, isDirectory);
       const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-      const url = `${blockBlobClient.url}${this.sasToken}`;
+      let url: string;
+      if (this.sasToken) {
+        url = `${blockBlobClient.url}${this.sasToken}`;
+      } else {
+        const sasToken = generateBlobSASQueryParameters(
+          {
+            containerName: this.containerName,
+            blobName,
+            expiresOn: new Date(Date.now() + SECONDS_OF_DAY * 1000),
+            permissions,
+          },
+          this.sharedKeyCredential! // eslint-disable-line
+        );
+        const blockBlobClient =
+          this.containerClient.getBlockBlobClient(blobName);
+        url = `${blockBlobClient.url}?${sasToken.toString()}`;
+      }
       return Promise.resolve(url);
     } catch (e) {
       throw this._error(path, e, false);
