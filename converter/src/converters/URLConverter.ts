@@ -15,7 +15,6 @@ import {
   DataType,
   deleteStartLength,
   getStartEnd,
-  isURL,
   Options,
 } from "./core";
 import {
@@ -92,7 +91,7 @@ class URLConverter extends AbstractConverter<string> {
   }
 
   protected _isEmpty(input: string): boolean {
-    return !isURL(input);
+    return !/^(file|http|https|blob|data):/.test(input);
   }
 
   protected async _merge(urls: string[], options: Options): Promise<string> {
