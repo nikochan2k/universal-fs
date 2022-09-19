@@ -234,7 +234,7 @@ export abstract class AbstractDirectory
     options = { ...this.fs.defaultMkcolOptions, ...options };
 
     try {
-      const result = await this.$mkcol(options);
+      const result = await this.__mkcol(options);
       await this._afterMkcol(options, result);
       return result;
     } catch (e) {
@@ -270,7 +270,7 @@ export abstract class AbstractDirectory
   public abstract _doList(): Promise<Item[]>;
   public abstract _doMkcol(): Promise<void>;
 
-  protected async $list(options: ListOptions): Promise<Item[]> {
+  protected async __list(options: ListOptions): Promise<Item[]> {
     await this._validate(options);
 
     const list = await this._doList();
@@ -286,7 +286,7 @@ export abstract class AbstractDirectory
     return list;
   }
 
-  protected async $mkcol(options: MkcolOptions): Promise<boolean> {
+  protected async __mkcol(options: MkcolOptions): Promise<boolean> {
     if (!this.fs.supportDirectory()) {
       return true;
     }
@@ -382,7 +382,7 @@ export abstract class AbstractDirectory
     try {
       let list = await this._beforeList(options);
       if (!list) {
-        list = await this.$list(options);
+        list = await this.__list(options);
       }
 
       await this._afterList(options, list);

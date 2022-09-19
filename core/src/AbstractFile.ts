@@ -274,31 +274,6 @@ export abstract class AbstractFile extends AbstractEntry implements File {
   public abstract supportRangeRead(): boolean;
   public abstract supportRangeWrite(): boolean;
 
-  protected async $read(options: ReadOptions): Promise<Data> {
-    /* eslint-disable */
-    if (options.length === 0) {
-      return EMPTY_UINT8_ARRAY;
-    }
-
-    await this._validate(options);
-    const stats = this.stats as Stats;
-    if (stats.size === 0) {
-      return EMPTY_UINT8_ARRAY;
-    }
-
-    let data = await this._doRead(stats, options);
-    if (
-      !this.supportRangeRead() &&
-      (typeof options?.start === "number" ||
-        typeof options?.length === "number")
-    ) {
-      data = await DEFAULT_CONVERTER.slice(data, options); // eslint-disable-line
-    }
-
-    return data;
-    /* eslint-enable */
-  }
-
   protected async $write(data: Data, options: WriteOptions): Promise<boolean> {
     /* eslint-disable */
     const length = options.length;
@@ -355,6 +330,31 @@ export abstract class AbstractFile extends AbstractEntry implements File {
 
     await this._doWrite(data, this.stats, options);
     return true;
+  }
+
+  protected async __read(options: ReadOptions): Promise<Data> {
+    /* eslint-disable */
+    if (options.length === 0) {
+      return EMPTY_UINT8_ARRAY;
+    }
+
+    await this._validate(options);
+    const stats = this.stats as Stats;
+    if (stats.size === 0) {
+      return EMPTY_UINT8_ARRAY;
+    }
+
+    let data = await this._doRead(stats, options);
+    if (
+      !this.supportRangeRead() &&
+      (typeof options?.start === "number" ||
+        typeof options?.length === "number")
+    ) {
+      data = await DEFAULT_CONVERTER.slice(data, options); // eslint-disable-line
+    }
+
+    return data;
+    /* eslint-enable */
   }
 
   protected async _afterGet(
@@ -439,7 +439,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
         return data;
       }
 
-      data = await this.$read(options);
+      data = await this.__read(options);
       await this._afterGet(options, data);
       return data;
     } catch (e) {
@@ -450,5 +450,6 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       return null;
     }
   }
+
   /* eslint-enable */
 }

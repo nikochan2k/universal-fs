@@ -52,7 +52,7 @@ export abstract class AbstractEntry implements Entry {
   ): Promise<boolean> {
     options = { ...this.fs.defaultDeleteOptions, ...options };
     try {
-      const result = await this.$delete(options, errors);
+      const result = await this.__delete(options, errors);
       await this._afterDelete(result, options);
       return result;
     } catch (e) {
@@ -150,7 +150,7 @@ export abstract class AbstractEntry implements Entry {
     errors?: FileSystemError[]
   ): Promise<Stats | null>;
 
-  protected async $delete(
+  protected async __delete(
     options: DeleteOptions,
     errors?: FileSystemError[]
   ): Promise<boolean> {
