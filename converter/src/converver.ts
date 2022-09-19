@@ -331,7 +331,7 @@ export class DefaultConverter {
     options?: Partial<ConvertOptions>
   ): Converter<Data> | undefined {
     if (typeof input === "string") {
-      return this._getStringConverterOfType(input, options?.srcStringType);
+      return this._getStringConverterOfType(options?.srcStringType);
     }
     for (const converter of this.binaryAndStreamConverters.values()) {
       if (converter.typeEquals(input)) {
@@ -355,11 +355,15 @@ export class DefaultConverter {
     }
   }
 
-  protected _getStringConverterOfType(_input: string, type?: StringType) {
-    if (!type) {
-      return textConverter();
+  protected _getStringConverterOfType(type?: StringType) {
+    let converter: Converter<Data> | undefined;
+    if (type) {
+      converter = this.stringConverters.get(type);
     }
-    return this.stringConverters.get(type) ?? textConverter();
+    if (!converter) {
+      converter = textConverter();
+    }
+    return converter;
   }
 
   protected async _merge<T extends DataType>(

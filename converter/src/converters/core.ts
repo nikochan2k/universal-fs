@@ -52,13 +52,6 @@ export const DEFAULT_BUFFER_SIZE = 96 * 1024;
 export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
-export function isURL(input: string) {
-  if (!input) {
-    return false;
-  }
-  return /^(file|http|https|blob|data):/.test(input);
-}
-
 export function getStartEnd(
   options: ConvertOptions,
   size?: number
