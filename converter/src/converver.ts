@@ -6,6 +6,7 @@ import {
   blobConverter,
   bufferConverter,
   closeStream,
+  Converter,
   ConvertOptions,
   Data,
   DataType,
@@ -50,6 +51,35 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : Data;
 
 export class DefaultConverter {
+  private converters: Converter<Data>[];
+  private binaryAndStreamConverters: Converter<Data>[] = [];
+  private binaryConverters: Converter<Data>[] = [];
+  private stringConverters: Converter<Data>[] = [];
+  private streamConverters: Converter<Data>[] = [];
+
+  constructor() {
+    this.binaryConverters.push(arrayBufferConverter());
+    this.binaryConverters.push(bufferConverter());
+    this.binaryConverters.push(uint8ArrayConverter());
+    this.binaryConverters.push(blobConverter());
+    this.streamConverters.push(readableConverter());
+    this.streamConverters.push(readableStreamConverter());
+    this.stringConverters.push(textConverter());
+    this.stringConverters.push(base64Converter());
+    this.stringConverters.push(binaryConverter());
+    this.stringConverters.push(hexConverter());
+    this.stringConverters.push(urlConverter());
+    this.binaryAndStreamConverters = [
+      ...this.binaryConverters,
+      ...this.streamConverters,
+    ];
+    this.converters = [
+      ...this.binaryConverters,
+      ...this.streamConverters,
+      ...this.stringConverters,
+    ];
+  }
+
   public async convert<T extends DataType>(
     input: Data,
     to: T,
@@ -59,29 +89,12 @@ export class DefaultConverter {
   }
 
   public empty<T extends DataType>(type?: T): ReturnData<T> {
-    switch (type) {
-      case "arraybuffer":
-        return arrayBufferConverter().empty() as ReturnData<T>;
-      case "buffer":
-        return bufferConverter().empty() as ReturnData<T>;
-      case "uint8array":
-        return uint8ArrayConverter().empty() as ReturnData<T>;
-      case "blob":
-        return blobConverter().empty() as ReturnData<T>;
-      case "readable":
-        return readableConverter().empty() as ReturnData<T>;
-      case "readablestream":
-        return readableStreamConverter().empty() as ReturnData<T>;
-      case "text":
-        return textConverter().empty() as ReturnData<T>;
-      case "base64":
-        return base64Converter().empty() as ReturnData<T>;
-      case "binary":
-        return binaryConverter().empty() as ReturnData<T>;
-      case "hex":
-        return hexConverter().empty() as ReturnData<T>;
-      case "url":
-        return urlConverter().empty() as ReturnData<T>;
+    if (type) {
+      for (const converter of this.converters) {
+        if (converter.type === type) {
+          return converter.empty() as ReturnData<T>;
+        }
+      }
     }
 
     if (isBrowser) {
@@ -94,20 +107,13 @@ export class DefaultConverter {
   }
 
   public emptyOf<T extends Data>(input: T): T {
-    if (arrayBufferConverter().typeEquals(input)) {
-      return arrayBufferConverter().empty() as T;
-    } else if (bufferConverter().typeEquals(input)) {
-      return bufferConverter().empty() as T;
-    } else if (uint8ArrayConverter().typeEquals(input)) {
-      return uint8ArrayConverter().empty() as T;
-    } else if (blobConverter().typeEquals(input)) {
-      return blobConverter().empty() as T;
-    } else if (readableConverter().typeEquals(input)) {
-      return readableConverter().empty() as T;
-    } else if (readableStreamConverter().typeEquals(input)) {
-      return readableStreamConverter().empty() as T;
-    } else if (typeof input === "string") {
+    if (typeof input === "string") {
       return "" as T;
+    }
+    for (const converter of this.binaryAndStreamConverters) {
+      if (converter.typeEquals(input)) {
+        return converter.empty() as T;
+      }
     }
 
     throw new Error("Illegal input: " + typeOf(input));
@@ -117,22 +123,7 @@ export class DefaultConverter {
     input: Data,
     options?: Partial<Options>
   ): Promise<number> {
-    if (arrayBufferConverter().typeEquals(input)) {
-      return await arrayBufferConverter().getSize(
-        input as ArrayBuffer,
-        options
-      );
-    } else if (bufferConverter().typeEquals(input)) {
-      return await bufferConverter().getSize(input as Buffer, options);
-    } else if (uint8ArrayConverter().typeEquals(input)) {
-      return await uint8ArrayConverter().getSize(input as Uint8Array, options);
-    } else if (blobConverter().typeEquals(input)) {
-      return await blobConverter().getSize(input, options);
-    } else if (readableConverter().typeEquals(input)) {
-      return await readableConverter().getSize(input, options);
-    } else if (readableStreamConverter().typeEquals(input)) {
-      return await readableStreamConverter().getSize(input, options);
-    } else if (typeof input === "string") {
+    if (typeof input === "string") {
       const type = options?.srcStringType;
       if (type == null || type === "text") {
         return await textConverter().getSize(input, options);
@@ -144,6 +135,12 @@ export class DefaultConverter {
         return await hexConverter().getSize(input, options);
       } else if (type === "url") {
         return await urlConverter().getSize(input, options);
+      }
+    }
+
+    for (const converter of this.binaryAndStreamConverters) {
+      if (converter.typeEquals(input)) {
+        return await converter.getSize(input, options);
       }
     }
 
@@ -201,19 +198,7 @@ export class DefaultConverter {
     }
 
     let to: DataType | undefined;
-    if (arrayBufferConverter().typeEquals(input)) {
-      to = "arraybuffer";
-    } else if (bufferConverter().typeEquals(input)) {
-      to = "buffer";
-    } else if (uint8ArrayConverter().typeEquals(input)) {
-      to = "uint8array";
-    } else if (blobConverter().typeEquals(input)) {
-      to = "blob";
-    } else if (readableConverter().typeEquals(input)) {
-      to = "readable";
-    } else if (readableStreamConverter().typeEquals(input)) {
-      to = "readablestream";
-    } else if (typeof input === "string") {
+    if (typeof input === "string") {
       const type = options?.srcStringType;
       if (type == null || type === "text") {
         to = "text";
@@ -225,6 +210,13 @@ export class DefaultConverter {
         to = "hex";
       } else if (type === "url") {
         to = "url";
+      }
+    } else {
+      for (const converter of this.binaryAndStreamConverters) {
+        if (converter.typeEquals(input)) {
+          to = converter.type;
+          break;
+        }
       }
     }
     if (to) {
@@ -360,29 +352,8 @@ export class DefaultConverter {
     to: T,
     options?: Partial<ConvertOptions>
   ): Promise<Data> {
-    switch (to) {
-      case "arraybuffer":
-        return await arrayBufferConverter().convert(input, options);
-      case "buffer":
-        return await bufferConverter().convert(input, options);
-      case "uint8array":
-        return await uint8ArrayConverter().convert(input, options);
-      case "blob":
-        return await blobConverter().convert(input, options);
-      case "readable":
-        return await readableConverter().convert(input, options);
-      case "readablestream":
-        return await readableStreamConverter().convert(input, options);
-      case "text":
-        return await textConverter().convert(input, options);
-      case "base64":
-        return await base64Converter().convert(input, options);
-      case "binary":
-        return await binaryConverter().convert(input, options);
-      case "hex":
-        return await hexConverter().convert(input, options);
-      case "url":
-        return await urlConverter().convert(input, options);
+    for (const converter of this.converters) {
+      return await converter.convert(input, options);
     }
 
     throw new Error("Illegal output type: " + to);
@@ -408,38 +379,10 @@ export class DefaultConverter {
   ) {
     const results = await this._convertAll(chunks, to, options);
 
-    switch (to) {
-      case "arraybuffer":
-        return await arrayBufferConverter().merge(
-          results as ArrayBuffer[],
-          options
-        );
-      case "buffer":
-        return await bufferConverter().merge(results as Buffer[], options);
-      case "uint8array":
-        return await uint8ArrayConverter().merge(
-          results as Uint8Array[],
-          options
-        );
-      case "blob":
-        return await blobConverter().merge(results as Blob[], options);
-      case "readable":
-        return await readableConverter().merge(results as Readable[], options);
-      case "readablestream":
-        return await readableStreamConverter().merge(
-          results as ReadableStream<Uint8Array>[],
-          options
-        );
-      case "text":
-        return await textConverter().merge(results as string[], options);
-      case "base64":
-        return await base64Converter().merge(results as string[], options);
-      case "binary":
-        return await binaryConverter().merge(results as string[], options);
-      case "hex":
-        return await hexConverter().merge(results as string[], options);
-      case "url":
-        return await urlConverter().merge(results as string[], options);
+    for (const converter of this.converters) {
+      if (converter.type === to) {
+        return await converter.merge(results, options);
+      }
     }
 
     throw new Error("Illegal output type: " + to);

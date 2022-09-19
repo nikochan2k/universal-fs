@@ -8,6 +8,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   getStartEnd,
   hasNoStartLength,
 } from "./core";
@@ -15,6 +16,8 @@ import { textHelper } from "./TextHelper";
 import { EMPTY_BUFFER } from "./util";
 
 class BufferConverter extends AbstractConverter<Buffer> {
+  public type: DataType = "buffer";
+
   public empty(): Buffer {
     return EMPTY_BUFFER;
   }

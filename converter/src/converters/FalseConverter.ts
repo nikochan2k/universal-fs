@@ -1,7 +1,9 @@
-import { Converter } from "./core";
+import { Converter, DataType } from "./core";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class FalseConverter implements Converter<any> {
+  public type: DataType = "unknown";
+
   public constructor(public key: string) {}
 
   public convert(): any {

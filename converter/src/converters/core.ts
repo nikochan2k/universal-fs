@@ -7,7 +7,7 @@ export type StringType = "text" | "url" | "base64" | "binary" | "hex";
 export type BinaryType = "arraybuffer" | "uint8array" | "buffer" | "blob";
 export type BlockType = StringType | BinaryType;
 export type StreamType = "readable" | "readablestream";
-export type DataType = BlockType | StreamType;
+export type DataType = BlockType | StreamType | "unknown";
 
 export type BlockData = string | ArrayBuffer | Uint8Array | Buffer | Blob;
 export type StreamData = Readable | ReadableStream<Uint8Array>;
@@ -26,6 +26,8 @@ export interface ConvertOptions extends Options {
 }
 
 export interface Converter<T extends Data> {
+  type: DataType;
+
   convert(input: Data, options?: Partial<ConvertOptions>): Promise<T>;
   empty(): T;
   getSize(input: T, options?: Partial<Options>): Promise<number>;
@@ -100,6 +102,8 @@ export function isEmpty(input: Data, options?: Partial<ConvertOptions>) {
 export abstract class AbstractConverter<T extends Data>
   implements Converter<T>
 {
+  abstract type: DataType;
+
   public async convert(
     input: Data,
     options?: Partial<ConvertOptions>

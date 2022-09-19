@@ -7,6 +7,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   getStartEnd,
   hasNoStartLength,
 } from "./core";
@@ -23,6 +24,8 @@ import {
 } from "./util";
 
 class BlobConverter extends AbstractConverter<Blob> {
+  public type: DataType = "blob";
+
   public empty(): Blob {
     return EMPTY_BLOB;
   }

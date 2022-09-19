@@ -12,6 +12,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   deleteStartLength,
   getStartEnd,
   isURL,
@@ -32,6 +33,8 @@ if (typeof fetch !== "function") {
 }
 
 class URLConverter extends AbstractConverter<string> {
+  public type: DataType = "url";
+
   public empty(): string {
     return "";
   }

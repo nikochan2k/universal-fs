@@ -4,6 +4,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   getStartEnd,
   hasNoStartLength,
 } from "./core";
@@ -11,6 +12,8 @@ import { textHelper } from "./TextHelper";
 import { handleFileReader, hasReadAsBinaryStringOnBlob, isNode } from "./util";
 
 class BinaryConverter extends AbstractConverter<string> {
+  public type: DataType = "binary";
+
   public empty(): string {
     return "";
   }

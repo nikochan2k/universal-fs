@@ -14,6 +14,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   deleteStartLength,
   getStartEnd,
   hasNoStartLength,
@@ -23,6 +24,8 @@ import { textHelper } from "./TextHelper";
 import { isBrowser, isNode } from "./util";
 
 class Base64Converter extends AbstractConverter<string> {
+  public type: DataType = "base64";
+
   public empty(): string {
     return "";
   }

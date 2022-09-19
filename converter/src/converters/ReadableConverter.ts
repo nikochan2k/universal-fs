@@ -8,6 +8,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   deleteStartLength,
   getStartEnd,
 } from "./core";
@@ -29,6 +30,10 @@ export class PartialReadable extends Readable {
   ) {
     super();
     src.once("readable", () => this.setup());
+  }
+
+  public override _read() {
+    // noop
   }
 
   private setup() {
@@ -74,10 +79,6 @@ export class PartialReadable extends Readable {
       src.off("data", onData);
     });
     src.on("data", onData);
-  }
-
-  public override _read() {
-    // noop
   }
 }
 
@@ -143,6 +144,8 @@ class ReadableOfReadableStream extends Readable {
 }
 
 class ReadableConverter extends AbstractConverter<Readable> {
+  public type: DataType = "readable";
+
   public empty(): Readable {
     return new Readable({
       read() {

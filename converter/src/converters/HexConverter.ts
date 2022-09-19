@@ -3,6 +3,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   deleteStartLength,
   getStartEnd,
   hasNoStartLength,
@@ -43,6 +44,8 @@ const MAP_HEX: { [key: string]: number } = {
 };
 
 class HexConverter extends AbstractConverter<string> {
+  public type: DataType = "hex";
+
   public empty(): string {
     return "";
   }

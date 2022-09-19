@@ -13,6 +13,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   deleteStartLength,
   getStartEnd,
   hasNoStartLength,
@@ -21,6 +22,8 @@ import {
 import { textHelper } from "./TextHelper";
 
 class TextConverter extends AbstractConverter<string> {
+  public type: DataType = "text";
+
   public empty(): string {
     return "";
   }

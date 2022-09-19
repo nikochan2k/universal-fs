@@ -14,6 +14,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   EMPTY_UINT8_ARRAY,
   getStartEnd,
   hasNoStartLength,
@@ -21,6 +22,8 @@ import {
 import { textHelper } from "./TextHelper";
 import { isNode } from "./util";
 class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
+  public type: DataType = "uint8array";
+
   public empty(): Uint8Array {
     return EMPTY_UINT8_ARRAY;
   }

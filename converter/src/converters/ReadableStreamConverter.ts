@@ -9,6 +9,7 @@ import {
   AbstractConverter,
   ConvertOptions,
   Data,
+  DataType,
   EMPTY_UINT8_ARRAY,
   getStartEnd,
 } from "./core";
@@ -140,6 +141,8 @@ function createReadableStreamOfReader(
 class ReadableStreamConverter extends AbstractConverter<
   ReadableStream<Uint8Array>
 > {
+  public type: DataType = "readablestream";
+
   public empty(): ReadableStream<Uint8Array> {
     return new ReadableStream({
       start: (converter) => {
