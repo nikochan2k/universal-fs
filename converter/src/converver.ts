@@ -353,7 +353,9 @@ export class DefaultConverter {
     options?: Partial<ConvertOptions>
   ): Promise<Data> {
     for (const converter of this.converters) {
-      return await converter.convert(input, options);
+      if (converter.type === to) {
+        return await converter.convert(input, options);
+      }
     }
 
     throw new Error("Illegal output type: " + to);
