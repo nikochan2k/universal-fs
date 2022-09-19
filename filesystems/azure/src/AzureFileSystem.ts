@@ -2,9 +2,7 @@ import {
   BlobSASPermissions,
   BlobServiceClient,
   ContainerClient,
-  generateBlobSASQueryParameters,
   RestError,
-  StorageSharedKeyCredential,
 } from "@azure/storage-blob";
 import {
   AbstractDirectory,
@@ -26,8 +24,8 @@ import { AzureDirectory } from "./AzureDirectory";
 import { AzureFile } from "./AzureFile";
 
 export interface AzureCredential {
-  accessKey: string;
   accountName: string;
+  sasToken: string;
 }
 
 if (!Promise.allSettled) {
@@ -52,7 +50,7 @@ if (!Promise.allSettled) {
 const SECONDS_OF_DAY = 24 * 60 * 60;
 
 export class AzureFileSystem extends AbstractFileSystem {
-  private sharedKeyCredential: StorageSharedKeyCredential;
+  private sasToken: string;
 
   public containerClient: ContainerClient;
   public serviceClient: BlobServiceClient;
@@ -64,14 +62,12 @@ export class AzureFileSystem extends AbstractFileSystem {
     options?: FileSystemOptions
   ) {
     super(repository, options);
-
-    this.sharedKeyCredential = new StorageSharedKeyCredential(
-      credential.accountName,
-      credential.accessKey
-    );
+    this.sasToken = credential.sasToken;
+    if (!this.sasToken.startsWith("?")) {
+      this.sasToken = "?" + this.sasToken;
+    }
     this.serviceClient = new BlobServiceClient(
-      `https://${credential.accountName}.blob.core.windows.net`,
-      this.sharedKeyCredential
+      `https://${credential.accountName}.blob.core.windows.net${credential.sasToken}`
     );
     this.containerClient = this.serviceClient.getContainerClient(containerName);
   }
@@ -117,17 +113,8 @@ export class AzureFileSystem extends AbstractFileSystem {
           });
       }
       const blobName = this._getBlobName(path, isDirectory);
-      const sasToken = generateBlobSASQueryParameters(
-        {
-          containerName: this.containerName,
-          blobName,
-          expiresOn: new Date(Date.now() + SECONDS_OF_DAY * 1000),
-          permissions,
-        },
-        this.sharedKeyCredential
-      );
       const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-      const url = `${blockBlobClient.url}?${sasToken.toString()}`;
+      const url = `${blockBlobClient.url}${this.sasToken}`;
       return Promise.resolve(url);
     } catch (e) {
       throw this._error(path, e, false);
