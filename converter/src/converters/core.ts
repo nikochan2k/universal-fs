@@ -39,7 +39,7 @@ export interface Converter<T extends Data> {
   typeEquals(input: unknown): input is T;
 }
 
-export function typeOf(input: unknown): string {
+export function getType(input: unknown): string {
   const type = typeof input;
   if (type === "function" || type === "object") {
     // eslint-disable-next-line
@@ -102,7 +102,7 @@ export function isEmpty(input: Data, options?: Partial<ConvertOptions>) {
 export abstract class AbstractConverter<T extends Data>
   implements Converter<T>
 {
-  abstract type: DataType;
+  public abstract type: DataType;
 
   public async convert(
     input: Data,
@@ -112,16 +112,13 @@ export abstract class AbstractConverter<T extends Data>
       return this.empty();
     }
 
-    const converted = await this._convert(
-      input,
-      this._initOptions(input, options)
-    );
+    const converted = await this._convert(input, this._initOptions(options));
     if (typeof converted !== "undefined") {
       return converted;
     }
 
     throw new Error(
-      `[${this.constructor.name}] Illegal input: ${typeOf(input)}`
+      `[${this.constructor.name}] Illegal input: ${getType(input)}`
     );
   }
 
@@ -130,7 +127,7 @@ export abstract class AbstractConverter<T extends Data>
       return 0;
     }
 
-    return await this._getSize(input, this._initOptions(input, options));
+    return await this._getSize(input, this._initOptions(options));
   }
 
   public isEmpty(input: T, options?: Partial<Options>) {
@@ -148,10 +145,7 @@ export abstract class AbstractConverter<T extends Data>
       return chunks[0] as T;
     }
 
-    return await this._merge(
-      chunks,
-      this._initOptions(chunks[0] as Data, options)
-    );
+    return await this._merge(chunks, this._initOptions(options));
   }
 
   public async toArrayBuffer(
@@ -220,7 +214,6 @@ export abstract class AbstractConverter<T extends Data>
   ): Promise<Uint8Array>;
 
   private _initOptions<T extends Options>(
-    input: Data,
     options?: Partial<ConvertOptions>
   ): ConvertOptions {
     if (!options) options = {};
@@ -231,15 +224,6 @@ export abstract class AbstractConverter<T extends Data>
       console.info(
         `"bufferSize" was modified to ${options.bufferSize}. ("bufferSize" must be divisible by 6.)`
       );
-    }
-    if (typeof input === "string") {
-      if (!options.srcStringType) {
-        if (isURL(input)) {
-          options.srcStringType = "url";
-        } else {
-          options.srcStringType = "text";
-        }
-      }
     }
     if (!options.bufferToTextCharset) options.bufferToTextCharset = "utf8";
     if (!options.textToBufferCharset) options.textToBufferCharset = "utf8";

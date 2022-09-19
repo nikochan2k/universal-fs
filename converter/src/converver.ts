@@ -20,8 +20,9 @@ import {
   pipeWebStream,
   readableConverter,
   readableStreamConverter,
+  StringType,
   textConverter,
-  typeOf,
+  getType,
   uint8ArrayConverter,
   urlConverter,
 } from "./converters";
@@ -51,33 +52,36 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : Data;
 
 export class DefaultConverter {
-  private converters: Converter<Data>[];
-  private binaryAndStreamConverters: Converter<Data>[] = [];
-  private binaryConverters: Converter<Data>[] = [];
-  private stringConverters: Converter<Data>[] = [];
-  private streamConverters: Converter<Data>[] = [];
+  private binaryAndStreamConverters = new Map<DataType, Converter<Data>>();
+  private binaryConverters = new Map<DataType, Converter<Data>>();
+  private converters = new Map<DataType, Converter<Data>>();
+  private streamConverters = new Map<DataType, Converter<Data>>();
+  private stringConverters = new Map<DataType, Converter<Data>>();
 
   constructor() {
-    this.binaryConverters.push(arrayBufferConverter());
-    this.binaryConverters.push(bufferConverter());
-    this.binaryConverters.push(uint8ArrayConverter());
-    this.binaryConverters.push(blobConverter());
-    this.streamConverters.push(readableConverter());
-    this.streamConverters.push(readableStreamConverter());
-    this.stringConverters.push(textConverter());
-    this.stringConverters.push(base64Converter());
-    this.stringConverters.push(binaryConverter());
-    this.stringConverters.push(hexConverter());
-    this.stringConverters.push(urlConverter());
-    this.binaryAndStreamConverters = [
-      ...this.binaryConverters,
-      ...this.streamConverters,
-    ];
-    this.converters = [
-      ...this.binaryConverters,
-      ...this.streamConverters,
-      ...this.stringConverters,
-    ];
+    this.binaryConverters.set("arraybuffer", arrayBufferConverter());
+    this.binaryConverters.set("buffer", bufferConverter());
+    this.binaryConverters.set("uint8array", uint8ArrayConverter());
+    this.binaryConverters.set("blob", blobConverter());
+    this.streamConverters.set("readable", readableConverter());
+    this.streamConverters.set("readablestream", readableStreamConverter());
+    this.stringConverters.set("text", textConverter());
+    this.stringConverters.set("base64", base64Converter());
+    this.stringConverters.set("binary", binaryConverter());
+    this.stringConverters.set("hex", hexConverter());
+    this.stringConverters.set("url", urlConverter());
+
+    this.binaryConverters.forEach((converter, type) => {
+      this.converters.set(type, converter);
+      this.binaryAndStreamConverters.set(type, converter);
+    });
+    this.streamConverters.forEach((converter, type) => {
+      this.converters.set(type, converter);
+      this.binaryAndStreamConverters.set(type, converter);
+    });
+    this.stringConverters.forEach((converter, type) => {
+      this.converters.set(type, converter);
+    });
   }
 
   public async convert<T extends DataType>(
@@ -88,63 +92,33 @@ export class DefaultConverter {
     return await (this._convert(input, to, options) as Promise<ReturnData<T>>);
   }
 
-  public empty<T extends DataType>(type?: T): ReturnData<T> {
-    if (type) {
-      for (const converter of this.converters) {
-        if (converter.type === type) {
-          return converter.empty() as ReturnData<T>;
-        }
-      }
-    }
-
-    if (isBrowser) {
-      return blobConverter().empty() as ReturnData<T>;
-    } else if (isNode) {
-      return bufferConverter().empty() as ReturnData<T>;
-    } else {
-      return uint8ArrayConverter().empty() as ReturnData<T>;
-    }
-  }
-
-  public emptyOf<T extends Data>(input: T): T {
+  public empty<T extends Data>(input: T): T {
     if (typeof input === "string") {
       return "" as T;
     }
-    for (const converter of this.binaryAndStreamConverters) {
-      if (converter.typeEquals(input)) {
-        return converter.empty() as T;
-      }
+    const converter = this._getConverter(input);
+    if (converter) {
+      return converter.empty() as T;
     }
 
-    throw new Error("Illegal input: " + typeOf(input));
+    throw new Error("Illegal input: " + getType(input));
+  }
+
+  public emptyOfType<T extends DataType>(type: T): ReturnData<T> {
+    const converter = this._getConverterOfType(type);
+    return converter.empty() as ReturnData<T>;
   }
 
   public async getSize(
     input: Data,
     options?: Partial<Options>
   ): Promise<number> {
-    if (typeof input === "string") {
-      const type = options?.srcStringType;
-      if (type == null || type === "text") {
-        return await textConverter().getSize(input, options);
-      } else if (type === "base64") {
-        return await base64Converter().getSize(input, options);
-      } else if (type === "binary") {
-        return await binaryConverter().getSize(input, options);
-      } else if (type === "hex") {
-        return await hexConverter().getSize(input, options);
-      } else if (type === "url") {
-        return await urlConverter().getSize(input, options);
-      }
+    const converter = this._getConverter(input, options);
+    if (converter) {
+      return await converter.getSize(input, options);
     }
 
-    for (const converter of this.binaryAndStreamConverters) {
-      if (converter.typeEquals(input)) {
-        return await converter.getSize(input, options);
-      }
-    }
-
-    throw new Error("Illegal input: " + typeOf(input));
+    throw new Error("Illegal input: " + getType(input));
   }
 
   public async merge<T extends DataType>(
@@ -177,53 +151,8 @@ export class DefaultConverter {
         closeStream(output, e);
       }
     } else {
-      throw new Error("Illegal output type: " + typeOf(output));
+      throw new Error("Illegal output type: " + getType(output));
     }
-  }
-
-  public async slice(
-    input: Data,
-    options: Partial<ConvertOptions>
-  ): Promise<Data> {
-    if (
-      typeof options.start !== "number" &&
-      typeof options.length !== "number"
-    ) {
-      throw new Error(
-        "Illegal argument: options.start and options.length are undefined."
-      );
-    }
-    if (options.length === 0) {
-      return Promise.resolve(this.emptyOf(input));
-    }
-
-    let to: DataType | undefined;
-    if (typeof input === "string") {
-      const type = options?.srcStringType;
-      if (type == null || type === "text") {
-        to = "text";
-      } else if (type === "base64") {
-        to = "base64";
-      } else if (type === "binary") {
-        to = "binary";
-      } else if (type === "hex") {
-        to = "hex";
-      } else if (type === "url") {
-        to = "url";
-      }
-    } else {
-      for (const converter of this.binaryAndStreamConverters) {
-        if (converter.typeEquals(input)) {
-          to = converter.type;
-          break;
-        }
-      }
-    }
-    if (to) {
-      return await this._convert(input, to, options);
-    }
-
-    throw new Error("Illegal output type: " + typeOf(input));
   }
 
   public async toArrayBuffer(
@@ -352,13 +281,12 @@ export class DefaultConverter {
     to: T,
     options?: Partial<ConvertOptions>
   ): Promise<Data> {
-    for (const converter of this.converters) {
-      if (converter.type === to) {
-        return await converter.convert(input, options);
-      }
+    if (options?.length === 0) {
+      return this.emptyOfType(to);
     }
 
-    throw new Error("Illegal output type: " + to);
+    const converter = this._getConverterOfType(to);
+    return await converter.convert(input, options);
   }
 
   protected async _convertAll<T extends DataType>(
@@ -374,20 +302,51 @@ export class DefaultConverter {
     return results;
   }
 
+  protected _getConverter(
+    input: Data,
+    options?: Partial<ConvertOptions>
+  ): Converter<Data> | undefined {
+    if (typeof input === "string") {
+      return this._getStringConverterOfType(input, options?.srcStringType);
+    }
+    for (const converter of this.binaryAndStreamConverters.values()) {
+      if (converter.typeEquals(input)) {
+        return converter;
+      }
+    }
+    return undefined;
+  }
+
+  protected _getConverterOfType(type: DataType): Converter<Data> {
+    const converter = this.converters.get(type);
+    if (converter) {
+      return converter;
+    }
+    if (isBrowser) {
+      return blobConverter();
+    } else if (isNode) {
+      return bufferConverter();
+    } else {
+      return uint8ArrayConverter();
+    }
+  }
+
+  protected _getStringConverterOfType(_input: string, type?: StringType) {
+    if (!type) {
+      return textConverter();
+    }
+    return this.stringConverters.get(type) ?? textConverter();
+  }
+
   protected async _merge<T extends DataType>(
     chunks: Data[],
     to: T,
     options?: Partial<Options>
   ) {
     const results = await this._convertAll(chunks, to, options);
-
-    for (const converter of this.converters) {
-      if (converter.type === to) {
-        return await converter.merge(results, options);
-      }
-    }
-
-    throw new Error("Illegal output type: " + to);
+    const converter = this._getConverterOfType(to);
+    // eslint-disable-next-line
+    return await converter.merge(results as any[], options); // TODO
   }
 }
 
