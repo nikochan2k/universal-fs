@@ -10,8 +10,10 @@ import {
   ConvertOptions,
   Data,
   DataType,
+  getType,
   hexConverter,
   isBrowser,
+  isEmpty,
   isNode,
   isWritable,
   isWritableStream,
@@ -22,7 +24,6 @@ import {
   readableStreamConverter,
   StringType,
   textConverter,
-  getType,
   uint8ArrayConverter,
   urlConverter,
 } from "./converters";
@@ -153,6 +154,29 @@ export class DefaultConverter {
     } else {
       throw new Error("Illegal output type: " + getType(output));
     }
+  }
+
+  public async slice(
+    input: Data,
+    options: Partial<ConvertOptions>
+  ): Promise<Data> {
+    if (
+      typeof options.start !== "number" &&
+      typeof options.length !== "number"
+    ) {
+      throw new Error(
+        "Illegal argument: options.start and options.length are undefined."
+      );
+    }
+    if (isEmpty(input, options)) {
+      return Promise.resolve(this.empty(input));
+    }
+
+    const converter = this._getConverter(input, options);
+    if (converter) {
+      return await converter.convert(input, options);
+    }
+    throw new Error("Illegal output type: " + getType(input));
   }
 
   public async toArrayBuffer(
