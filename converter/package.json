@@ -54,8 +54,8 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
-    "fast-text-encoding": "^1.0.3",
-    "node-fetch": "^2.6.7"
+    "fast-text-encoding": "^1.0.6",
+    "node-fetch": "2.6.7"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"

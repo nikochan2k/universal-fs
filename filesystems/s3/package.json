@@ -44,7 +44,7 @@
     ]
   },
   "dependencies": {
-    "aws-sdk": "^2.1218.0"
+    "aws-sdk": "^2.1219.0"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"
