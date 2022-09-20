@@ -1,5 +1,6 @@
 □add glob to find/delete method.
 ☑︎Azure
+□S3 Cognite authentication
 ■Check logic if supportDirectory is false
 　☑︎s3
 　☑︎s3v3
