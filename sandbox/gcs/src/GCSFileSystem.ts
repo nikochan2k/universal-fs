@@ -200,5 +200,4 @@ export class GCSFileSystem extends AbstractFileSystem {
 
     return stats;
   }
-  /* eslint-enable */
 }

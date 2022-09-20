@@ -261,9 +261,8 @@ export function createError(error: ErrorParams): FileSystemError {
     return error.e;
   }
 
-  /* eslint-disable */
   let found = false;
-  const e = error.e;
+  const e = error.e as ErrorLike;
   if (e?.name) {
     for (const de of domExceptions) {
       if (de.name === e.name) {
@@ -293,7 +292,6 @@ export function createError(error: ErrorParams): FileSystemError {
     error.name = UnknownError.name;
     error.message = UnknownError.message;
   }
-  /* eslint-enable */
 
   return new FileSystemError(error);
 }

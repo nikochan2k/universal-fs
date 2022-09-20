@@ -6,9 +6,8 @@
 // Copyright (c) Microsoft Open Technologies, Inc.
 // Licensed under the MIT license.
 
-/* eslint-disable */
+/* eslint-disable-next-line */
 interface Window {
-  /* eslint-enable */
   /**
    * Requests a filesystem in which to store application data.
    * @param type              Whether the filesystem requested should be persistent, as defined above. Use one of TEMPORARY or PERSISTENT.

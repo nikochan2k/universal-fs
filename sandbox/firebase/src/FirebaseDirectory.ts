@@ -16,7 +16,6 @@ export class FirebaseDirectory extends AbstractDirectory {
     const path = this.path;
     const items: Item[] = [];
     try {
-      /* eslint-disable */
       const dir = await ffs._getEntry(path, true);
       const prefix = ffs._getKey(path, true);
       const result = await listAll(dir);
@@ -40,7 +39,6 @@ export class FirebaseDirectory extends AbstractDirectory {
         items.push({ path: joined, type: EntryType.File });
       }
       return items;
-      /* eslint-enable */
     } catch (e) {
       throw ffs._error(path, e, false);
     }

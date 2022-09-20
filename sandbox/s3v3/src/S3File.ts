@@ -32,11 +32,9 @@ export class S3File extends AbstractFile {
     const path = this.path;
 
     try {
-      /* eslint-disable */
       const cmd = new DeleteObjectCommand(s3fs._createCommand(path, false));
       const client = await s3fs._getClient();
       await client.send(cmd);
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, true);
     }
@@ -55,7 +53,6 @@ export class S3File extends AbstractFile {
     const s3fs = this.s3fs;
     const path = this.path;
     const cmdIn: GetObjectCommandInput = s3fs._createCommand(path, false);
-    /* eslint-disable */
     if (range) {
       cmdIn.Range = range;
     }
@@ -68,7 +65,6 @@ export class S3File extends AbstractFile {
     } catch (e) {
       throw s3fs._error(path, e, false);
     }
-    /* eslint-enable */
   }
 
   public async _doWrite(
@@ -99,7 +95,6 @@ export class S3File extends AbstractFile {
         metadata = createMetadata(stats);
       }
 
-      /* eslint-disable */
       const client = await s3fs._getClient();
       if (
         readableConverter().typeEquals(body) ||
@@ -124,7 +119,6 @@ export class S3File extends AbstractFile {
         });
         await client.send(cmd);
       }
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, true);
     }

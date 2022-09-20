@@ -18,14 +18,12 @@ export class FirebaseFile extends AbstractFile {
   public async _doDelete(): Promise<void> {
     const ffs = this.ffs;
     const path = this.path;
-    /* eslint-disable */
     const file = await this.ffs._getEntry(path, false);
     try {
       await deleteObject(file);
     } catch (e) {
       throw ffs._error(path, e, true);
     }
-    /* eslint-enable */
   }
 
   public async _doRead(): Promise<Data> {
@@ -70,7 +68,6 @@ export class FirebaseFile extends AbstractFile {
     const path = this.path;
     const converter = this._getConverter();
 
-    /* eslint-disable */
     const file = await this.ffs._getEntry(path, false);
     try {
       if (isNode) {
@@ -83,7 +80,6 @@ export class FirebaseFile extends AbstractFile {
     } catch (e) {
       throw ffs._error(path, e, true);
     }
-    /* eslint-enable */
   }
 
   public supportAppend(): boolean {

@@ -139,28 +139,46 @@ export class IdbFileSystem extends AbstractFileSystem {
     return tx.objectStore(storeName);
   }
 
-  /* eslint-disable */
-  public _onAbort(reject: (reason?: any) => void, path: string, ev: any) {
+  public _onAbort(
+    reject: (reason?: unknown) => void,
+    path: string,
+    ev: unknown
+  ) {
     reject(this._error(path, ev, AbortError));
   }
 
-  public _onBlockError(reject: (reason?: any) => void, path: string, ev: any) {
+  public _onBlockError(
+    reject: (reason?: unknown) => void,
+    path: string,
+    ev: unknown
+  ) {
     reject(this._error(path, ev, TimeoutError));
   }
 
-  public _onNotFound(reject: (reason?: any) => void, path: string, ev: any) {
+  public _onNotFound(
+    reject: (reason?: unknown) => void,
+    path: string,
+    ev: unknown
+  ) {
     reject(this._error(path, ev, NotFoundError));
   }
 
-  public _onReadError(reject: (reason?: any) => void, path: string, ev: any) {
+  public _onReadError(
+    reject: (reason?: unknown) => void,
+    path: string,
+    ev: unknown
+  ) {
     reject(this._error(path, ev, NotReadableError));
   }
 
-  public _onWriteError(reject: (reason?: any) => void, path: string, ev: any) {
+  public _onWriteError(
+    reject: (reason?: unknown) => void,
+    path: string,
+    ev: unknown
+  ) {
     reject(this._error(path, ev, NoModificationAllowedError));
   }
 
-  /* eslint-enable */
   public async _open(): Promise<IDBDatabase> {
     if (this.db) {
       return this.db;

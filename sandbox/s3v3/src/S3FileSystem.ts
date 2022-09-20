@@ -42,25 +42,6 @@ export interface Command {
   Key: string;
 }
 
-if (!Promise.allSettled) {
-  /* eslint-disable */
-  (Promise as any).allSettled = (promises: any) =>
-    Promise.all(
-      promises.map((p: any) =>
-        p
-          .then((value: any) => ({
-            status: "fulfilled",
-            value,
-          }))
-          .catch((reason: any) => ({
-            status: "rejected",
-            reason,
-          }))
-      )
-    );
-  /* eslint-enable */
-}
-
 const SECONDS_OF_DAY = 24 * 60 * 60;
 
 export class S3FileSystem extends AbstractFileSystem {
@@ -107,7 +88,6 @@ export class S3FileSystem extends AbstractFileSystem {
     options: URLOptions
   ): Promise<string> {
     try {
-      /* eslint-disable */
       options = { expires: SECONDS_OF_DAY, ...options };
       const client = await this._getClient();
       const params = this._createCommand(path, isDirectory);
@@ -136,7 +116,6 @@ export class S3FileSystem extends AbstractFileSystem {
             e: { message: `"${options.method}" is not supported` }, // eslint-disable-line
           });
       }
-      /* eslint-enable */
       return url;
     } catch (e) {
       throw this._error(path, e, false);
@@ -144,7 +123,6 @@ export class S3FileSystem extends AbstractFileSystem {
   }
 
   public async _doHead(path: string, options?: HeadOptions): Promise<Stats> {
-    /* eslint-disable */
     const client = await this._getClient();
     if (!this.supportDirectory()) {
       try {
@@ -233,8 +211,8 @@ export class S3FileSystem extends AbstractFileSystem {
         throw this._error(path, dirHeadRes.reason, false);
       }
     }
+    // eslint-disable-next-line
     throw this._error(path, (dirListRes as any).reason, false);
-    /* eslint-enable */
   }
 
   public async _doPatch(
@@ -244,7 +222,6 @@ export class S3FileSystem extends AbstractFileSystem {
   ): Promise<void> {
     const key = this._getKey(path, props.size == null);
     try {
-      /* eslint-disable */
       const cmd = new CopyObjectCommand({
         Bucket: this.bucket,
         CopySource: this.bucket + "/" + key,
@@ -253,7 +230,6 @@ export class S3FileSystem extends AbstractFileSystem {
       });
       const client = await this._getClient();
       await client.send(cmd);
-      /* eslint-enable */
     } catch (e) {
       throw this._error(path, e, true);
     }
@@ -279,7 +255,6 @@ export class S3FileSystem extends AbstractFileSystem {
   }
 
   public async _getClient() {
-    /* eslint-disable */
     if (this.client) {
       return this.client;
     }
@@ -311,7 +286,6 @@ export class S3FileSystem extends AbstractFileSystem {
     } catch (e) {
       throw this._error("/", e, true);
     }
-    /* eslint-enable */
   }
 
   public _getKey(path: string, isDirectory: boolean) {
@@ -344,7 +318,6 @@ export class S3FileSystem extends AbstractFileSystem {
   }
 
   private _handleHead(data: HeadObjectCommandOutput, isDirectory: boolean) {
-    /* eslint-disable */
     const stats: Stats = {};
     if (!isDirectory) {
       stats.size = data.ContentLength;
@@ -361,7 +334,6 @@ export class S3FileSystem extends AbstractFileSystem {
       }
       stats[key] = value;
     }
-    /* eslint-enable */
 
     return stats;
   }

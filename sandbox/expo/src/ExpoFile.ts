@@ -48,7 +48,6 @@ export class ExpoFile extends AbstractFile {
     const length = end - position;
 
     try {
-      /* eslint-disable */
       const base64 = await readAsStringAsync(this.uri, {
         encoding: "base64",
         position,
@@ -60,7 +59,6 @@ export class ExpoFile extends AbstractFile {
         bufferSize: options.bufferSize,
       });
       return u8;
-      /* eslint-enable */
     } catch (e) {
       throw this._createError({
         ...NotReadableError,

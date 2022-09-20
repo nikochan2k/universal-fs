@@ -19,10 +19,8 @@ export class S3File extends AbstractFile {
     const path = this.path;
 
     try {
-      /* eslint-disable */
       const client = await s3fs._getClient();
       await client.deleteObject(s3fs._createParams(path, false)).promise();
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, true);
     }
@@ -33,13 +31,11 @@ export class S3File extends AbstractFile {
     const path = this.path;
 
     try {
-      /* eslint-disable */
       const client = await s3fs._getClient();
       const obj = await client
         .getObject(s3fs._createParams(path, false))
         .promise();
       return (obj.Body as Data) || "";
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, false);
     }
@@ -73,7 +69,6 @@ export class S3File extends AbstractFile {
         metadata = createMetadata(stats);
       }
 
-      /* eslint-disable */
       const client = await s3fs._getClient();
       const params = s3fs._createParams(path, false);
       if (
@@ -95,7 +90,6 @@ export class S3File extends AbstractFile {
           })
           .promise();
       }
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, true);
     }

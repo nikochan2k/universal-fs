@@ -16,25 +16,6 @@ import {
 import { WfsDirectory } from "./WfsDirectory";
 import { WfsFile } from "./WfsFile";
 
-if (!Promise.allSettled) {
-  /* eslint-disable */
-  (Promise as any).allSettled = (promises: any) =>
-    Promise.all(
-      promises.map((p: any) =>
-        p
-          .then((value: any) => ({
-            status: "fulfilled",
-            value,
-          }))
-          .catch((reason: any) => ({
-            status: "rejected",
-            reason,
-          }))
-      )
-    );
-  /* eslint-enable */
-}
-
 const requestFileSystem =
   window.requestFileSystem || (window as any).webkitRequestFileSystem; // eslint-disable-line
 export class WfsFileSystem extends AbstractFileSystem {
@@ -158,7 +139,6 @@ export class WfsFileSystem extends AbstractFileSystem {
         );
       });
     }
-    /* eslint-enable */
     const fs = await new Promise<FileSystem>((resolve, reject) => {
       requestFileSystem(
         window.PERSISTENT,

@@ -78,14 +78,12 @@ export class FirebaseFileSystem extends AbstractFileSystem {
         );
     }
 
-    /* eslint-disable */
     const file = await this._getEntry(path, isDirectory);
     try {
       return await getDownloadURL(file);
     } catch (e) {
       throw this._error(path, e, false);
     }
-    /* eslint-enable */
   }
 
   public async _doHead(path: string): Promise<Stats> {
@@ -104,12 +102,10 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     props: Stats
   ): Promise<void> {
     try {
-      /* eslint-disable */
       const obj = await this._getMetadata(path, props.size === null);
       obj.customMetadata = createMetadata(props);
       const entry = await this._getEntry(path, props.size === null);
       await updateMetadata(entry, obj);
-      /* eslint-enable */
     } catch (e) {
       throw this._error(path, e, true);
     }
@@ -136,11 +132,9 @@ export class FirebaseFileSystem extends AbstractFileSystem {
   }
 
   public async _getEntry(path: string, isDirectory: boolean) {
-    /* eslint-disable */
     const storage = await this._getStorage();
     const key = this._getKey(path, isDirectory);
     return ref(storage, key);
-    /* eslint-enable */
   }
 
   public _getKey(path: string, isDirectory: boolean) {
@@ -157,18 +151,15 @@ export class FirebaseFileSystem extends AbstractFileSystem {
   }
 
   public async _getMetadata(path: string, isDirectory: boolean) {
-    /* eslint-disable */
     const entry = await this._getEntry(path, isDirectory);
     try {
       return await getMetadata(entry);
     } catch (e) {
       throw this._error(path, e, false);
     }
-    /* eslint-enable */
   }
 
   public async _getStorage() {
-    /* eslint-disable */
     if (this.storage) {
       return this.storage;
     }
@@ -176,11 +167,9 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     this.storage = getStorage(this.app, this.firebaseOptions?.bucketUrl);
     await this._setupStorage(this.storage);
     return this.storage;
-    /* eslint-enable */
   }
 
   public async _setupStorage(storage: FirebaseStorage) {
-    /* eslint-disable */
     this.storage = storage;
 
     const key = this._getKey("/", true);
@@ -198,7 +187,6 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     } catch (e) {
       throw this._error("/", e, true);
     }
-    /* eslint-enable */
   }
 
   public canPatchAccessed(): boolean {
@@ -218,7 +206,6 @@ export class FirebaseFileSystem extends AbstractFileSystem {
   }
 
   private _handleHead(obj: FullMetadata) {
-    /* eslint-disable */
     const metadata = obj.customMetadata || {};
     const stats: Stats = {};
     for (const [key, value] of Object.entries(metadata)) {
@@ -239,6 +226,5 @@ export class FirebaseFileSystem extends AbstractFileSystem {
     }
 
     return stats;
-    /* eslint-enable */
   }
 }

@@ -59,7 +59,6 @@ export class WnfsFileSystem extends AbstractFileSystem {
     if (path === "/") {
       return {};
     }
-    /* eslint-disable */
     const { parent, name } = await this._getParent(path);
     try {
       const fileHandle = await parent.getFileHandle(name);
@@ -75,7 +74,6 @@ export class WnfsFileSystem extends AbstractFileSystem {
     }
     await parent.getDirectoryHandle(name);
     return {};
-    /* eslint-enable */
   }
 
   public _doPatch(path: string): Promise<void> {
@@ -94,7 +92,6 @@ export class WnfsFileSystem extends AbstractFileSystem {
         path,
       });
     }
-    /* eslint-disable */
     let parent = await this._getRoot();
     const end = parts.length - 1;
     for (let i = 0; i < end; i++) {
@@ -102,18 +99,15 @@ export class WnfsFileSystem extends AbstractFileSystem {
       parent = await parent.getDirectoryHandle(part);
     }
     return { parent, name: parts[end] as string };
-    /* eslint-enable */
   }
 
   public async _getRoot() {
     if (this.root) {
       return this.root;
     }
-    /* eslint-disable */
     const root = await window.showDirectoryPicker();
     this.root = root;
     return root;
-    /* eslint-enable */
   }
 
   public canPatchAccessed(): boolean {

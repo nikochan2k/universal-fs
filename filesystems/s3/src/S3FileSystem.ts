@@ -33,25 +33,6 @@ export interface Params {
   Key: string;
 }
 
-if (!Promise.allSettled) {
-  /* eslint-disable */
-  (Promise as any).allSettled = (promises: any) =>
-    Promise.all(
-      promises.map((p: any) =>
-        p
-          .then((value: any) => ({
-            status: "fulfilled",
-            value,
-          }))
-          .catch((reason: any) => ({
-            status: "rejected",
-            reason,
-          }))
-      )
-    );
-  /* eslint-enable */
-}
-
 const SECONDS_OF_DAY = 24 * 60 * 60;
 
 export class S3FileSystem extends AbstractFileSystem {
@@ -86,7 +67,6 @@ export class S3FileSystem extends AbstractFileSystem {
   }
 
   public async _doHead(path: string, options?: HeadOptions): Promise<Stats> {
-    /* eslint-disable */
     const client = await this._getClient();
     if (!this.supportDirectory()) {
       try {
@@ -174,8 +154,8 @@ export class S3FileSystem extends AbstractFileSystem {
         throw this._error(path, dirHeadRes.reason, false);
       }
     }
+    // eslint-disable-next-line
     throw this._error(path, (dirListRes as any).reason, false);
-    /* eslint-enable */
   }
 
   public async _doPatch(
@@ -185,7 +165,6 @@ export class S3FileSystem extends AbstractFileSystem {
   ): Promise<void> {
     const key = this._getKey(path, props.size == null);
     try {
-      /* eslint-disable */
       const client = await this._getClient();
       await client
         .copyObject({
@@ -195,7 +174,6 @@ export class S3FileSystem extends AbstractFileSystem {
           Metadata: createMetadata(props),
         })
         .promise();
-      /* eslint-enable */
     } catch (e) {
       throw this._error(path, e, true);
     }
@@ -207,7 +185,6 @@ export class S3FileSystem extends AbstractFileSystem {
     options: URLOptions
   ): Promise<string> {
     try {
-      /* eslint-disable */
       options = { expires: SECONDS_OF_DAY, ...options };
       const client = await this._getClient();
       const params = this._createParams(path, isDirectory);
@@ -234,14 +211,12 @@ export class S3FileSystem extends AbstractFileSystem {
           });
       }
       return url;
-      /* eslint-enable */
     } catch (e) {
       throw this._error(path, e, false);
     }
   }
 
   public _error(path: string, e: unknown, write: boolean) {
-    /* eslint-disable */
     const err = e as AWSError;
     let error: ErrorLike;
     if (err.statusCode === 404) {
@@ -256,12 +231,9 @@ export class S3FileSystem extends AbstractFileSystem {
       path,
       e: e as ErrorLike,
     });
-    /* eslint-enable */
   }
 
   public async _getClient() {
-    /* eslint-disable */
-
     if (this.client) {
       return this.client;
     }
@@ -291,7 +263,6 @@ export class S3FileSystem extends AbstractFileSystem {
     } catch (e) {
       throw this._error("/", e, true);
     }
-    /* eslint-enable */
   }
 
   public _getKey(path: string, isDirectory: boolean) {
@@ -324,7 +295,6 @@ export class S3FileSystem extends AbstractFileSystem {
   }
 
   private _handleHead(data: HeadObjectOutput, isDirectory: boolean) {
-    /* eslint-disable */
     const stats: Stats = {};
     if (!isDirectory) {
       stats.size = data.ContentLength;
@@ -343,6 +313,5 @@ export class S3FileSystem extends AbstractFileSystem {
     }
 
     return stats;
-    /* eslint-enable */
   }
 }

@@ -31,25 +31,6 @@ export interface AzureCredential {
   sasToken: string;
 }
 
-if (!Promise.allSettled) {
-  /* eslint-disable */
-  (Promise as any).allSettled = (promises: any) =>
-    Promise.all(
-      promises.map((p: any) =>
-        p
-          .then((value: any) => ({
-            status: "fulfilled",
-            value,
-          }))
-          .catch((reason: any) => ({
-            status: "rejected",
-            reason,
-          }))
-      )
-    );
-  /* eslint-enable */
-}
-
 const SECONDS_OF_DAY = 24 * 60 * 60;
 
 export class AzureFileSystem extends AbstractFileSystem {

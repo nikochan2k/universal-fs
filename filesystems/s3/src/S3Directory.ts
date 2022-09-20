@@ -42,7 +42,6 @@ export class S3Directory extends AbstractDirectory {
     const params = s3fs._createParams(path, true);
 
     try {
-      /* eslint-disable */
       const client = await s3fs._getClient();
       await client
         .putObject({
@@ -51,7 +50,6 @@ export class S3Directory extends AbstractDirectory {
           ContentLength: 0,
         })
         .promise();
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, true);
     }
@@ -62,17 +60,14 @@ export class S3Directory extends AbstractDirectory {
     const path = this.path;
 
     try {
-      /* eslint-disable */
       const client = await s3fs._getClient();
       await client.deleteObject(s3fs._createParams(path, true)).promise();
-      /* eslint-enable */
     } catch (e) {
       throw s3fs._error(path, e, true);
     }
   }
 
   private async _listItems(params: ListObjectsV2Request, items: Item[]) {
-    /* eslint-disable */
     const client = await this.s3fs._getClient();
     const data = await client.listObjectsV2(params).promise();
     // Directories
@@ -109,5 +104,4 @@ export class S3Directory extends AbstractDirectory {
       await this._listItems(params, items);
     }
   }
-  /* eslint-enable */
 }

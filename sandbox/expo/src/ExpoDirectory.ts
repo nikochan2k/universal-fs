@@ -36,12 +36,10 @@ export class ExpoDirectory extends AbstractDirectory {
 
   public async _doList(): Promise<Item[]> {
     try {
-      /* eslint-disable */
       const names = await readDirectoryAsync(this.uri);
       return names.map((name) => {
         return { path: joinPaths(this.path, name) };
       });
-      /* eslint-enable */
     } catch (e) {
       throw createError({
         ...NotReadableError,

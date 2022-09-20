@@ -27,7 +27,6 @@ export class ExpoFileSystem extends AbstractFileSystem {
 
   constructor(rootDir: string, private expoFSOptions?: ExpoFileSystemOptions) {
     super(normalizePath(rootDir), expoFSOptions);
-    /* eslint-disable */
     const rootUri = (documentDirectory ?? "").replace(/\/+$/, "") + rootDir;
     (async () => {
       const info = await getInfoAsync(rootUri);
@@ -38,7 +37,6 @@ export class ExpoFileSystem extends AbstractFileSystem {
       console.warn(e);
     });
     this.rootUri = rootUri;
-    /* eslint-enable */
   }
 
   public _doGetDirectory(path: string): AbstractDirectory {
@@ -52,7 +50,6 @@ export class ExpoFileSystem extends AbstractFileSystem {
   public async _doHead(path: string): Promise<Stats> {
     try {
       const uri = this._resolveURL(path);
-      /* eslint-disable */
       const info = await getInfoAsync(uri, {
         size: true,
         md5: this.expoFSOptions?.useEtag,
@@ -62,7 +59,6 @@ export class ExpoFileSystem extends AbstractFileSystem {
         size: info.size,
         etag: info.md5,
       };
-      /* eslint-enable */
     } catch (e) {
       throw this._createError({
         ...NotReadableError,
