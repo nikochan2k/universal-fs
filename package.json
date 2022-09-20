@@ -1,6 +1,6 @@
 {
   "name": "univ-fs",
-  "version": "0.0.1",
+  "version": "0.8.0",
   "description": "Universal File System",
   "main": "index.js",
   "keywords": [
