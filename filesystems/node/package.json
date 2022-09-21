@@ -34,7 +34,10 @@
       "<rootDir>/lib/__tests__/**/*.spec.js"
     ]
   },
-  "dependencies": {
+  "devDependencies": {
+    "univ-fs": "file:../../core"
+  },
+  "peerDependencies": {
     "univ-fs": "file:../../core"
   },
   "author": "Yoshihiro Seki",

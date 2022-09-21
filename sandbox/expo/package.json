@@ -34,7 +34,11 @@
       "<rootDir>/lib/__tests__/**/*.spec.js"
     ]
   },
-  "dependencies": {
+  "devDependencies": {
+    "expo-file-system": "^14.1.0",
+    "univ-fs": "file:../../core"
+  },
+  "peerDependencies": {
     "expo-file-system": "^14.1.0",
     "univ-fs": "file:../../core"
   },

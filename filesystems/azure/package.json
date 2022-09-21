@@ -43,7 +43,11 @@
       "<rootDir>/lib/__tests__/**/*.spec.js"
     ]
   },
-  "dependencies": {
+  "devDependencies": {
+    "@azure/storage-blob": "^12.11.0",
+    "univ-fs": "file:../../core"
+  },
+  "peerDependencies": {
     "@azure/storage-blob": "^12.11.0",
     "univ-fs": "file:../../core"
   },

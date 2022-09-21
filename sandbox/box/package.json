@@ -35,8 +35,13 @@
       "<rootDir>/lib/__tests__/**/*.spec.js"
     ]
   },
-  "dependencies": {
-    "box-node-sdk": "^2.5.0"
+  "devDependencies": {
+    "box-node-sdk": "^2.5.0",
+    "univ-fs": "file:../../core"
+  },
+  "peerDependencies": {
+    "box-node-sdk": "^2.5.0",
+    "univ-fs": "file:../../core"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"

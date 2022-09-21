@@ -35,7 +35,11 @@
       "<rootDir>/lib/__tests__/**/*.spec.js"
     ]
   },
-  "dependencies": {
+  "devDependencies": {
+    "@google-cloud/storage": "^6.5.0",
+    "univ-fs": "file:../../core"
+  },
+  "peerDependencies": {
     "@google-cloud/storage": "^6.5.0",
     "univ-fs": "file:../../core"
   },

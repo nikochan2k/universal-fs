@@ -31,8 +31,10 @@
     "karma": "karma start",
     "web-test": "npm-run-all web-compile-test karma"
   },
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
+    "univ-fs": "file:../../core"
+  },
+  "peerDependencies": {
     "univ-fs": "file:../../core"
   },
   "author": "Yoshihiro Seki",
