@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-s3v3",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "The universal Filesystem API for S3 v3",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

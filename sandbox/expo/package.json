@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-expo",
-  "version": "0.7.1",
+  "version": "0.9.1",
   "description": "The universal Filesystem for Expo Filesystem",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-box",
-  "version": "0.8.0",
+  "version": "0.9.1",
   "description": "The universal Filesystem API for Box",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
