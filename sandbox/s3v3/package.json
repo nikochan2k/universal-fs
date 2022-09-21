@@ -53,7 +53,7 @@
     "@aws-sdk/client-s3": "^3.171.0",
     "@aws-sdk/lib-storage": "^3.171.0",
     "@aws-sdk/s3-request-presigner": "^3.173.0",
-    "univ-fs": "file:../../core"
+    "univ-conv": "~0.9.0"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"

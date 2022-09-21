@@ -35,7 +35,7 @@
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {
-    "univ-fs": "file:../../core"
+    "univ-conv": "~0.9.0"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"

@@ -41,7 +41,7 @@
   },
   "peerDependencies": {
     "box-node-sdk": "^2.5.0",
-    "univ-fs": "file:../../core"
+    "univ-conv": "~0.9.0"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"

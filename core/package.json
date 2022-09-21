@@ -1,6 +1,6 @@
 {
   "name": "univ-fs",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "The universal Filesystem API core",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -34,8 +34,13 @@
     ]
   },
   "dependencies": {
-    "sha256-uint8array": "^0.10.3",
+    "sha256-uint8array": "^0.10.3"
+  },
+  "devDependencies": {
     "univ-conv": "file:../converter"
+  },
+  "peerDependencies": {
+    "univ-conv": "~0.9.0"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT"
