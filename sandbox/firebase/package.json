@@ -56,5 +56,13 @@
     "univ-conv": "~0.9.0"
   },
   "author": "Yoshihiro Seki",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikochan2k/universal-fs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nikochan2k/universal-fs/issues"
+  },
+  "homepage": "https://github.com/nikochan2k/universal-fs#readme"
 }

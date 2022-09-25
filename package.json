@@ -38,12 +38,12 @@
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },
+  "author": "Yoshihiro Seki",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nikochan2k/universal-fs.git"
   },
-  "author": "Yoshihiro Seki",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nikochan2k/universal-fs/issues"
   },
