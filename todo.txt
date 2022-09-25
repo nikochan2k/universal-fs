@@ -1,3 +1,5 @@
+□ArrayBuffer => ArrayBufferLike
+□Memory filesystem
 □add glob to find/delete method.
 ☑︎Azure
 □S3 Cognite authentication
