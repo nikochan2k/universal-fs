@@ -3,10 +3,12 @@
   "version": "0.9.1",
   "description": "The universal Filesystem for Web File System Access API (Native File System API)",
   "main": "lib/index.js",
+  "browser": "dist/univ-fs-webnfs.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "dist"
   ],
   "keywords": [
     "fs",
@@ -19,19 +21,22 @@
     "api"
   ],
   "scripts": {
-    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
+    "clean": "rimraf ./dist ./lib ./tsconfig.tsbuildinfo",
     "compile": "tsc",
     "build": "npm-run-all clean compile",
-    "npm-version": "npm version patch",
-    "npm-publish": "npm publish",
-    "release": "npm-run-all build npm-version npm-publish",
     "webpack": "webpack",
     "web-compile": "npm-run-all compile webpack",
-    "web-build": "npm-run-all clean web-clean web-compile",
+    "web-build": "npm-run-all clean web-compile",
     "webpack-test": "webpack --config webpack.config.test.js",
-    "web-compile-test": "npm-run-all compile webpack-test",
+    "karma": "karma start",
     "web-open": "opener SpecRunner.html",
-    "web-test": "npm-run-all web-compile-test web-open"
+    "web-test": "npm-run-all web-compile-test web-open",
+    "npm-version": "npm version patch",
+    "npm-publish-dry-run": "npm publish --dry-run",
+    "npm-publish": "npm publish",
+    "sanitize": "rimraf ./lib/**/__tests__/",
+    "release-dry-run": "npm-run-all clean compile sanitize webpack npm-publish-dry-run",
+    "release": "npm-run-all clean compile sanitize webpack npm-version npm-publish"
   },
   "devDependencies": {
     "@types/wicg-file-system-access": "^2020.9.5",
