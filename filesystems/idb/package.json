@@ -50,5 +50,8 @@
   "bugs": {
     "url": "https://github.com/nikochan2k/universal-fs/issues"
   },
-  "homepage": "https://github.com/nikochan2k/universal-fs#readme"
+  "homepage": "https://github.com/nikochan2k/universal-fs#readme",
+  "dependencies": {
+    "safari-14-idb-fix": "^3.0.0"
+  }
 }
