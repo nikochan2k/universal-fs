@@ -3,7 +3,7 @@ node_modules/
 *.tsbuildinfo
 dist/
 lib/
-dist/
+commonjs/
 .chrome-karma/
 .DS_Store
 secret*.json

@@ -2,11 +2,14 @@
   "name": "univ-conv",
   "version": "0.9.1",
   "description": "The universal binary and text converter",
-  "main": "lib/index.js",
+  "main": "commonjs/index.js",
+  "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
   "files": [
-    "lib"
+    "commonjs",
+    "lib",
+    "dist"
   ],
   "keywords": [
     "converter",
@@ -22,29 +25,29 @@
     "url"
   ],
   "scripts": {
-    "clean": "rimraf ./lib ./tsconfig.tsbuildinfo",
-    "compile": "tsc",
-    "build": "npm-run-all clean compile",
-    "npm-version": "npm version patch",
-    "npm-publish": "npm publish",
-    "release": "npm-run-all build npm-version npm-publish",
+    "clean": "rimraf ./lib ./commonjs ./dist ./tsconfig.tsbuildinfo",
+    "compile-lib": "tsc --module ES2020 --outDir lib",
+    "compile-commonjs": "tsc --module CommonJS --outDir commonjs",
+    "build": "npm-run-all clean compile-lib compile-commonjs",
     "jest": "jest --runInBand",
-    "test": "npm-run-all compile jest",
-    "web-clean": "rimraf ./dist",
+    "test": "npm-run-all compile-commonjs jest",
     "webpack": "webpack",
-    "web-compile": "npm-run-all compile webpack",
-    "web-build": "npm-run-all clean web-clean web-compile",
     "webpack-test": "webpack --config webpack.config.test.js",
-    "web-compile-test": "npm-run-all compile webpack-test",
     "karma": "karma start",
-    "web-test": "npm-run-all web-compile-test karma"
+    "web-test": "npm-run-all compile-lib webpack-test karma",
+    "npm-version": "npm version patch",
+    "npm-publish-dry-run": "npm publish --dry-run",
+    "npm-publish": "npm publish",
+    "sanitize": "rimraf ./lib/**/__tests__/ ./commonjs/**/__tests__/",
+    "release-dry-run": "npm-run-all build sanitize webpack npm-publish-dry-run",
+    "release": "npm-run-all build sanitize webpack npm-version npm-publish"
   },
   "jest": {
     "moduleFileExtensions": [
       "js"
     ],
     "testMatch": [
-      "<rootDir>/lib/__tests__/**/*.spec.js"
+      "<rootDir>/commonjs/__tests__/**/*.spec.js"
     ]
   },
   "devDependencies": {

@@ -35,7 +35,7 @@
     "npm-publish": "npm publish",
     "sanitize": "rimraf ./lib/**/secret*.json ./lib/**/__tests__/",
     "release-dry-run": "npm-run-all clean compile sanitize webpack npm-publish-dry-run",
-    "release": "npm-run-all clean compile sanitize webpack npm-version npm-publish"
+    "release": "npm-run-all build sanitize webpack npm-version npm-publish"
   },
   "jest": {
     "testTimeout": 10000,
