@@ -20,7 +20,7 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 import { isBrowser, isNode } from "./util";
 
 class Base64Converter extends AbstractConverter<string> {
@@ -49,10 +49,8 @@ class Base64Converter extends AbstractConverter<string> {
       } else if (srcStringType === "url") {
         return await urlConverter().toBase64(input, options);
       }
-      input = await textHelper().textToBuffer(
-        input,
-        options.textToBufferCharset
-      );
+      const textHelper = await getTextHelper();
+      input = await textHelper.textToBuffer(input, options.textToBufferCharset);
     }
     if (arrayBufferConverter().typeEquals(input)) {
       return await arrayBufferConverter().toBase64(input, options);
@@ -146,7 +144,8 @@ class Base64Converter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(u8, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(

@@ -19,7 +19,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 import { isNode } from "./util";
 
 class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
@@ -55,10 +55,8 @@ class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
       } else if (srcStringType === "url") {
         return await urlConverter().toArrayBuffer(input, options);
       }
-      input = await textHelper().textToBuffer(
-        input,
-        options.textToBufferCharset
-      );
+      const textHelper = await getTextHelper();
+      input = await textHelper.textToBuffer(input, options.textToBufferCharset);
     }
     if (bufferConverter().typeEquals(input)) {
       return await bufferConverter().toArrayBuffer(input, options);
@@ -133,7 +131,8 @@ class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(u8, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(

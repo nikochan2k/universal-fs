@@ -19,7 +19,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 import { isNode } from "./util";
 class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   public type: DataType = "uint8array";
@@ -55,7 +55,8 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
       } else if (srcStringType === "url") {
         return await urlConverter().toUint8Array(input, options);
       }
-      const u8 = await textHelper().textToBuffer(
+      const textHelper = await getTextHelper();
+      const u8 = await textHelper.textToBuffer(
         input,
         options.textToBufferCharset
       );
@@ -127,7 +128,8 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(u8, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(

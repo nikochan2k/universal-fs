@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 import { handleFileReader, hasReadAsBinaryStringOnBlob, isNode } from "./util";
 
 class BinaryConverter extends AbstractConverter<string> {
@@ -101,7 +101,8 @@ class BinaryConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(u8, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(

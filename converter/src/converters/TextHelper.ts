@@ -6,15 +6,16 @@ export interface TextHelper {
   textToBuffer(text: string, bufCharset: Charset): Promise<Uint8Array>;
 }
 
-let TEXT_HELPER: TextHelper;
-/* eslint-disable */
-export function textHelper() {
-  if (!TEXT_HELPER) {
+let textHelper: TextHelper | undefined;
+export async function getTextHelper() {
+  if (!textHelper) {
     if (isNode) {
-      TEXT_HELPER = require("./NodeTextHelper").NODE_TEXT_HELPER;
+      const module = await import("./NodeTextHelper");
+      textHelper = module.NODE_TEXT_HELPER;
     } else {
-      TEXT_HELPER = require("./DefaultTextHelper").DEFAULT_TEXT_HELPER;
+      const module = await import("./DefaultTextHelper");
+      textHelper = module.DEFAULT_TEXT_HELPER;
     }
   }
-  return TEXT_HELPER;
+  return textHelper;
 }

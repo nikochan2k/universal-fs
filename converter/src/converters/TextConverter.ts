@@ -19,7 +19,7 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 
 class TextConverter extends AbstractConverter<string> {
   public type: DataType = "text";
@@ -123,14 +123,16 @@ class TextConverter extends AbstractConverter<string> {
       return input;
     }
     const u8 = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(u8, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(
     input: string,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    const u8 = await textHelper().textToBuffer(
+    const textHelper = await getTextHelper();
+    const u8 = await textHelper.textToBuffer(
       input,
       options.textToBufferCharset
     );

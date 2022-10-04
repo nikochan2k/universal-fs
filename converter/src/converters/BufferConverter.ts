@@ -12,7 +12,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 import { EMPTY_BUFFER } from "./util";
 
 class BufferConverter extends AbstractConverter<Buffer> {
@@ -46,7 +46,8 @@ class BufferConverter extends AbstractConverter<Buffer> {
       } else if (type === "hex") {
         buffer = Buffer.from(input, "hex");
       } else if (type === "text") {
-        const u8 = await textHelper().textToBuffer(
+        const textHelper = await getTextHelper();
+        const u8 = await textHelper.textToBuffer(
           input,
           options.textToBufferCharset
         );
@@ -127,7 +128,8 @@ class BufferConverter extends AbstractConverter<Buffer> {
     options: ConvertOptions
   ): Promise<string> {
     const buffer = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(buffer, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(buffer, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(

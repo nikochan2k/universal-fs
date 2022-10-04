@@ -11,7 +11,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { textHelper } from "./TextHelper";
+import { getTextHelper } from "./TextHelper";
 import {
   dataUrlToBase64,
   EMPTY_BLOB,
@@ -143,7 +143,8 @@ class BlobConverter extends AbstractConverter<Blob> {
       );
     }
     const u8 = await this.toUint8Array(input, options);
-    return await textHelper().bufferToText(u8, options.bufferToTextCharset);
+    const textHelper = await getTextHelper();
+    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
   }
 
   protected async _toUint8Array(
