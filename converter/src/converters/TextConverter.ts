@@ -1,15 +1,5 @@
-import {
-  arrayBufferConverter,
-  base64Converter,
-  binaryConverter,
-  blobConverter,
-  bufferConverter,
-  getTextHelper,
-  hexConverter,
-  readableConverter,
-  readableStreamConverter,
-  uint8ArrayConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
+import { getTextHelper, uint8ArrayConverter } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -36,43 +26,8 @@ class TextConverter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    if (typeof input === "string") {
-      const srcStringType = options.srcStringType;
-      if (srcStringType === "base64") {
-        return await base64Converter().toText(input, options);
-      } else if (srcStringType === "binary") {
-        return await binaryConverter().toText(input, options);
-      } else if (srcStringType === "hex") {
-        return await hexConverter().toText(input, options);
-      } else if (srcStringType === "url") {
-        input = await uint8ArrayConverter().convert(
-          input,
-          deleteStartLength(options)
-        );
-      } else {
-        return await this.toText(input, options);
-      }
-    }
-    if (arrayBufferConverter().typeEquals(input, options)) {
-      return await arrayBufferConverter().toText(input, options);
-    }
-    if (bufferConverter().typeEquals(input, options)) {
-      return await bufferConverter().toText(input, options);
-    }
-    if (uint8ArrayConverter().typeEquals(input, options)) {
-      return await uint8ArrayConverter().toText(input, options);
-    }
-    if (blobConverter().typeEquals(input, options)) {
-      return await blobConverter().toText(input, options);
-    }
-    if (readableConverter().typeEquals(input, options)) {
-      return await readableConverter().toText(input, options);
-    }
-    if (readableStreamConverter().typeEquals(input, options)) {
-      return await readableStreamConverter().toText(input, options);
-    }
-
-    return undefined;
+    const converter = DEFAULT_CONVERTER.getConverter(input, options);
+    return await converter.toText(input, options);
   }
 
   protected async _getSize(input: string, options: Options): Promise<number> {

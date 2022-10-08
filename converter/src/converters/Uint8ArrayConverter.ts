@@ -1,16 +1,6 @@
 import { encode } from "base64-arraybuffer";
-import {
-  arrayBufferConverter,
-  base64Converter,
-  binaryConverter,
-  blobConverter,
-  bufferConverter,
-  getTextHelper,
-  hexConverter,
-  readableConverter,
-  readableStreamConverter,
-  urlConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
+import { bufferConverter, getTextHelper } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -45,39 +35,8 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array | undefined> {
-    if (this.typeEquals(input, options)) {
-      return await this.toUint8Array(input, options);
-    }
-
-    if (typeof input === "string") {
-      const srcStringType = options.srcStringType;
-      if (srcStringType === "base64") {
-        return await base64Converter().toUint8Array(input, options);
-      } else if (srcStringType === "binary") {
-        return await binaryConverter().toUint8Array(input, options);
-      } else if (srcStringType === "hex") {
-        return await hexConverter().toUint8Array(input, options);
-      } else if (srcStringType === "url") {
-        return await urlConverter().toUint8Array(input, options);
-      }
-      const textHelper = await getTextHelper();
-      const u8 = await textHelper.textToBuffer(input, options);
-      return await this.toUint8Array(u8, options);
-    }
-    if (arrayBufferConverter().typeEquals(input, options)) {
-      return await arrayBufferConverter().toUint8Array(input, options);
-    }
-    if (blobConverter().typeEquals(input, options)) {
-      return await blobConverter().toUint8Array(input, options);
-    }
-    if (readableStreamConverter().typeEquals(input, options)) {
-      return await readableStreamConverter().toUint8Array(input, options);
-    }
-    if (readableConverter().typeEquals(input, options)) {
-      return await readableConverter().toUint8Array(input, options);
-    }
-
-    return undefined;
+    const converter = DEFAULT_CONVERTER.getConverter(input, options);
+    return await converter.toUint8Array(input, options);
   }
 
   protected _getSize(input: Uint8Array): Promise<number> {

@@ -1,15 +1,9 @@
 import { decode } from "base64-arraybuffer";
+import { DEFAULT_CONVERTER } from "../converver";
 import {
-  arrayBufferConverter,
-  binaryConverter,
   blobConverter,
-  bufferConverter,
   getTextHelper,
-  hexConverter,
-  readableConverter,
-  readableStreamConverter,
   uint8ArrayConverter,
-  urlConverter,
 } from "./converters";
 import {
   AbstractConverter,
@@ -38,40 +32,8 @@ class Base64Converter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    if (typeof input === "string") {
-      const srcStringType = options.srcStringType;
-      if (srcStringType === "base64") {
-        return await this.toBase64(input, options);
-      } else if (srcStringType === "binary") {
-        return await binaryConverter().toBase64(input, options);
-      } else if (srcStringType === "hex") {
-        return await hexConverter().toBase64(input, options);
-      } else if (srcStringType === "url") {
-        return await urlConverter().toBase64(input, options);
-      }
-      const textHelper = await getTextHelper();
-      input = await textHelper.textToBuffer(input, options);
-    }
-    if (arrayBufferConverter().typeEquals(input, options)) {
-      return await arrayBufferConverter().toBase64(input, options);
-    }
-    if (bufferConverter().typeEquals(input, options)) {
-      return await bufferConverter().toBase64(input, options);
-    }
-    if (uint8ArrayConverter().typeEquals(input, options)) {
-      return await uint8ArrayConverter().toBase64(input, options);
-    }
-    if (blobConverter().typeEquals(input, options)) {
-      return await blobConverter().toBase64(input, options);
-    }
-    if (readableStreamConverter().typeEquals(input, options)) {
-      return await readableStreamConverter().toBase64(input, options);
-    }
-    if (readableConverter().typeEquals(input, options)) {
-      return await readableConverter().toBase64(input, options);
-    }
-
-    return undefined;
+    const converter = DEFAULT_CONVERTER.getConverter(input, options);
+    return await converter.toBase64(input, options);
   }
 
   protected _getSize(input: string): Promise<number> {
