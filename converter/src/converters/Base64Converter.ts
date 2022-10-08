@@ -4,6 +4,7 @@ import {
   binaryConverter,
   blobConverter,
   bufferConverter,
+  getTextHelper,
   hexConverter,
   readableConverter,
   readableStreamConverter,
@@ -20,7 +21,6 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import { isBrowser, isNode } from "./util";
 
 class Base64Converter extends AbstractConverter<string> {

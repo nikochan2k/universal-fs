@@ -1,5 +1,6 @@
 import {
   arrayBufferConverter,
+  getTextHelper,
   readableStreamConverter,
   uint8ArrayConverter,
 } from "./converters";
@@ -11,7 +12,6 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import {
   dataUrlToBase64,
   EMPTY_BLOB,

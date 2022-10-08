@@ -1,4 +1,8 @@
-import { base64Converter, uint8ArrayConverter } from "./converters";
+import {
+  base64Converter,
+  getTextHelper,
+  uint8ArrayConverter,
+} from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -8,7 +12,6 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import { isNode } from "./util";
 
 const BYTE_TO_HEX: string[] = [];

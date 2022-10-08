@@ -2,6 +2,7 @@ import { Duplex, PassThrough, Readable } from "stream";
 import {
   blobConverter,
   bufferConverter,
+  getTextHelper,
   readableStreamConverter,
 } from "./converters";
 import {
@@ -12,7 +13,6 @@ import {
   deleteStartLength,
   getStartEnd,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import {
   EMPTY_BUFFER,
   fileURLToReadable,

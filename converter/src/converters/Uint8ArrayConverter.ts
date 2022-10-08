@@ -5,6 +5,7 @@ import {
   binaryConverter,
   blobConverter,
   bufferConverter,
+  getTextHelper,
   hexConverter,
   readableConverter,
   readableStreamConverter,
@@ -19,7 +20,6 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import { isNode } from "./util";
 class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   public type: DataType = "uint8array";

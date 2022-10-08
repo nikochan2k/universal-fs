@@ -1,5 +1,9 @@
 import { encode } from "base64-arraybuffer";
-import { blobConverter, uint8ArrayConverter } from "./converters";
+import {
+  blobConverter,
+  getTextHelper,
+  uint8ArrayConverter,
+} from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -8,7 +12,6 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import { handleFileReader, hasReadAsBinaryStringOnBlob, isNode } from "./util";
 
 class BinaryConverter extends AbstractConverter<string> {

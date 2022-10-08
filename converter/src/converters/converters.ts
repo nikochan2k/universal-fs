@@ -1,11 +1,13 @@
 import type { Readable } from "stream";
 import { Converter } from "./core";
 import { FalseConverter } from "./FalseConverter";
+import { TextHelper } from "./TextHelper";
 import {
   EMPTY_BLOB,
   EMPTY_BUFFER,
   hasReadable,
   hasReadableStream,
+  isNode,
 } from "./util";
 
 /* eslint-disable */
@@ -112,4 +114,16 @@ export function readableStreamConverter() {
     }
   }
   return READABLE_STREAM_CONVERTER;
+}
+
+let textHelper: TextHelper | undefined;
+export async function getTextHelper() {
+  if (!textHelper) {
+    if (isNode) {
+      textHelper = (await import("./NodeTextHelper")).NODE_TEXT_HELPER;
+    } else {
+      textHelper = (await import("./TextHelper")).TEXT_HELPER;
+    }
+  }
+  return textHelper;
 }

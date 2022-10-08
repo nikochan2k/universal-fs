@@ -4,6 +4,7 @@ import {
   binaryConverter,
   blobConverter,
   bufferConverter,
+  getTextHelper,
   hexConverter,
   readableConverter,
   readableStreamConverter,
@@ -19,7 +20,6 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import { isNode } from "./util";
 
 class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {

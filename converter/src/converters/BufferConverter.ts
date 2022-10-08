@@ -1,5 +1,6 @@
 import {
   arrayBufferConverter,
+  getTextHelper,
   readableConverter,
   readableStreamConverter,
   uint8ArrayConverter,
@@ -12,7 +13,6 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper } from "./TextHelper";
 import { EMPTY_BUFFER } from "./util";
 
 class BufferConverter extends AbstractConverter<Buffer> {
