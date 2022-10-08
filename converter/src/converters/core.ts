@@ -221,6 +221,7 @@ export abstract class AbstractConverter<T extends Data>
         `"bufferSize" was modified to ${options.bufferSize}. ("bufferSize" must be divisible by 6.)`
       );
     }
+    if (!options.srcStringType) options.srcStringType = "text";
     if (!options.bufferToTextCharset) options.bufferToTextCharset = "utf8";
     if (!options.textToBufferCharset) options.textToBufferCharset = "utf8";
     if (options.dstURLType === "file") {
