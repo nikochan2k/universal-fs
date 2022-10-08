@@ -26,13 +26,19 @@ import {
   toFileURL,
 } from "./util";
 
-if (typeof fetch !== "function") {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  globalThis.fetch = require("node-fetch");
-}
-
 class URLConverter extends AbstractConverter<string> {
   public type: DataType = "url";
+
+  constructor() {
+    super();
+    if (typeof fetch !== "function") {
+      import("node-fetch")
+        .then((module) => {
+          globalThis.fetch = module.default as unknown as typeof fetch;
+        })
+        .catch((e) => console.warn(e));
+    }
+  }
 
   public empty(): string {
     return "";
