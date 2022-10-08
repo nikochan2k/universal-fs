@@ -70,16 +70,12 @@ class HexConverter extends AbstractConverter<string> {
     }
 
     const u8 = await uint8ArrayConverter().convert(input, options);
-    if (u8) {
-      return (
-        Array.from(u8)
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          .map((b) => (HEX_STRINGS[b >> 4] as string) + HEX_STRINGS[b & 15])
-          .join("")
-      );
-    }
-
-    return undefined;
+    return (
+      Array.from(u8)
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        .map((b) => (HEX_STRINGS[b >> 4] as string) + HEX_STRINGS[b & 15])
+        .join("")
+    );
   }
 
   protected _getSize(input: string): Promise<number> {

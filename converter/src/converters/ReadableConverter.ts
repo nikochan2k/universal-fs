@@ -191,14 +191,10 @@ class ReadableConverter extends AbstractConverter<Readable> {
     }
 
     const buffer = await bufferConverter().convert(input, options);
-    if (buffer) {
-      const duplex = new Duplex();
-      duplex.push(buffer);
-      duplex.push(null);
-      return duplex;
-    }
-
-    return undefined;
+    const duplex = new Duplex();
+    duplex.push(buffer);
+    duplex.push(null);
+    return duplex;
   }
 
   protected _getSize(): Promise<number> {

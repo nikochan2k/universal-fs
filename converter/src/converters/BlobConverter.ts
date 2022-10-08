@@ -1,7 +1,6 @@
 import {
   arrayBufferConverter,
   getTextHelper,
-  readableStreamConverter,
   uint8ArrayConverter,
 } from "./converters";
 import {
@@ -50,34 +49,8 @@ class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    if (readableStreamConverter().typeEquals(input, options)) {
-      const start = options.start ?? 0;
-      const bufferSize = options.bufferSize;
-
-      let index = 0;
-      const chunks: Blob[] = [];
-      await handleReadableStream(input, async (u8) => {
-        const chunk = await this.convert(u8, { bufferSize });
-        const size = chunk.size;
-        const end = index + size;
-        if (index < start) {
-          chunks.push(chunk.slice(start, end));
-        } else {
-          chunks.push(chunk);
-        }
-        index += size;
-        return true;
-      });
-
-      return await this.merge(chunks, options);
-    }
-
     const u8 = await uint8ArrayConverter().convert(input, options);
-    if (u8) {
-      return new Blob([u8]);
-    }
-
-    return undefined;
+    return new Blob([u8]);
   }
 
   protected _getSize(input: Blob): Promise<number> {

@@ -56,12 +56,9 @@ class BinaryConverter extends AbstractConverter<string> {
         return chunks.join("");
       }
     }
-    const u8 = await uint8ArrayConverter().convert(input, options);
-    if (u8) {
-      return Array.from(u8, (e) => String.fromCharCode(e)).join("");
-    }
 
-    return undefined;
+    const u8 = await uint8ArrayConverter().convert(input, options);
+    return Array.from(u8, (e) => String.fromCharCode(e)).join("");
   }
 
   protected _getSize(input: string): Promise<number> {

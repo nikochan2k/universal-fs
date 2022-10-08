@@ -1,10 +1,4 @@
-import {
-  arrayBufferConverter,
-  getTextHelper,
-  readableConverter,
-  readableStreamConverter,
-  uint8ArrayConverter,
-} from "./converters";
+import { arrayBufferConverter, getTextHelper } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -56,33 +50,9 @@ class BufferConverter extends AbstractConverter<Buffer> {
       }
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }
-    if (uint8ArrayConverter().typeEquals(input, options)) {
-      return Buffer.from(
-        input.buffer.slice(
-          input.byteOffset,
-          input.byteOffset + input.byteLength
-        )
-      );
-    }
-    if (readableConverter().typeEquals(input, options)) {
-      const u8 = await readableConverter().toUint8Array(input, options);
-      return Buffer.from(
-        u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength)
-      );
-    }
-    if (readableStreamConverter().typeEquals(input, options)) {
-      const u8 = await readableStreamConverter().toUint8Array(input, options);
-      return Buffer.from(
-        u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength)
-      );
-    }
 
     const ab = await arrayBufferConverter().convert(input, options);
-    if (ab) {
-      return Buffer.from(ab);
-    }
-
-    return undefined;
+    return Buffer.from(ab);
   }
 
   protected _getSize(input: Buffer): Promise<number> {

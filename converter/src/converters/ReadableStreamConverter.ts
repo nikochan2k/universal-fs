@@ -195,12 +195,8 @@ class ReadableStreamConverter extends AbstractConverter<
     }
 
     const u8 = await uint8ArrayConverter().convert(input, options);
-    if (u8) {
-      const { start, end } = getStartEnd(options, u8.byteLength);
-      return createReadableStream(u8.slice(start, end));
-    }
-
-    return undefined;
+    const { start, end } = getStartEnd(options, u8.byteLength);
+    return createReadableStream(u8.slice(start, end));
   }
 
   protected _getSize(): Promise<number> {
