@@ -47,10 +47,7 @@ class BufferConverter extends AbstractConverter<Buffer> {
         buffer = Buffer.from(input, "hex");
       } else if (type === "text") {
         const textHelper = await getTextHelper();
-        const u8 = await textHelper.textToBuffer(
-          input,
-          options.textToBufferCharset
-        );
+        const u8 = await textHelper.textToBuffer(input, options);
         buffer = u8 as Buffer;
       }
       if (buffer) {
@@ -59,7 +56,7 @@ class BufferConverter extends AbstractConverter<Buffer> {
       }
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }
-    if (uint8ArrayConverter().typeEquals(input)) {
+    if (uint8ArrayConverter().typeEquals(input, options)) {
       return Buffer.from(
         input.buffer.slice(
           input.byteOffset,
@@ -67,13 +64,13 @@ class BufferConverter extends AbstractConverter<Buffer> {
         )
       );
     }
-    if (readableConverter().typeEquals(input)) {
+    if (readableConverter().typeEquals(input, options)) {
       const u8 = await readableConverter().toUint8Array(input, options);
       return Buffer.from(
         u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength)
       );
     }
-    if (readableStreamConverter().typeEquals(input)) {
+    if (readableStreamConverter().typeEquals(input, options)) {
       const u8 = await readableStreamConverter().toUint8Array(input, options);
       return Buffer.from(
         u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength)
@@ -129,7 +126,7 @@ class BufferConverter extends AbstractConverter<Buffer> {
   ): Promise<string> {
     const buffer = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(buffer, options.bufferToTextCharset);
+    return await textHelper.bufferToText(buffer, options);
   }
 
   protected async _toUint8Array(

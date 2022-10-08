@@ -37,7 +37,7 @@ class BinaryConverter extends AbstractConverter<string> {
       return input.substring(start, end);
     }
 
-    if (blobConverter().typeEquals(input)) {
+    if (blobConverter().typeEquals(input, options)) {
       if (hasReadAsBinaryStringOnBlob) {
         const startEnd = getStartEnd(options, input.size);
         let start = startEnd.start;
@@ -105,7 +105,7 @@ class BinaryConverter extends AbstractConverter<string> {
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
+    return await textHelper.bufferToText(u8, options);
   }
 
   protected async _toUint8Array(

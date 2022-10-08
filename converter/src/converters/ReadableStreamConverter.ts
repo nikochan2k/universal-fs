@@ -163,7 +163,7 @@ class ReadableStreamConverter extends AbstractConverter<
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
-        if (readableConverter().typeEquals(resp.body)) {
+        if (readableConverter().typeEquals(resp.body, options)) {
           input = resp.body as unknown as Readable;
         } else {
           input = resp.body as ReadableStream<Uint8Array>;
@@ -172,13 +172,13 @@ class ReadableStreamConverter extends AbstractConverter<
         input = await fileURLToReadable(input);
       }
     }
-    if (blobConverter().typeEquals(input)) {
+    if (blobConverter().typeEquals(input, options)) {
       if (hasStreamOnBlob) {
         input = input.stream() as unknown as ReadableStream<Uint8Array>;
       }
     }
 
-    if (readableConverter().typeEquals(input)) {
+    if (readableConverter().typeEquals(input, options)) {
       return createReadableStreamOfReader(input, options);
     }
 

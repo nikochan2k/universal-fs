@@ -50,7 +50,7 @@ class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    if (readableStreamConverter().typeEquals(input)) {
+    if (readableStreamConverter().typeEquals(input, options)) {
       const start = options.start ?? 0;
       const bufferSize = options.bufferSize;
 
@@ -144,7 +144,7 @@ class BlobConverter extends AbstractConverter<Blob> {
     }
     const u8 = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
+    return await textHelper.bufferToText(u8, options);
   }
 
   protected async _toUint8Array(

@@ -334,7 +334,7 @@ export class DefaultConverter {
       return this._getStringConverterOfType(options?.srcStringType);
     }
     for (const converter of this.binaryAndStreamConverters.values()) {
-      if (converter.typeEquals(input)) {
+      if (converter.typeEquals(input, options)) {
         return converter;
       }
     }

@@ -50,24 +50,24 @@ class Base64Converter extends AbstractConverter<string> {
         return await urlConverter().toBase64(input, options);
       }
       const textHelper = await getTextHelper();
-      input = await textHelper.textToBuffer(input, options.textToBufferCharset);
+      input = await textHelper.textToBuffer(input, options);
     }
-    if (arrayBufferConverter().typeEquals(input)) {
+    if (arrayBufferConverter().typeEquals(input, options)) {
       return await arrayBufferConverter().toBase64(input, options);
     }
-    if (bufferConverter().typeEquals(input)) {
+    if (bufferConverter().typeEquals(input, options)) {
       return await bufferConverter().toBase64(input, options);
     }
-    if (uint8ArrayConverter().typeEquals(input)) {
+    if (uint8ArrayConverter().typeEquals(input, options)) {
       return await uint8ArrayConverter().toBase64(input, options);
     }
-    if (blobConverter().typeEquals(input)) {
+    if (blobConverter().typeEquals(input, options)) {
       return await blobConverter().toBase64(input, options);
     }
-    if (readableStreamConverter().typeEquals(input)) {
+    if (readableStreamConverter().typeEquals(input, options)) {
       return await readableStreamConverter().toBase64(input, options);
     }
-    if (readableConverter().typeEquals(input)) {
+    if (readableConverter().typeEquals(input, options)) {
       return await readableConverter().toBase64(input, options);
     }
 
@@ -145,7 +145,7 @@ class Base64Converter extends AbstractConverter<string> {
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
+    return await textHelper.bufferToText(u8, options);
   }
 
   protected async _toUint8Array(

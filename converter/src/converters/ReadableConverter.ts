@@ -175,7 +175,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (blobConverter().typeEquals(input)) {
+    if (blobConverter().typeEquals(input, options)) {
       if (hasStreamOnBlob) {
         input = input.stream() as unknown as ReadableStream;
       }
@@ -185,7 +185,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (readableStreamConverter().typeEquals(input)) {
+    if (readableStreamConverter().typeEquals(input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }
@@ -269,7 +269,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
+    return await textHelper.bufferToText(u8, options);
   }
 
   protected async _toUint8Array(

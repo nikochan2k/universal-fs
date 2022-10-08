@@ -36,7 +36,7 @@ export interface Converter<T extends Data> {
   toBase64(input: T, options: ConvertOptions): Promise<string>;
   toText(input: T, options: ConvertOptions): Promise<string>;
   toUint8Array(input: T, options: ConvertOptions): Promise<Uint8Array>;
-  typeEquals(input: unknown): input is T;
+  typeEquals(input: unknown, options?: Partial<ConvertOptions>): input is T;
 }
 
 export function getType(input: unknown): string {
@@ -176,7 +176,10 @@ export abstract class AbstractConverter<T extends Data>
   }
 
   public abstract empty(): T;
-  public abstract typeEquals(input: Data): input is T;
+  public abstract typeEquals(
+    input: Data,
+    options?: Partial<ConvertOptions>
+  ): input is T;
 
   protected abstract _convert(
     input: Data,

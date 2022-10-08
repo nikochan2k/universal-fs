@@ -4,7 +4,7 @@ import type {
   ConvertStringOptions,
 } from "encoding-japanese";
 import "fast-text-encoding";
-import { Charset } from "./core";
+import { ConvertOptions } from "./core";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -14,8 +14,9 @@ export class TextHelper {
 
   public async bufferToText(
     u8: Uint8Array,
-    bufCharset: Charset
+    options: ConvertOptions
   ): Promise<string> {
+    const bufCharset = options.bufferToTextCharset;
     if (bufCharset === "utf8") {
       return textDecoder.decode(u8);
     }
@@ -32,8 +33,9 @@ export class TextHelper {
 
   public async textToBuffer(
     text: string,
-    bufCharset: Charset
+    options: ConvertOptions
   ): Promise<Uint8Array> {
+    const bufCharset = options.textToBufferCharset;
     if (bufCharset === "utf8") {
       return textEncoder.encode(text);
     }

@@ -28,9 +28,14 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return EMPTY_UINT8_ARRAY;
   }
 
-  public typeEquals(input: unknown): input is Uint8Array {
+  public typeEquals(
+    input: unknown,
+    options: ConvertOptions
+  ): input is Uint8Array {
+    if (bufferConverter().typeEquals(input, options)) {
+      return true;
+    }
     return (
-      bufferConverter().typeEquals(input) ||
       input instanceof Uint8Array ||
       toString.call(input) === "[object Uint8Array]"
     );
@@ -40,7 +45,7 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array | undefined> {
-    if (this.typeEquals(input)) {
+    if (this.typeEquals(input, options)) {
       return await this.toUint8Array(input, options);
     }
 
@@ -56,22 +61,19 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
         return await urlConverter().toUint8Array(input, options);
       }
       const textHelper = await getTextHelper();
-      const u8 = await textHelper.textToBuffer(
-        input,
-        options.textToBufferCharset
-      );
+      const u8 = await textHelper.textToBuffer(input, options);
       return await this.toUint8Array(u8, options);
     }
-    if (arrayBufferConverter().typeEquals(input)) {
+    if (arrayBufferConverter().typeEquals(input, options)) {
       return await arrayBufferConverter().toUint8Array(input, options);
     }
-    if (blobConverter().typeEquals(input)) {
+    if (blobConverter().typeEquals(input, options)) {
       return await blobConverter().toUint8Array(input, options);
     }
-    if (readableStreamConverter().typeEquals(input)) {
+    if (readableStreamConverter().typeEquals(input, options)) {
       return await readableStreamConverter().toUint8Array(input, options);
     }
-    if (readableConverter().typeEquals(input)) {
+    if (readableConverter().typeEquals(input, options)) {
       return await readableConverter().toUint8Array(input, options);
     }
 
@@ -129,7 +131,7 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
+    return await textHelper.bufferToText(u8, options);
   }
 
   protected async _toUint8Array(

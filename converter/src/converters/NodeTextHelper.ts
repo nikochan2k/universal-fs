@@ -1,32 +1,34 @@
 import { bufferConverter } from "./converters";
-import { Charset } from "./core";
+import { ConvertOptions } from "./core";
 import { TextHelper } from "./TextHelper";
 
 class NodeTextHelper extends TextHelper {
   public override async bufferToText(
     buf: Uint8Array,
-    bufCharset: Charset
+    options: ConvertOptions
   ): Promise<string> {
     let buffer: Buffer;
-    if (bufferConverter().typeEquals(buf)) {
+    if (bufferConverter().typeEquals(buf, options)) {
       buffer = buf;
     } else {
       buffer = await bufferConverter().convert(buf);
     }
+    const bufCharset = options.bufferToTextCharset;
     if (bufCharset === "utf8" || bufCharset === "utf16le") {
       return buffer.toString(bufCharset as BufferEncoding);
     }
-    return await super.bufferToText(buf, bufCharset);
+    return await super.bufferToText(buf, options);
   }
 
   public override async textToBuffer(
     text: string,
-    bufCharset: Charset
+    options: ConvertOptions
   ): Promise<Uint8Array> {
+    const bufCharset = options.textToBufferCharset;
     if (bufCharset === "utf8" || bufCharset === "utf16le") {
       return Buffer.from(text, bufCharset as BufferEncoding);
     }
-    return await super.textToBuffer(text, bufCharset);
+    return await super.textToBuffer(text, options);
   }
 }
 

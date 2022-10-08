@@ -53,22 +53,22 @@ class TextConverter extends AbstractConverter<string> {
         return await this.toText(input, options);
       }
     }
-    if (arrayBufferConverter().typeEquals(input)) {
+    if (arrayBufferConverter().typeEquals(input, options)) {
       return await arrayBufferConverter().toText(input, options);
     }
-    if (bufferConverter().typeEquals(input)) {
+    if (bufferConverter().typeEquals(input, options)) {
       return await bufferConverter().toText(input, options);
     }
-    if (uint8ArrayConverter().typeEquals(input)) {
+    if (uint8ArrayConverter().typeEquals(input, options)) {
       return await uint8ArrayConverter().toText(input, options);
     }
-    if (blobConverter().typeEquals(input)) {
+    if (blobConverter().typeEquals(input, options)) {
       return await blobConverter().toText(input, options);
     }
-    if (readableConverter().typeEquals(input)) {
+    if (readableConverter().typeEquals(input, options)) {
       return await readableConverter().toText(input, options);
     }
-    if (readableStreamConverter().typeEquals(input)) {
+    if (readableStreamConverter().typeEquals(input, options)) {
       return await readableStreamConverter().toText(input, options);
     }
 
@@ -124,7 +124,7 @@ class TextConverter extends AbstractConverter<string> {
     }
     const u8 = await this.toUint8Array(input, options);
     const textHelper = await getTextHelper();
-    return await textHelper.bufferToText(u8, options.bufferToTextCharset);
+    return await textHelper.bufferToText(u8, options);
   }
 
   protected async _toUint8Array(
@@ -132,10 +132,7 @@ class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const textHelper = await getTextHelper();
-    const u8 = await textHelper.textToBuffer(
-      input,
-      options.textToBufferCharset
-    );
+    const u8 = await textHelper.textToBuffer(input, options);
     return await uint8ArrayConverter().toUint8Array(u8, options);
   }
 }
