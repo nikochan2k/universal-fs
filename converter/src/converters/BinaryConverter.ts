@@ -37,24 +37,25 @@ class BinaryConverter extends AbstractConverter<string> {
       return input.substring(start, end);
     }
 
-    if (blobConverter().typeEquals(input, options)) {
-      if (hasReadAsBinaryStringOnBlob) {
-        const startEnd = getStartEnd(options, input.size);
-        let start = startEnd.start;
-        const end = startEnd.end as number;
+    if (
+      blobConverter().typeEquals(input, options) &&
+      hasReadAsBinaryStringOnBlob
+    ) {
+      const startEnd = getStartEnd(options, input.size);
+      let start = startEnd.start;
+      const end = startEnd.end as number;
 
-        const bufferSize = options.bufferSize;
-        const chunks: string[] = [];
-        for (; start < end; start += bufferSize) {
-          const blobChunk = input.slice(start, start + bufferSize);
-          const chunk: string = await handleFileReader(
-            (reader) => reader.readAsBinaryString(blobChunk),
-            (data) => data as string
-          );
-          chunks.push(chunk);
-        }
-        return chunks.join("");
+      const bufferSize = options.bufferSize;
+      const chunks: string[] = [];
+      for (; start < end; start += bufferSize) {
+        const blobChunk = input.slice(start, start + bufferSize);
+        const chunk: string = await handleFileReader(
+          (reader) => reader.readAsBinaryString(blobChunk),
+          (data) => data as string
+        );
+        chunks.push(chunk);
       }
+      return chunks.join("");
     }
 
     const u8 = await uint8ArrayConverter().convert(input, options);

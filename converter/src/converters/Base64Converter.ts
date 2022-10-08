@@ -84,7 +84,7 @@ class Base64Converter extends AbstractConverter<string> {
   ): Promise<ArrayBuffer> {
     const ab = decode(input);
     if (hasNoStartLength(options)) {
-      return Promise.resolve(ab);
+      return ab;
     }
     const { start, end } = await this._getStartEnd(input, options);
     return ab.slice(start, end);
