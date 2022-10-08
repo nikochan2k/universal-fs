@@ -94,7 +94,7 @@ export class DefaultConverter {
   public getConverter(
     input: Data,
     options?: Partial<ConvertOptions>
-  ): Converter<Data> | undefined {
+  ): Converter<Data> {
     for (const converter of this.converters.values()) {
       if (converter.typeEquals(input, options)) {
         return converter;

@@ -1,16 +1,6 @@
 import { encode } from "base64-arraybuffer";
-import {
-  base64Converter,
-  binaryConverter,
-  blobConverter,
-  bufferConverter,
-  getTextHelper,
-  hexConverter,
-  readableConverter,
-  readableStreamConverter,
-  uint8ArrayConverter,
-  urlConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
+import { getTextHelper } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -40,41 +30,8 @@ class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
     input: Data,
     options: ConvertOptions
   ): Promise<ArrayBuffer | undefined> {
-    if (this.typeEquals(input)) {
-      return await this.toArrayBuffer(input, options);
-    }
-
-    if (typeof input === "string") {
-      const srcStringType = options.srcStringType;
-      if (srcStringType === "base64") {
-        return await base64Converter().toArrayBuffer(input, options);
-      } else if (srcStringType === "binary") {
-        return await binaryConverter().toArrayBuffer(input, options);
-      } else if (srcStringType === "hex") {
-        return await hexConverter().toArrayBuffer(input, options);
-      } else if (srcStringType === "url") {
-        return await urlConverter().toArrayBuffer(input, options);
-      }
-      const textHelper = await getTextHelper();
-      input = await textHelper.textToBuffer(input, options);
-    }
-    if (bufferConverter().typeEquals(input, options)) {
-      return await bufferConverter().toArrayBuffer(input, options);
-    }
-    if (uint8ArrayConverter().typeEquals(input, options)) {
-      return await uint8ArrayConverter().toArrayBuffer(input, options);
-    }
-    if (blobConverter().typeEquals(input, options)) {
-      return await blobConverter().toArrayBuffer(input, options);
-    }
-    if (readableStreamConverter().typeEquals(input, options)) {
-      return await readableStreamConverter().toArrayBuffer(input, options);
-    }
-    if (readableConverter().typeEquals(input, options)) {
-      return await readableConverter().toArrayBuffer(input, options);
-    }
-
-    return undefined;
+    const converter = DEFAULT_CONVERTER.getConverter(input, options);
+    return await converter.toArrayBuffer(input, options);
   }
 
   protected _getSize(input: ArrayBuffer): Promise<number> {
