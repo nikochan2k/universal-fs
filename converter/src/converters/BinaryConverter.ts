@@ -21,8 +21,8 @@ class BinaryConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public typeEquals(input: unknown): input is string {
-    return typeof input === "string";
+  public typeEquals(input: unknown, options: ConvertOptions): input is string {
+    return typeof input === "string" && options.srcStringType === "binary";
   }
 
   protected async _convert(

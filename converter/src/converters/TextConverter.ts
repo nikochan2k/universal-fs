@@ -28,8 +28,8 @@ class TextConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public typeEquals(input: unknown): input is string {
-    return typeof input === "string";
+  public typeEquals(input: unknown, options: ConvertOptions): input is string {
+    return typeof input === "string" && options.srcStringType === "text";
   }
 
   protected async _convert(

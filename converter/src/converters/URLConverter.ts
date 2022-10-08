@@ -44,8 +44,8 @@ class URLConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public typeEquals(input: unknown): input is string {
-    return typeof input === "string";
+  public typeEquals(input: unknown, options: ConvertOptions): input is string {
+    return typeof input === "string" && options.srcStringType === "url";
   }
 
   protected async _convert(

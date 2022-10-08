@@ -97,7 +97,7 @@ export class DefaultConverter {
     if (typeof input === "string") {
       return "" as T;
     }
-    const converter = this._getConverter(input);
+    const converter = this.getConverter(input);
     if (converter) {
       return converter.empty() as T;
     }
@@ -110,11 +110,26 @@ export class DefaultConverter {
     return converter.empty() as ReturnData<T>;
   }
 
+  public getConverter(
+    input: Data,
+    options?: Partial<ConvertOptions>
+  ): Converter<Data> | undefined {
+    if (typeof input === "string") {
+      return this._getStringConverterOfType(options?.srcStringType);
+    }
+    for (const converter of this.binaryAndStreamConverters.values()) {
+      if (converter.typeEquals(input, options)) {
+        return converter;
+      }
+    }
+    return undefined;
+  }
+
   public async getSize(
     input: Data,
     options?: Partial<Options>
   ): Promise<number> {
-    const converter = this._getConverter(input, options);
+    const converter = this.getConverter(input, options);
     if (converter) {
       return await converter.getSize(input, options);
     }
@@ -172,7 +187,7 @@ export class DefaultConverter {
       return Promise.resolve(this.empty(input));
     }
 
-    const converter = this._getConverter(input, options);
+    const converter = this.getConverter(input, options);
     if (converter) {
       return await converter.convert(input, options);
     }
@@ -324,21 +339,6 @@ export class DefaultConverter {
       results.push(converted);
     }
     return results;
-  }
-
-  protected _getConverter(
-    input: Data,
-    options?: Partial<ConvertOptions>
-  ): Converter<Data> | undefined {
-    if (typeof input === "string") {
-      return this._getStringConverterOfType(options?.srcStringType);
-    }
-    for (const converter of this.binaryAndStreamConverters.values()) {
-      if (converter.typeEquals(input, options)) {
-        return converter;
-      }
-    }
-    return undefined;
   }
 
   protected _getConverterOfType(type: DataType): Converter<Data> {
