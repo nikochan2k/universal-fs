@@ -172,7 +172,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
           input = resp.body as ReadableStream;
         }
       } else if (input.startsWith("file:") && fileURLToReadable) {
-        input = fileURLToReadable(input);
+        input = await fileURLToReadable(input);
       }
     }
     if (blobConverter().typeEquals(input)) {

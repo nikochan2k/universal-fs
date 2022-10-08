@@ -1,11 +1,19 @@
+import type { createReadStream, createWriteStream, readFile, stat } from "fs";
+import type { tmpdir } from "os";
+import type { join } from "path";
 import type { Readable, Writable } from "stream";
+import type { fileURLToPath, pathToFileURL } from "url";
 import { Data } from "./core";
 
-declare type FS = typeof import("fs");
-declare type OS = typeof import("os");
-declare type PATH = typeof import("path");
-declare type URL = typeof import("url");
-declare type STREAM = typeof import("stream");
+let _Writable: typeof Writable | undefined;
+let _fileURLToPath: typeof fileURLToPath | undefined;
+let _pathToFileURL: typeof pathToFileURL | undefined;
+let _stat: typeof stat | undefined;
+let _createReadStream: typeof createReadStream | undefined;
+let _createWriteStream: typeof createWriteStream | undefined;
+let _readFile: typeof readFile | undefined;
+let _tmpdir: typeof tmpdir | undefined;
+let _join: typeof join | undefined;
 
 export let isBrowser = false;
 export let isReactNative = false;
@@ -59,21 +67,6 @@ export let EMPTY_BUFFER: Buffer;
 if (typeof Buffer === "function") {
   hasBuffer = true;
   EMPTY_BUFFER = Buffer.alloc(0);
-}
-
-/* eslint-disable */
-let stream: any;
-try {
-  stream = require("stream");
-} catch {}
-/* eslint-enable */
-
-export let hasReadable = false;
-export let hasWritable = false;
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-if (typeof stream?.Readable === "function") {
-  hasReadable = true;
-  hasWritable = true;
 }
 
 export function handleFileReader<T extends string | ArrayBuffer>(
@@ -143,7 +136,7 @@ export function isWritableStream(
 
 export function isReadable(stream: unknown): stream is Readable {
   return (
-    hasReadable &&
+    isNode &&
     stream != null &&
     typeof (stream as Readable).pipe === "function" &&
     (stream as Readable).readable
@@ -167,7 +160,7 @@ export async function pipeWebStream(
 
 export function isWritable(stream: unknown): stream is Writable {
   return (
-    hasWritable &&
+    isNode &&
     stream != null &&
     typeof (stream as Writable).pipe === "function" &&
     (stream as Writable).writable
@@ -187,12 +180,15 @@ export async function handleReadable(
   readable: Readable,
   onData: (chunk: Data) => Promise<boolean>
 ): Promise<void> {
+  if (!_Writable) {
+    _Writable = (await import("stream")).Writable;
+  }
+
   if (readable.destroyed) {
     return;
   }
 
-  const stream: STREAM = require("stream"); // eslint-disable-line
-  const writable = new stream.Writable({
+  const writable = new _Writable({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     write(chunk: any, _: string, next: (error?: Error | null) => void): void {
       onData(chunk as Data)
@@ -241,72 +237,83 @@ export function closeStream(
   }
 }
 
-export let getFileSize: ((fileURL: string) => Promise<number>) | undefined;
-try {
-  const url: URL = require("url"); // eslint-disable-line
-  const fs: FS = require("fs"); // eslint-disable-line
+export async function getFileSize(fileURL: string) {
+  if (!_fileURLToPath) {
+    _fileURLToPath = (await import("url")).fileURLToPath;
+  }
+  if (!_stat) {
+    _stat = (await import("fs")).stat;
+  }
 
-  getFileSize = async (fileURL: string) => {
-    const p = url.fileURLToPath(fileURL);
-    return await new Promise<number>((resolve, reject) => {
-      fs.stat(p, (err, stats) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(stats.size);
-      });
+  const p = _fileURLToPath(fileURL);
+  return await new Promise<number>((resolve, reject) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    _stat!(p, (err, stats) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(stats.size);
     });
-  };
-} catch {
-  getFileSize = undefined;
+  });
 }
 
-export let fileToBuffer: ((filePath: string) => Buffer) | undefined;
-try {
-  const fs: FS = require("fs"); // eslint-disable-line
+export async function fileToBuffer(filePath: string) {
+  if (!_readFile) {
+    _readFile = (await import("fs")).readFile;
+  }
 
-  fileToBuffer = (filePath: string) => fs.readFileSync(filePath);
-} catch {
-  fileToBuffer = undefined;
+  return new Promise<Buffer>((resolve, reject) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    _readFile!(filePath, (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve(data);
+    });
+  });
 }
 
-export let fileURLToReadable: ((fileURL: string) => Readable) | undefined;
-try {
-  const fs: FS = require("fs"); // eslint-disable-line
-  const url: URL = require("url"); // eslint-disable-line
-  fileURLToReadable = (fileURL: string) => {
-    const filePath = url.fileURLToPath(fileURL);
-    return fs.createReadStream(filePath);
-  };
-} catch {
-  fileURLToReadable = undefined;
+export async function fileURLToReadable(fileURL: string) {
+  if (!_fileURLToPath) {
+    _fileURLToPath = (await import("url")).fileURLToPath;
+  }
+  if (!_createReadStream) {
+    _createReadStream = (await import("fs")).createReadStream;
+  }
+
+  const filePath = _fileURLToPath(fileURL);
+  return _createReadStream(filePath);
 }
 
-export let toFileURL:
-  | ((readable: Readable, extension?: string) => Promise<string>)
-  | undefined;
-try {
-  const fs: FS = require("fs"); // eslint-disable-line
-  const os: OS = require("os"); // eslint-disable-line
-  const path: PATH = require("path"); // eslint-disable-line
-  const url: URL = require("url"); // eslint-disable-line
+export async function toFileURL(readable: Readable, extension?: string) {
+  if (!_join) {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    _join = (await import("path")).join;
+  }
+  if (!_tmpdir) {
+    _tmpdir = (await import("os")).tmpdir;
+  }
+  if (!_createWriteStream) {
+    _createWriteStream = (await import("fs")).createWriteStream;
+  }
+  if (!_pathToFileURL) {
+    _pathToFileURL = (await import("url")).pathToFileURL;
+  }
 
-  toFileURL = async (readable: Readable, extension?: string) => {
-    extension =
-      typeof extension !== "undefined"
-        ? extension.startsWith(".")
-          ? extension
-          : "." + extension
-        : "";
-    const joined = path.join(os.tmpdir(), Date.now().toString() + extension);
-    const writable = fs.createWriteStream("dest.txt");
-    await pipeNodeStream(readable, writable);
-    const u = url.pathToFileURL(joined);
-    return u.href;
-  };
-} catch {
-  toFileURL = undefined;
+  extension =
+    typeof extension !== "undefined"
+      ? extension.startsWith(".")
+        ? extension
+        : "." + extension
+      : "";
+  const joined = _join(_tmpdir(), Date.now().toString() + extension);
+  const writable = _createWriteStream("dest.txt");
+  await pipeNodeStream(readable, writable);
+  const u = _pathToFileURL(joined);
+  return u.href;
 }
 
 export function dataUrlToBase64(dataUrl: string) {

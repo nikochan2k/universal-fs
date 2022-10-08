@@ -1,9 +1,4 @@
-import {
-  hasBlob,
-  hasBuffer,
-  hasReadable,
-  hasReadableStream,
-} from "../converters";
+import { hasBlob, hasBuffer, hasReadableStream, isNode } from "../converters";
 import { DEFAULT_CONVERTER as c } from "../converver";
 
 it("arraybuffer", async () => {
@@ -255,7 +250,7 @@ it("binary", async () => {
 });
 
 it("readable", async () => {
-  if (!hasReadable) {
+  if (!isNode) {
     return;
   }
 

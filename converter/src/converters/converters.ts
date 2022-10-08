@@ -2,13 +2,7 @@ import type { Readable } from "stream";
 import { Converter } from "./core";
 import { FalseConverter } from "./FalseConverter";
 import { TextHelper } from "./TextHelper";
-import {
-  EMPTY_BLOB,
-  EMPTY_BUFFER,
-  hasReadable,
-  hasReadableStream,
-  isNode,
-} from "./util";
+import { EMPTY_BLOB, EMPTY_BUFFER, hasReadableStream, isNode } from "./util";
 
 /* eslint-disable */
 
@@ -95,7 +89,7 @@ export function blobConverter() {
 let READABLE_CONVERTER: Converter<Readable>;
 export function readableConverter() {
   if (!READABLE_CONVERTER) {
-    if (hasReadable) {
+    if (isNode) {
       READABLE_CONVERTER = require("./ReadableConverter").INSTANCE;
     } else {
       READABLE_CONVERTER = new FalseConverter("Readable");

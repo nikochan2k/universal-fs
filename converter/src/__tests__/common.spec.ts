@@ -1,9 +1,4 @@
-import {
-  hasBlob,
-  hasBuffer,
-  hasReadable,
-  hasReadableStream,
-} from "../converters";
+import { hasBlob, hasBuffer, hasReadableStream, isNode } from "../converters";
 import { DEFAULT_CONVERTER as c } from "../converver";
 
 const head = "大谷翔平";
@@ -67,7 +62,7 @@ it("binary", async () => {
 });
 
 it("readable", async () => {
-  if (!hasReadable) {
+  if (!isNode) {
     return;
   }
 

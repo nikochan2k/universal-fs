@@ -144,7 +144,7 @@ class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
     if (input.startsWith("file:") && fileURLToReadable) {
-      const readable = fileURLToReadable(input);
+      const readable = await fileURLToReadable(input);
       return await readableConverter().toArrayBuffer(readable, options);
     } else {
       const resp = await fetch(input);

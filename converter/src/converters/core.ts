@@ -1,5 +1,5 @@
 import type { Readable } from "stream";
-import { hasBlob, isBrowser, toFileURL } from "./util";
+import { hasBlob, isBrowser, isNode } from "./util";
 
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
 export type URLType = "file" | "data" | "blob";
@@ -221,7 +221,7 @@ export abstract class AbstractConverter<T extends Data>
     if (!options.bufferToTextCharset) options.bufferToTextCharset = "utf8";
     if (!options.textToBufferCharset) options.textToBufferCharset = "utf8";
     if (options.dstURLType === "file") {
-      if (!toFileURL) {
+      if (!isNode) {
         throw new Error("File URL is not supported");
       }
     } else if (options.dstURLType === "blob") {
@@ -231,7 +231,7 @@ export abstract class AbstractConverter<T extends Data>
     } else if (options.dstURLType === "data") {
       // Do nothing
     } else {
-      if (toFileURL) {
+      if (isNode) {
         options.dstURLType = "file";
       } else if (isBrowser) {
         options.dstURLType = "blob";
