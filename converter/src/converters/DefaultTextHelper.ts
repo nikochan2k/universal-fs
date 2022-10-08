@@ -1,7 +1,7 @@
 import { Charset } from "./core";
 import { TextHelper } from "./TextHelper";
 
-if (!globalThis.TextDecoder || !globalThis.TextEncoder) {
+if (!TextDecoder || !TextEncoder) {
   require("fast-text-encoding");
 }
 
