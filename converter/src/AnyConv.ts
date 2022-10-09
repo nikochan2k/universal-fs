@@ -167,7 +167,7 @@ class DefaultAnyConv implements AnyConv {
   }
 }
 
-const get = async () => {
+export const getAnyConv = async () => {
   if (AbstractConverter.C) {
     return AbstractConverter.C;
   }
@@ -215,5 +215,3 @@ const get = async () => {
   AbstractConverter.C = anyConv;
   return AbstractConverter.C;
 };
-
-export default get;

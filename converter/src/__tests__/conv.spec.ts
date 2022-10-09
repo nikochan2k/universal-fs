@@ -1,4 +1,4 @@
-import get from "../AnyConv";
+import { getAnyConv } from "../AnyConv";
 import { AnyConv } from "../converters/core";
 import {
   hasBlob,
@@ -9,7 +9,7 @@ import {
 
 let c: AnyConv;
 it("initialize", async () => {
-  c = await get();
+  c = await getAnyConv();
 });
 
 it("arraybuffer", async () => {

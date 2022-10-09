@@ -1,11 +1,11 @@
-import get from "../AnyConv";
+import { getAnyConv } from "../AnyConv";
 import { AnyConv } from "../converters/core";
 
 const ab = new ArrayBuffer(1000 * 1024);
 
 let c: AnyConv;
 it("initialize", async () => {
-  c = await get();
+  c = await getAnyConv();
 });
 
 it("readableStream to uint8Array", async () => {

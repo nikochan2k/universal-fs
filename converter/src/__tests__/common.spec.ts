@@ -1,4 +1,4 @@
-import get from "../AnyConv";
+import { getAnyConv } from "../AnyConv";
 import { AnyConv } from "../converters/core";
 import {
   hasBlob,
@@ -13,7 +13,7 @@ const expected = "大谷翔平ホームラン";
 
 let c: AnyConv;
 it("initialize", async () => {
-  c = await get();
+  c = await getAnyConv();
 });
 
 it("arraybuffer", async () => {
