@@ -1,5 +1,4 @@
-import { DEFAULT_CONVERTER } from "../AnyConv";
-import { AbstractConverter } from "./AbstractConverter";
+import { $, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -26,7 +25,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    const converter = DEFAULT_CONVERTER.converter(input, options);
+    const converter = $().converter(input, options);
     return await converter.toText(input, options);
   }
 
@@ -64,10 +63,9 @@ export class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await DEFAULT_CONVERTER.converterOf("uint8array").toBase64(
-      u8,
-      deleteStartLength(options)
-    );
+    return await $()
+      .converterOf("uint8array")
+      .toBase64(u8, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -91,10 +89,7 @@ export class TextConverter extends AbstractConverter<string> {
   ): Promise<Uint8Array> {
     const textHelper = await getTextHelper();
     const u8 = await textHelper.textToBuffer(input, options);
-    return await DEFAULT_CONVERTER.converterOf("uint8array").toUint8Array(
-      u8,
-      options
-    );
+    return await $().converterOf("uint8array").toUint8Array(u8, options);
   }
 }
 

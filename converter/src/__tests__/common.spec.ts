@@ -1,4 +1,5 @@
-import { DEFAULT_CONVERTER as c } from "../AnyConv";
+import get from "../AnyConv";
+import { AnyConv } from "../converters/core";
 import {
   hasBlob,
   hasBuffer,
@@ -9,6 +10,11 @@ import {
 const head = "大谷翔平";
 const tail = "ホームラン";
 const expected = "大谷翔平ホームラン";
+
+let c: AnyConv;
+it("initialize", async () => {
+  c = await get();
+});
 
 it("arraybuffer", async () => {
   const chunk1 = await c.converterOf("arraybuffer").convert(head);

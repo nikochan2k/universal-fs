@@ -1,6 +1,12 @@
-import { DEFAULT_CONVERTER as c } from "../AnyConv";
+import get from "../AnyConv";
+import { AnyConv } from "../converters/core";
 
 const ab = new ArrayBuffer(1000 * 1024);
+
+let c: AnyConv;
+it("initialize", async () => {
+  c = await get();
+});
 
 it("readableStream to uint8Array", async () => {
   const readable = await c.convert("readablestream", ab);

@@ -1,4 +1,4 @@
-import type { Readable } from "stream";
+import type { Readable, Writable } from "stream";
 
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
 export type URLType = "file" | "data" | "blob";
@@ -36,6 +36,54 @@ export interface Converter<T extends Data> {
   toBase64(input: T, options: ConvertOptions): Promise<string>;
   toText(input: T, options: ConvertOptions): Promise<string>;
   toUint8Array(input: T, options: ConvertOptions): Promise<Uint8Array>;
+}
+
+export type ReturnData<T extends DataType> = T extends "arraybuffer"
+  ? ArrayBuffer
+  : T extends "uint8array"
+  ? Uint8Array
+  : T extends "buffer"
+  ? Buffer
+  : T extends "blob"
+  ? Blob
+  : T extends "readable"
+  ? Readable
+  : T extends "readablestream"
+  ? ReadableStream<Uint8Array>
+  : T extends "text"
+  ? string
+  : T extends "base64"
+  ? string
+  : T extends "binary"
+  ? string
+  : T extends "hex"
+  ? string
+  : T extends "url"
+  ? string
+  : Data;
+
+export interface AnyConv {
+  convert<T extends DataType>(
+    returnType: T,
+    input: Data,
+    options?: Partial<ConvertOptions>
+  ): Promise<ReturnData<T>>;
+  empty<T extends Data>(input: T): T;
+  emptyOf<T extends DataType>(returnType: T): ReturnData<T>;
+  converter(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
+  merge<T extends DataType>(
+    to: T,
+    chunks: Data[],
+    options?: Partial<Options>
+  ): Promise<ReturnData<T>>;
+  converterOf<T extends DataType>(type: T): Converter<ReturnData<T>>;
+  pipe(
+    input: Data,
+    output: Writable | WritableStream<Uint8Array>,
+    options?: Partial<ConvertOptions>
+  ): Promise<void>;
+  size(input: Data, options?: Partial<Options>): Promise<number>;
+  slice(input: Data, options: Partial<ConvertOptions>): Promise<Data>;
 }
 
 export const DEFAULT_BUFFER_SIZE = 96 * 1024;

@@ -41,7 +41,7 @@ export default function createModifiedReadableStream(
                 const length = size;
                 controller.enqueue(
                   // eslint-disable-next-line
-                  DEFAULT_CONVERTER.slice(mod.data, { start, length })
+                  $().slice(mod.data, { start, length })
                 );
                 return;
               } else if (iStart <= mStart && mStart <= iEnd) {
@@ -87,7 +87,7 @@ export default function createModifiedReadableStream(
                   const modLen = mEnd - mStart;
                   controller.enqueue(
                     // eslint-disable-next-line
-                    DEFAULT_CONVERTER.slice(mod.data, {
+                    $().slice(mod.data, {
                       start: 0,
                       length: modLen,
                     })
@@ -141,7 +141,7 @@ export default function createModifiedReadableStream(
                 }
                 controller.enqueue(
                   // eslint-disable-next-line
-                  DEFAULT_CONVERTER.slice(mod.data, { start, length })
+                  $().slice(mod.data, { start, length })
                 );
                 return;
               }

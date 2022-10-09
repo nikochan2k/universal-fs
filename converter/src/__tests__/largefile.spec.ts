@@ -1,9 +1,15 @@
 import { createWriteStream, rmSync, statSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import { DEFAULT_CONVERTER as c } from "../AnyConv";
+import get from "../AnyConv";
+import { AnyConv } from "../converters/core";
 
 const source = Buffer.alloc(1000 * 1024);
+
+let c: AnyConv;
+it("initialize", async () => {
+  c = await get();
+});
 
 it("readable to buffer", async () => {
   const readable = await c.convert("readable", source);

@@ -1,6 +1,5 @@
 import { encode } from "base64-arraybuffer";
-import { DEFAULT_CONVERTER } from "../AnyConv";
-import { AbstractConverter } from "./AbstractConverter";
+import { $, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -20,7 +19,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   }
 
   public match(input: unknown, options: ConvertOptions): input is Uint8Array {
-    if (DEFAULT_CONVERTER.converterOf("buffer").match(input, options)) {
+    if ($().converterOf("buffer").match(input, options)) {
       return true;
     }
     return input instanceof Uint8Array;
@@ -30,7 +29,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array | undefined> {
-    const converter = DEFAULT_CONVERTER.converter(input, options);
+    const converter = $().converter(input, options);
     return await converter.toUint8Array(input, options);
   }
 

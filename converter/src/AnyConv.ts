@@ -1,8 +1,10 @@
-import type { Readable, Writable } from "stream";
+import type { Writable } from "stream";
+import { AbstractConverter } from "./converters/AbstractConverter";
 import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
 import { Base64Converter } from "./converters/Base64Converter";
 import { BinaryConverter } from "./converters/BinaryConverter";
 import {
+  AnyConv,
   Converter,
   ConvertOptions,
   Data,
@@ -10,6 +12,7 @@ import {
   getType,
   isEmpty,
   Options,
+  ReturnData,
 } from "./converters/core";
 import { FalseConverter } from "./converters/FalseConverter";
 import { HexConverter } from "./converters/HexConverter";
@@ -27,41 +30,8 @@ import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
 
-export type ReturnData<T extends DataType> = T extends "arraybuffer"
-  ? ArrayBuffer
-  : T extends "uint8array"
-  ? Uint8Array
-  : T extends "buffer"
-  ? Buffer
-  : T extends "blob"
-  ? Blob
-  : T extends "readable"
-  ? Readable
-  : T extends "readablestream"
-  ? ReadableStream<Uint8Array>
-  : T extends "text"
-  ? string
-  : T extends "base64"
-  ? string
-  : T extends "binary"
-  ? string
-  : T extends "hex"
-  ? string
-  : T extends "url"
-  ? string
-  : Data;
-
-export class AnyConv {
-  private converters = new Map<DataType, Converter<Data>>();
-  private initialized = false;
-
-  constructor() {
-    this._initialize()
-      .then(() => {
-        this.initialized = true;
-      })
-      .catch((e) => console.warn(e));
-  }
+class DefaultAnyConv implements AnyConv {
+  constructor(private converters: Map<DataType, Converter<Data>>) {}
 
   public async convert<T extends DataType>(
     returnType: T,
@@ -195,55 +165,55 @@ export class AnyConv {
     }
     return results;
   }
-
-  protected async _initialize() {
-    if (this.initialized) {
-      return;
-    }
-
-    this.converters.set("base64", new Base64Converter());
-    this.converters.set("binary", new BinaryConverter());
-    this.converters.set("hex", new HexConverter());
-    this.converters.set("url", new URLConverter());
-    this.converters.set("text", new TextConverter());
-    this.converters.set("arraybuffer", new ArrayBufferConverter());
-    if (hasBuffer) {
-      const bc = new (
-        await import("./converters/BufferConverter")
-      ).BufferConverter();
-      this.converters.set("buffer", bc);
-    } else {
-      this.converters.set("buffer", new FalseConverter("Buffer"));
-    }
-    this.converters.set("uint8array", new Uint8ArrayConverter());
-    if (hasBlob) {
-      const bc = new (
-        await import("./converters/BlobConverter")
-      ).BlobConverter();
-      this.converters.set("blob", bc);
-    } else {
-      this.converters.set("blob", new FalseConverter("Blob"));
-    }
-    try {
-      const rc = new (
-        await import("./converters/ReadableConverter")
-      ).ReadableConverter();
-      this.converters.set("readable", rc);
-    } catch {
-      this.converters.set("readable", new FalseConverter("Readable"));
-    }
-    if (hasReadableStream) {
-      const rsc = new (
-        await import("./converters/ReadableStreamConverter")
-      ).ReadableStreamConverter();
-      this.converters.set("readablestream", rsc);
-    } else {
-      this.converters.set(
-        "readablestream",
-        new FalseConverter("ReadableStream")
-      );
-    }
-  }
 }
 
-export const DEFAULT_CONVERTER = new AnyConv();
+const get = async () => {
+  if (AbstractConverter.CONV) {
+    return AbstractConverter.CONV;
+  }
+
+  const converters = new Map<DataType, Converter<Data>>();
+  converters.set("base64", new Base64Converter());
+  converters.set("binary", new BinaryConverter());
+  converters.set("hex", new HexConverter());
+  converters.set("url", new URLConverter());
+  converters.set("text", new TextConverter());
+  converters.set("arraybuffer", new ArrayBufferConverter());
+  if (hasBuffer) {
+    const bc = new (
+      await import("./converters/BufferConverter")
+    ).BufferConverter();
+    converters.set("buffer", bc);
+  } else {
+    converters.set("buffer", new FalseConverter("Buffer"));
+  }
+  converters.set("uint8array", new Uint8ArrayConverter());
+  if (hasBlob) {
+    const bc = new (await import("./converters/BlobConverter")).BlobConverter();
+    converters.set("blob", bc);
+  } else {
+    converters.set("blob", new FalseConverter("Blob"));
+  }
+  try {
+    const rc = new (
+      await import("./converters/ReadableConverter")
+    ).ReadableConverter();
+    converters.set("readable", rc);
+  } catch {
+    converters.set("readable", new FalseConverter("Readable"));
+  }
+  if (hasReadableStream) {
+    const rsc = new (
+      await import("./converters/ReadableStreamConverter")
+    ).ReadableStreamConverter();
+    converters.set("readablestream", rsc);
+  } else {
+    converters.set("readablestream", new FalseConverter("ReadableStream"));
+  }
+
+  const anyConv = new DefaultAnyConv(converters);
+  AbstractConverter.CONV = anyConv;
+  return AbstractConverter.CONV;
+};
+
+export default get;

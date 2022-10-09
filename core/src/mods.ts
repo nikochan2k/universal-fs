@@ -30,7 +30,7 @@ if (hasReadable) {
 }
 
 export async function modify(src: BlockData, ...mods: Modification[]) {
-  const u8 = await DEFAULT_CONVERTER.convert(src, "uint8array");
+  const u8 = await $().convert(src, "uint8array");
   const size = u8.length;
   for (const mod of mods) {
     const start = mod.start ?? 0;
@@ -46,7 +46,7 @@ export async function modify(src: BlockData, ...mods: Modification[]) {
         length = size - start;
       }
     }
-    const data = await DEFAULT_CONVERTER.toUint8Array(mod.data, { length });
+    const data = await $().toUint8Array(mod.data, { length });
     u8.set(data, start);
   }
   return u8;

@@ -1,6 +1,5 @@
 import { encode } from "base64-arraybuffer";
-import { DEFAULT_CONVERTER } from "../AnyConv";
-import { AbstractConverter } from "./AbstractConverter";
+import { $, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -32,7 +31,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     input: Data,
     options: ConvertOptions
   ): Promise<ArrayBufferLike | undefined> {
-    const converter = DEFAULT_CONVERTER.converter(input, options);
+    const converter = $().converter(input, options);
     return await converter.toArrayBuffer(input, options);
   }
 

@@ -1,6 +1,5 @@
 import type { Readable } from "stream";
-import { DEFAULT_CONVERTER } from "../AnyConv";
-import { AbstractConverter } from "./AbstractConverter";
+import { $, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -91,7 +90,7 @@ function createReadableStreamOfReader(
   const start = startEnd.start;
   const end = startEnd.end ?? Number.MAX_SAFE_INTEGER;
   const bufferSize = options.bufferSize;
-  const converter = DEFAULT_CONVERTER.converterOf("uint8array");
+  const converter = $().converterOf("uint8array");
   let iStart = 0;
   return new ReadableStream({
     start: async (controller) => {
@@ -158,9 +157,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
-        if (
-          DEFAULT_CONVERTER.converterOf("readable").match(resp.body, options)
-        ) {
+        if ($().converterOf("readable").match(resp.body, options)) {
           input = resp.body as unknown as Readable;
         } else {
           input = resp.body as ReadableStream<Uint8Array>;
@@ -169,22 +166,16 @@ export class ReadableStreamConverter extends AbstractConverter<
         input = await fileURLToReadable(input);
       }
     }
-    if (
-      DEFAULT_CONVERTER.converterOf("blob").match(input, options) &&
-      hasStreamOnBlob
-    ) {
+    if ($().converterOf("blob").match(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
-    if (DEFAULT_CONVERTER.converterOf("readable").match(input, options)) {
+    if ($().converterOf("readable").match(input, options)) {
       return createReadableStreamOfReader(input, options);
     }
 
     if (!this.match(input) && hasStreamOnBlob) {
-      const blob = await DEFAULT_CONVERTER.converterOf("blob").convert(
-        input,
-        options
-      );
+      const blob = await $().converterOf("blob").convert(input, options);
       input = blob.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
@@ -195,10 +186,7 @@ export class ReadableStreamConverter extends AbstractConverter<
       );
     }
 
-    const u8 = await DEFAULT_CONVERTER.converterOf("uint8array").convert(
-      input,
-      options
-    );
+    const u8 = await $().converterOf("uint8array").convert(input, options);
     const { start, end } = getStartEnd(options, u8.byteLength);
     return createReadableStream(u8.slice(start, end));
   }
@@ -268,35 +256,20 @@ export class ReadableStreamConverter extends AbstractConverter<
   ): Promise<string> {
     const bufferSize = options.bufferSize;
     if (isBrowser) {
-      const blob = await DEFAULT_CONVERTER.converterOf("blob").convert(input, {
+      const blob = await $().converterOf("blob").convert(input, {
         bufferSize,
       });
-      return await DEFAULT_CONVERTER.converterOf("blob").toBase64(
-        blob,
-        options
-      );
+      return await $().converterOf("blob").toBase64(blob, options);
     } else if (isNode) {
-      const buffer = await DEFAULT_CONVERTER.converterOf("buffer").convert(
-        input,
-        {
-          bufferSize,
-        }
-      );
-      return await DEFAULT_CONVERTER.converterOf("buffer").toBase64(
-        buffer,
-        options
-      );
+      const buffer = await $().converterOf("buffer").convert(input, {
+        bufferSize,
+      });
+      return await $().converterOf("buffer").toBase64(buffer, options);
     } else {
-      const u8 = await DEFAULT_CONVERTER.converterOf("uint8array").convert(
-        input,
-        {
-          bufferSize,
-        }
-      );
-      return await DEFAULT_CONVERTER.converterOf("uint8array").toBase64(
-        u8,
-        options
-      );
+      const u8 = await $().converterOf("uint8array").convert(input, {
+        bufferSize,
+      });
+      return await $().converterOf("uint8array").toBase64(u8, options);
     }
   }
 
@@ -306,32 +279,20 @@ export class ReadableStreamConverter extends AbstractConverter<
   ): Promise<string> {
     const bufferSize = options.bufferSize;
     if (isBrowser) {
-      const blob = await DEFAULT_CONVERTER.converterOf("blob").convert(input, {
+      const blob = await $().converterOf("blob").convert(input, {
         bufferSize,
       });
-      return await DEFAULT_CONVERTER.converterOf("blob").toText(blob, options);
+      return await $().converterOf("blob").toText(blob, options);
     } else if (isNode) {
-      const buffer = await DEFAULT_CONVERTER.converterOf("buffer").convert(
-        input,
-        {
-          bufferSize,
-        }
-      );
-      return await DEFAULT_CONVERTER.converterOf("buffer").toText(
-        buffer,
-        options
-      );
+      const buffer = await $().converterOf("buffer").convert(input, {
+        bufferSize,
+      });
+      return await $().converterOf("buffer").toText(buffer, options);
     } else {
-      const u8 = await DEFAULT_CONVERTER.converterOf("uint8array").convert(
-        input,
-        {
-          bufferSize,
-        }
-      );
-      return await DEFAULT_CONVERTER.converterOf("uint8array").toText(
-        u8,
-        options
-      );
+      const u8 = await $().converterOf("uint8array").convert(input, {
+        bufferSize,
+      });
+      return await $().converterOf("uint8array").toText(u8, options);
     }
   }
 
@@ -344,7 +305,7 @@ export class ReadableStreamConverter extends AbstractConverter<
       chunks.push(chunk);
       return Promise.resolve(true);
     });
-    const converter = DEFAULT_CONVERTER.converterOf("uint8array");
+    const converter = $().converterOf("uint8array");
     return await converter.merge(chunks, options);
   }
 }

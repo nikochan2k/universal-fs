@@ -1,6 +1,5 @@
 import { Duplex, PassThrough, Readable } from "stream";
-import { DEFAULT_CONVERTER } from "../AnyConv";
-import { AbstractConverter } from "./AbstractConverter";
+import { $, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -91,7 +90,7 @@ class ReadableOfReadableStream extends Readable {
   private async setup() {
     const reader = this.stream.getReader();
     try {
-      const converter = DEFAULT_CONVERTER.converterOf("buffer");
+      const converter = $().converterOf("buffer");
       let iStart = 0;
       let done: boolean;
       do {
@@ -171,10 +170,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (
-      DEFAULT_CONVERTER.converterOf("blob").match(input, options) &&
-      hasStreamOnBlob
-    ) {
+    if ($().converterOf("blob").match(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream;
     }
 
@@ -182,15 +178,12 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (DEFAULT_CONVERTER.converterOf("readablestream").match(input, options)) {
+    if ($().converterOf("readablestream").match(input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }
 
-    const buffer = await DEFAULT_CONVERTER.converterOf("buffer").convert(
-      input,
-      options
-    );
+    const buffer = await $().converterOf("buffer").convert(input, options);
     const duplex = new Duplex();
     duplex.push(buffer);
     duplex.push(null);
@@ -256,10 +249,9 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     options: ConvertOptions
   ): Promise<string> {
     const buffer = (await this.toUint8Array(input, options)) as Buffer;
-    return await DEFAULT_CONVERTER.converterOf("buffer").toBase64(
-      buffer,
-      deleteStartLength(options)
-    );
+    return await $()
+      .converterOf("buffer")
+      .toBase64(buffer, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -279,7 +271,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     const bufferSize = options.bufferSize;
 
     let index = 0;
-    const converter = DEFAULT_CONVERTER.converterOf("buffer");
+    const converter = $().converterOf("buffer");
     const chunks: Buffer[] = [];
     await handleReadable(input, async (chunk) => {
       const buffer = await converter.convert(chunk, { bufferSize });

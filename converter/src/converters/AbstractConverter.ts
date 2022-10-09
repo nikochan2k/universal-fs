@@ -1,4 +1,5 @@
 import {
+  AnyConv,
   Converter,
   ConvertOptions,
   Data,
@@ -12,9 +13,15 @@ import {
 } from "./core";
 import { hasBlob, isBrowser, isNode } from "./NodeUtil";
 
+export function $() {
+  return AbstractConverter.CONV;
+}
+
 export abstract class AbstractConverter<T extends Data>
   implements Converter<T>
 {
+  public static CONV: AnyConv;
+
   public abstract type: DataType;
 
   public async convert(

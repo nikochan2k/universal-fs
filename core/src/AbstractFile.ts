@@ -343,7 +343,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       (typeof options?.start === "number" ||
         typeof options?.length === "number")
     ) {
-      data = await DEFAULT_CONVERTER.slice(data, options); // eslint-disable-line
+      data = await $().slice(data, options); // eslint-disable-line
     }
 
     return data;

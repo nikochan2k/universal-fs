@@ -1,10 +1,16 @@
-import { DEFAULT_CONVERTER as c } from "../AnyConv";
+import get from "../AnyConv";
+import { AnyConv } from "../converters/core";
 import {
   hasBlob,
   hasBuffer,
   hasReadableStream,
   isNode,
 } from "../converters/NodeUtil";
+
+let c: AnyConv;
+it("initialize", async () => {
+  c = await get();
+});
 
 it("arraybuffer", async () => {
   const expected = "大谷翔平ホームラン";
