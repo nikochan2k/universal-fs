@@ -170,7 +170,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (C().of("blob").is(input, options) && hasStreamOnBlob) {
+    if (C().is("blob", input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream;
     }
 
@@ -178,12 +178,12 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (C().of("readablestream").is(input, options)) {
+    if (C().is("readablestream", input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }
 
-    const buffer = await C().of("buffer").convert(input, options);
+    const buffer = await C().convert("buffer", input, options);
     const duplex = new Duplex();
     duplex.push(buffer);
     duplex.push(null);
