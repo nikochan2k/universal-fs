@@ -1,5 +1,5 @@
 import { decode } from "base64-arraybuffer";
-import { $, AbstractConverter } from "./AbstractConverter";
+import { C, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -27,7 +27,7 @@ export class Base64Converter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    const converter = $().converter(input, options);
+    const converter = C().converter(input, options);
     return await converter.toBase64(input, options);
   }
 
@@ -56,7 +56,7 @@ export class Base64Converter extends AbstractConverter<string> {
 
   protected async _merge(chunks: string[], options: Options): Promise<string> {
     if (isBrowser) {
-      const converter = $().converterOf("blob");
+      const converter = C().converterOf("blob");
       const blobs: Blob[] = [];
       for (const chunk of chunks) {
         blobs.push(await converter.convert(chunk, options));
@@ -68,7 +68,7 @@ export class Base64Converter extends AbstractConverter<string> {
       for (const chunk of chunks) {
         buffers.push(await this.toUint8Array(chunk, options));
       }
-      const u8 = await $().converterOf("uint8array").merge(buffers, options);
+      const u8 = await C().converterOf("uint8array").merge(buffers, options);
       return await this.convert(u8);
     }
   }

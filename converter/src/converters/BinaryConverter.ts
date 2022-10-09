@@ -1,5 +1,5 @@
 import { encode } from "base64-arraybuffer";
-import { $, AbstractConverter } from "./AbstractConverter";
+import { C, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -38,7 +38,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     }
 
     if (
-      $().converterOf("blob").match(input, options) &&
+      C().converterOf("blob").match(input, options) &&
       hasReadAsBinaryStringOnBlob
     ) {
       const startEnd = getStartEnd(options, input.size);
@@ -58,7 +58,7 @@ export class BinaryConverter extends AbstractConverter<string> {
       return chunks.join("");
     }
 
-    const u8 = await $().converterOf("uint8array").convert(input, options);
+    const u8 = await C().converterOf("uint8array").convert(input, options);
     return Array.from(u8, (e) => String.fromCharCode(e)).join("");
   }
 

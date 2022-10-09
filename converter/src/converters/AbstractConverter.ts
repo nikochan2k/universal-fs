@@ -13,14 +13,14 @@ import {
 } from "./core";
 import { hasBlob, isBrowser, isNode } from "./NodeUtil";
 
-export function $() {
-  return AbstractConverter.CONV;
+export function C() {
+  return AbstractConverter.C;
 }
 
 export abstract class AbstractConverter<T extends Data>
   implements Converter<T>
 {
-  public static CONV: AnyConv;
+  public static C: AnyConv;
 
   public abstract type: DataType;
 

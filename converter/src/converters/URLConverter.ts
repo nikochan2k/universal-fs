@@ -1,5 +1,5 @@
 import type { Readable } from "stream";
-import { $, AbstractConverter } from "./AbstractConverter";
+import { C, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -46,15 +46,15 @@ export class URLConverter extends AbstractConverter<string> {
     let url: string;
     const type = options.dstURLType;
     if (type === "file" && toFileURL) {
-      const readable = await $()
+      const readable = await C()
         .converterOf("readable")
         .convert(input, options);
       url = await toFileURL(readable);
     } else if (type === "blob") {
-      const blob = await $().converterOf("blob").convert(input, options);
+      const blob = await C().converterOf("blob").convert(input, options);
       url = URL.createObjectURL(blob);
     } else {
-      const base64 = await $().converterOf("base64").convert(input, options);
+      const base64 = await C().converterOf("base64").convert(input, options);
       url = "data:application/octet-stream;base64," + base64;
     }
     return url;
@@ -69,7 +69,7 @@ export class URLConverter extends AbstractConverter<string> {
       return blob.size;
     } else if (input.startsWith("data:")) {
       const base64 = dataUrlToBase64(input);
-      return await $().converterOf("base64").size(base64);
+      return await C().converterOf("base64").size(base64);
     } else {
       const resp = await fetch(input, { method: "HEAD" });
       const str = resp.headers.get("Content-Length");
@@ -95,7 +95,7 @@ export class URLConverter extends AbstractConverter<string> {
 
   protected async _merge(urls: string[], options: Options): Promise<string> {
     if (isNode) {
-      const converter = $().converterOf("readable");
+      const converter = C().converterOf("readable");
       const readables: Readable[] = [];
       for (const url of urls) {
         const readable = await converter.convert(url);
@@ -107,7 +107,7 @@ export class URLConverter extends AbstractConverter<string> {
         dstURLType: "file",
       })) as string;
     } else if (isBrowser) {
-      const converter = $().converterOf("readablestream");
+      const converter = C().converterOf("readablestream");
       const readables: ReadableStream<Uint8Array>[] = [];
       for (const url of urls) {
         const readable = await converter.convert(url, options);
@@ -124,7 +124,7 @@ export class URLConverter extends AbstractConverter<string> {
         const buffer = await this.toArrayBuffer(url, options);
         buffers.push(buffer);
       }
-      const merged = await $()
+      const merged = await C()
         .converterOf("arraybuffer")
         .merge(buffers, options);
       return (await this._convert(merged, {
@@ -140,10 +140,10 @@ export class URLConverter extends AbstractConverter<string> {
   ): Promise<ArrayBuffer> {
     if (input.startsWith("file:") && fileURLToReadable) {
       const readable = await fileURLToReadable(input);
-      return await $().converterOf("readable").toArrayBuffer(readable, options);
+      return await C().converterOf("readable").toArrayBuffer(readable, options);
     } else {
       const resp = await fetch(input);
-      return await $()
+      return await C()
         .converterOf("readablestream")
         .toArrayBuffer(resp.body as ReadableStream<Uint8Array>, options);
     }
@@ -154,7 +154,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await $()
+    return await C()
       .converterOf("uint8array")
       .toBase64(u8, deleteStartLength(options));
   }
@@ -164,7 +164,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const ab = await this.toArrayBuffer(input, options);
-    return $().converterOf("text").convert(ab, deleteStartLength(options));
+    return C().converterOf("text").convert(ab, deleteStartLength(options));
   }
 
   protected async _toUint8Array(

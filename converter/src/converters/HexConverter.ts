@@ -1,4 +1,4 @@
-import { $, AbstractConverter } from "./AbstractConverter";
+import { C, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -65,7 +65,7 @@ export class HexConverter extends AbstractConverter<string> {
       return input.slice(start * 2, end ? end * 2 : undefined);
     }
 
-    const u8 = await $().converterOf("uint8array").convert(input, options);
+    const u8 = await C().converterOf("uint8array").convert(input, options);
     return (
       Array.from(u8)
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -106,7 +106,7 @@ export class HexConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await $()
+    return await C()
       .converterOf("base64")
       .convert(u8, deleteStartLength(options));
   }

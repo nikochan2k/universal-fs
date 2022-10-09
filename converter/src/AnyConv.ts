@@ -168,8 +168,8 @@ class DefaultAnyConv implements AnyConv {
 }
 
 const get = async () => {
-  if (AbstractConverter.CONV) {
-    return AbstractConverter.CONV;
+  if (AbstractConverter.C) {
+    return AbstractConverter.C;
   }
 
   const converters = new Map<DataType, Converter<Data>>();
@@ -212,8 +212,8 @@ const get = async () => {
   }
 
   const anyConv = new DefaultAnyConv(converters);
-  AbstractConverter.CONV = anyConv;
-  return AbstractConverter.CONV;
+  AbstractConverter.C = anyConv;
+  return AbstractConverter.C;
 };
 
 export default get;

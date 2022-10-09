@@ -1,4 +1,4 @@
-import { $, AbstractConverter } from "./AbstractConverter";
+import { C, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -49,7 +49,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }
 
-    const ab = await $().converterOf("arraybuffer").convert(input, options);
+    const ab = await C().converterOf("arraybuffer").convert(input, options);
     return Buffer.from(ab);
   }
 
