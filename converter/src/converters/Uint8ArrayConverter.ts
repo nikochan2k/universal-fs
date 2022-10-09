@@ -22,10 +22,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     if (DEFAULT_CONVERTER.of("buffer").is(input, options)) {
       return true;
     }
-    return (
-      input instanceof Uint8Array ||
-      toString.call(input) === "[object Uint8Array]"
-    );
+    return input instanceof Uint8Array;
   }
 
   protected async _convert(

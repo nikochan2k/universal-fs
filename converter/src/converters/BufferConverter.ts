@@ -7,7 +7,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { EMPTY_BUFFER, getTextHelper } from "./util";
+import { EMPTY_BUFFER, getTextHelper, hasBuffer } from "./util";
 
 export class BufferConverter extends AbstractConverter<Buffer> {
   public type: DataType = "buffer";
@@ -17,9 +17,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
   }
 
   public is(input: unknown): input is Buffer {
-    return (
-      input instanceof Buffer || toString.call(input) === "[object Buffer]"
-    );
+    return hasBuffer && input instanceof Buffer;
   }
 
   protected async _convert(

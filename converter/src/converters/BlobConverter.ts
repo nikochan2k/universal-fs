@@ -14,6 +14,7 @@ import {
   handleFileReader,
   handleReadableStream,
   hasArrayBufferOnBlob,
+  hasBlob,
   hasReadAsArrayBufferOnBlob,
   hasStreamOnBlob,
   hasTextOnBlob,
@@ -27,11 +28,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
   }
 
   public is(input: unknown): input is Blob {
-    return (
-      input instanceof Blob ||
-      toString.call(input) === "[object Blob]" ||
-      toString.call(input) === "[object File]"
-    );
+    return hasBlob && input instanceof Blob;
   }
 
   protected async _convert(
