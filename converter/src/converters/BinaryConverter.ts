@@ -59,7 +59,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     return Array.from(u8, (e) => String.fromCharCode(e)).join("");
   }
 
-  protected _getSize(input: string): Promise<number> {
+  protected _size(input: string): Promise<number> {
     return Promise.resolve(input.length);
   }
 

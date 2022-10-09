@@ -74,7 +74,7 @@ export class HexConverter extends AbstractConverter<string> {
     );
   }
 
-  protected _getSize(input: string): Promise<number> {
+  protected _size(input: string): Promise<number> {
     return Promise.resolve(input.length / 2);
   }
 

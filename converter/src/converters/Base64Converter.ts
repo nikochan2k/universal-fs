@@ -1,5 +1,5 @@
 import { decode } from "base64-arraybuffer";
-import { _, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -31,7 +31,7 @@ export class Base64Converter extends AbstractConverter<string> {
     return await converter.toBase64(input, options);
   }
 
-  protected _getSize(input: string): Promise<number> {
+  protected _size(input: string): Promise<number> {
     const len = input.length;
     const baseLen = (len * 3) / 4;
     let padding = 0;

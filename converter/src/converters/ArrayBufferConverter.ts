@@ -22,8 +22,8 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
 
   public is(input: unknown): input is ArrayBufferLike {
     return (
-      (hasSharedArrayBuffer && input instanceof SharedArrayBuffer) ||
-      input instanceof ArrayBuffer
+      input instanceof ArrayBuffer ||
+      (hasSharedArrayBuffer && input instanceof SharedArrayBuffer)
     );
   }
 
@@ -35,7 +35,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     return await converter.toArrayBuffer(input, options);
   }
 
-  protected _getSize(input: ArrayBufferLike): Promise<number> {
+  protected _size(input: ArrayBufferLike): Promise<number> {
     return Promise.resolve(input.byteLength);
   }
 
@@ -60,9 +60,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
       u8.set(new Uint8Array(chunk), pos);
       pos += chunk.byteLength;
     }
-    return Promise.resolve(
-      u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength)
-    );
+    return Promise.resolve(u8.buffer);
   }
 
   protected async _toArrayBuffer(

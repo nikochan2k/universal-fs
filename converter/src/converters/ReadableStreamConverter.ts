@@ -192,7 +192,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     return createReadableStream(u8.slice(start, end));
   }
 
-  protected _getSize(): Promise<number> {
+  protected _size(): Promise<number> {
     throw new Error("Cannot get size of ReadableStream");
   }
 

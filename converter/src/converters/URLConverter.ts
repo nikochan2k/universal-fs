@@ -57,7 +57,7 @@ export class URLConverter extends AbstractConverter<string> {
     return url;
   }
 
-  protected async _getSize(input: string): Promise<number> {
+  protected async _size(input: string): Promise<number> {
     if (input.startsWith("file:") && getFileSize) {
       return await getFileSize(input);
     } else if (input.startsWith("blob:") && isBrowser) {
@@ -82,7 +82,7 @@ export class URLConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<{ start: number; end: number | undefined }> {
-    const size = await this._getSize(input);
+    const size = await this._size(input);
     return getStartEnd(options, size);
   }
 

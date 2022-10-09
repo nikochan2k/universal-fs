@@ -45,7 +45,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     return new Blob([u8]);
   }
 
-  protected _getSize(input: Blob): Promise<number> {
+  protected _size(input: Blob): Promise<number> {
     return Promise.resolve(input.size);
   }
 

@@ -190,7 +190,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     return duplex;
   }
 
-  protected _getSize(): Promise<number> {
+  protected _size(): Promise<number> {
     throw new Error("Cannot get size of Readable");
   }
 

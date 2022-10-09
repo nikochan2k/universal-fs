@@ -43,10 +43,7 @@ export abstract class AbstractConverter<T extends Data>
   }
 
   public isEmpty(input: T, options?: Partial<Options>) {
-    if (isEmpty(input, options)) {
-      return true;
-    }
-    return this._isEmpty(input);
+    return isEmpty(input, options) && this._isEmpty(input);
   }
 
   public async merge(chunks: T[], options?: Partial<Options>): Promise<T> {
@@ -61,32 +58,32 @@ export abstract class AbstractConverter<T extends Data>
   }
 
   public async size(input: T, options?: Partial<Options>): Promise<number> {
-    if (this._isEmpty(input)) {
+    if (this.isEmpty(input, options)) {
       return 0;
     }
 
-    return await this._getSize(input, this._initOptions(options));
+    return await this._size(input, this._initOptions(options));
   }
 
   public async toArrayBuffer(
     input: T,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
-    if (this._isEmpty(input)) {
+    if (this.isEmpty(input)) {
       return EMPTY_ARRAY_BUFFER;
     }
     return await this._toArrayBuffer(input, options);
   }
 
   public async toBase64(input: T, options: ConvertOptions): Promise<string> {
-    if (this._isEmpty(input)) {
+    if (this.isEmpty(input, options)) {
       return "";
     }
     return await this._toBase64(input, options);
   }
 
   public async toText(input: T, options: ConvertOptions): Promise<string> {
-    if (this._isEmpty(input)) {
+    if (this.isEmpty(input, options)) {
       return "";
     }
     return await this._toText(input, options);
@@ -96,7 +93,7 @@ export abstract class AbstractConverter<T extends Data>
     input: T,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    if (this._isEmpty(input)) {
+    if (this.isEmpty(input, options)) {
       return EMPTY_UINT8_ARRAY;
     }
     return await this._toUint8Array(input, options);
@@ -112,13 +109,13 @@ export abstract class AbstractConverter<T extends Data>
     input: Data,
     options: ConvertOptions
   ): Promise<T | undefined>;
-  protected abstract _getSize(input: T, options: Options): Promise<number>;
   protected abstract _getStartEnd(
     input: T,
     options: ConvertOptions
   ): Promise<{ start: number; end: number | undefined }>;
   protected abstract _isEmpty(input: T): boolean;
   protected abstract _merge(chunks: T[], options: Options): Promise<T>;
+  protected abstract _size(input: T, options: Options): Promise<number>;
   protected abstract _toArrayBuffer(
     input: T,
     options: ConvertOptions

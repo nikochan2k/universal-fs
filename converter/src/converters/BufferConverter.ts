@@ -53,7 +53,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     return Buffer.from(ab);
   }
 
-  protected _getSize(input: Buffer): Promise<number> {
+  protected _size(input: Buffer): Promise<number> {
     return Promise.resolve(input.byteLength);
   }
 

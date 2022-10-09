@@ -29,7 +29,7 @@ export class TextConverter extends AbstractConverter<string> {
     return await converter.toText(input, options);
   }
 
-  protected async _getSize(input: string, options: Options): Promise<number> {
+  protected async _size(input: string, options: Options): Promise<number> {
     const u8 = await this.toUint8Array(input, deleteStartLength(options));
     return u8.byteLength;
   }

@@ -33,7 +33,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return await converter.toUint8Array(input, options);
   }
 
-  protected _getSize(input: Uint8Array): Promise<number> {
+  protected _size(input: Uint8Array): Promise<number> {
     return Promise.resolve(input.byteLength);
   }
 
