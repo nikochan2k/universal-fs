@@ -1,5 +1,4 @@
-import type { Readable } from "stream";
-import { C, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, C } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -46,13 +45,13 @@ export class URLConverter extends AbstractConverter<string> {
     let url: string;
     const type = options.dstURLType;
     if (type === "file" && toFileURL) {
-      const readable = await C().of("readable").convert(input, options);
+      const readable = await C().convert("readable", input, options);
       url = await toFileURL(readable);
     } else if (type === "blob") {
-      const blob = await C().of("blob").convert(input, options);
+      const blob = await C().convert("blob", input, options);
       url = URL.createObjectURL(blob);
     } else {
-      const base64 = await C().of("base64").convert(input, options);
+      const base64 = await C().convert("base64", input, options);
       url = "data:application/octet-stream;base64," + base64;
     }
     return url;
@@ -93,36 +92,19 @@ export class URLConverter extends AbstractConverter<string> {
 
   protected async _merge(urls: string[], options: Options): Promise<string> {
     if (isNode) {
-      const converter = C().of("readable");
-      const readables: Readable[] = [];
-      for (const url of urls) {
-        const readable = await converter.convert(url);
-        readables.push(readable);
-      }
-      const merged = await converter.merge(readables, options);
+      const merged = await C().merge("readable", urls, options);
       return (await this._convert(merged, {
         ...options,
         dstURLType: "file",
       })) as string;
     } else if (isBrowser) {
-      const converter = C().of("readablestream");
-      const readables: ReadableStream<Uint8Array>[] = [];
-      for (const url of urls) {
-        const readable = await converter.convert(url, options);
-        readables.push(readable);
-      }
-      const merged = await converter.merge(readables, options);
+      const merged = await C().merge("readablestream", urls, options);
       return (await this._convert(merged, {
         ...options,
         dstURLType: "blob",
       })) as string;
     } else {
-      const buffers: ArrayBuffer[] = [];
-      for (const url of urls) {
-        const buffer = await this.toArrayBuffer(url, options);
-        buffers.push(buffer);
-      }
-      const merged = await C().of("arraybuffer").merge(buffers, options);
+      const merged = await C().merge("arraybuffer", urls, options);
       return (await this._convert(merged, {
         ...options,
         dstURLType: "data",

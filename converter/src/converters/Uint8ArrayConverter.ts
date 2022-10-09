@@ -19,7 +19,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is Uint8Array {
-    if (C().of("buffer").is(input, options)) {
+    if (C().is("buffer", input, options)) {
       return true;
     }
     return input instanceof Uint8Array;
@@ -29,7 +29,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array | undefined> {
-    const converter = C().converter(input, options);
+    const converter = C().find(input, options);
     return await converter.toUint8Array(input, options);
   }
 

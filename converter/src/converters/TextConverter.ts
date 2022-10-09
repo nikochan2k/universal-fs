@@ -25,7 +25,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    const converter = C().converter(input, options);
+    const converter = C().find(input, options);
     return await converter.toText(input, options);
   }
 

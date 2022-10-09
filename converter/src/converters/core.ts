@@ -68,7 +68,7 @@ export interface AnyConv {
     input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>>;
-  converter(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
+  find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
   empty<T extends Data>(input: T): T;
   emptyOf<T extends DataType>(type: T): ReturnData<T>;
   is<T extends DataType>(

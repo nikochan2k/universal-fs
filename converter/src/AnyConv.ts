@@ -46,10 +46,7 @@ class DefaultAnyConv implements AnyConv {
     return await converter.convert(input, options);
   }
 
-  public converter(
-    input: Data,
-    options?: Partial<ConvertOptions>
-  ): Converter<Data> {
+  public find(input: Data, options?: Partial<ConvertOptions>): Converter<Data> {
     for (const converter of this.converters.values()) {
       if (converter.is(input, options)) {
         return converter;
@@ -66,7 +63,7 @@ class DefaultAnyConv implements AnyConv {
     if (typeof input === "string") {
       return "" as T;
     }
-    const converter = this.converter(input);
+    const converter = this.find(input);
     return converter.empty() as T;
   }
 
@@ -129,7 +126,7 @@ class DefaultAnyConv implements AnyConv {
   }
 
   public async size(input: Data, options?: Partial<Options>): Promise<number> {
-    const converter = this.converter(input, options);
+    const converter = this.find(input, options);
     return await converter.size(input, options);
   }
 
@@ -149,7 +146,7 @@ class DefaultAnyConv implements AnyConv {
       return Promise.resolve(this.empty(input));
     }
 
-    const converter = this.converter(input, options);
+    const converter = this.find(input, options);
     if (converter) {
       return await converter.convert(input, options);
     }
