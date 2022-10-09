@@ -8,7 +8,7 @@ import {
   EMPTY_ARRAY_BUFFER,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./AbstractConverter";
 import { isNode } from "./NodeUtil";
 import { getTextHelper } from "./Util";
 

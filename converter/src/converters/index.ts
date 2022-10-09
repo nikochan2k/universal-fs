@@ -1,2 +1,2 @@
-export * from "./core";
+export * from "./AbstractConverter";
 export * from "./NodeUtil";

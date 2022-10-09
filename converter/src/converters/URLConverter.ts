@@ -8,7 +8,7 @@ import {
   deleteStartLength,
   getStartEnd,
   Options,
-} from "./core";
+} from "./AbstractConverter";
 import {
   fileURLToReadable,
   getFileSize,

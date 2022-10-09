@@ -8,7 +8,7 @@ import {
   EMPTY_UINT8_ARRAY,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./AbstractConverter";
 import { isNode } from "./NodeUtil";
 import { getTextHelper } from "./Util";
 

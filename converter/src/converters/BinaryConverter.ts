@@ -7,7 +7,7 @@ import {
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./AbstractConverter";
 import {
   handleFileReader,
   hasReadAsBinaryStringOnBlob,

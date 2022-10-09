@@ -7,7 +7,7 @@ import {
   DataType,
   EMPTY_UINT8_ARRAY,
   getStartEnd,
-} from "./core";
+} from "./AbstractConverter";
 import {
   closeStream,
   fileURLToReadable,

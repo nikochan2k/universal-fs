@@ -9,7 +9,7 @@ import {
   getStartEnd,
   hasNoStartLength,
   Options,
-} from "./core";
+} from "./AbstractConverter";
 import { isBrowser, isNode } from "./NodeUtil";
 import { getTextHelper } from "./Util";
 

@@ -6,7 +6,7 @@ import {
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./AbstractConverter";
 import { EMPTY_BUFFER, hasBuffer } from "./NodeUtil";
 import { getTextHelper } from "./Util";
 

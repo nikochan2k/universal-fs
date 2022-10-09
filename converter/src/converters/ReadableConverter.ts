@@ -7,7 +7,7 @@ import {
   DataType,
   deleteStartLength,
   getStartEnd,
-} from "./core";
+} from "./AbstractConverter";
 import {
   EMPTY_BUFFER,
   fileURLToReadable,

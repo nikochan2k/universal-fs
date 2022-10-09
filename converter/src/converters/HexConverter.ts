@@ -7,7 +7,7 @@ import {
   deleteStartLength,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./AbstractConverter";
 import { isNode } from "./NodeUtil";
 import { getTextHelper } from "./Util";
 

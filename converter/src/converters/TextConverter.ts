@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
   Options,
-} from "./core";
+} from "./AbstractConverter";
 import { getTextHelper } from "./Util";
 
 export class TextConverter extends AbstractConverter<string> {

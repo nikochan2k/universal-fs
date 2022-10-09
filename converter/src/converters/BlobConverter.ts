@@ -6,7 +6,7 @@ import {
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./AbstractConverter";
 import {
   EMPTY_BLOB,
   handleFileReader,

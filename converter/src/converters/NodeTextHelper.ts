@@ -1,5 +1,5 @@
 import { DEFAULT_CONVERTER } from "../AnyConv";
-import { ConvertOptions } from "./core";
+import { ConvertOptions } from "./AbstractConverter";
 import { TextHelper } from "./TextHelper";
 
 class NodeTextHelper extends TextHelper {
