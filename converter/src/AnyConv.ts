@@ -5,6 +5,7 @@ import { Base64Converter } from "./converters/Base64Converter";
 import { BinaryConverter } from "./converters/BinaryConverter";
 import {
   AnyConv,
+  AnyConvInternal,
   Converter,
   ConvertOptions,
   Data,
@@ -30,7 +31,7 @@ import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
 
-class DefaultAnyConv implements AnyConv {
+class DefaultAnyConv implements AnyConvInternal {
   constructor(private converters: Map<DataType, Converter<Data>>) {}
 
   public _empty<T extends Data>(input: T): T {
@@ -171,8 +172,8 @@ class DefaultAnyConv implements AnyConv {
 }
 
 export const getAnyConv = async () => {
-  if (AbstractConverter.C) {
-    return AbstractConverter.C;
+  if (AbstractConverter._ANY_CONV) {
+    return AbstractConverter._ANY_CONV;
   }
 
   const converters = new Map<DataType, Converter<Data>>();
@@ -215,6 +216,6 @@ export const getAnyConv = async () => {
   }
 
   const anyConv = new DefaultAnyConv(converters);
-  AbstractConverter.C = anyConv;
-  return AbstractConverter.C;
+  AbstractConverter._ANY_CONV = anyConv;
+  return AbstractConverter._ANY_CONV as AnyConv;
 };

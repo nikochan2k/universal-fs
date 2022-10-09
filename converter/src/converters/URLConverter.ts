@@ -1,4 +1,4 @@
-import { AbstractConverter, C } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -45,13 +45,13 @@ export class URLConverter extends AbstractConverter<string> {
     let url: string;
     const type = options.dstURLType;
     if (type === "file" && toFileURL) {
-      const readable = await C().convert("readable", input, options);
+      const readable = await _().convert("readable", input, options);
       url = await toFileURL(readable);
     } else if (type === "blob") {
-      const blob = await C().convert("blob", input, options);
+      const blob = await _().convert("blob", input, options);
       url = URL.createObjectURL(blob);
     } else {
-      const base64 = await C().convert("base64", input, options);
+      const base64 = await _().convert("base64", input, options);
       url = "data:application/octet-stream;base64," + base64;
     }
     return url;
@@ -66,7 +66,7 @@ export class URLConverter extends AbstractConverter<string> {
       return blob.size;
     } else if (input.startsWith("data:")) {
       const base64 = dataUrlToBase64(input);
-      return await C()._of("base64").size(base64);
+      return await _()._of("base64").size(base64);
     } else {
       const resp = await fetch(input, { method: "HEAD" });
       const str = resp.headers.get("Content-Length");
@@ -92,19 +92,19 @@ export class URLConverter extends AbstractConverter<string> {
 
   protected async _merge(urls: string[], options: Options): Promise<string> {
     if (isNode) {
-      const merged = await C().merge("readable", urls, options);
+      const merged = await _().merge("readable", urls, options);
       return (await this._convert(merged, {
         ...options,
         dstURLType: "file",
       })) as string;
     } else if (isBrowser) {
-      const merged = await C().merge("readablestream", urls, options);
+      const merged = await _().merge("readablestream", urls, options);
       return (await this._convert(merged, {
         ...options,
         dstURLType: "blob",
       })) as string;
     } else {
-      const merged = await C().merge("arraybuffer", urls, options);
+      const merged = await _().merge("arraybuffer", urls, options);
       return (await this._convert(merged, {
         ...options,
         dstURLType: "data",
@@ -118,10 +118,10 @@ export class URLConverter extends AbstractConverter<string> {
   ): Promise<ArrayBuffer> {
     if (input.startsWith("file:") && fileURLToReadable) {
       const readable = await fileURLToReadable(input);
-      return await C()._of("readable").toArrayBuffer(readable, options);
+      return await _()._of("readable").toArrayBuffer(readable, options);
     } else {
       const resp = await fetch(input);
-      return await C()
+      return await _()
         ._of("readablestream")
         .toArrayBuffer(resp.body as ReadableStream<Uint8Array>, options);
     }
@@ -132,7 +132,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await C()._of("uint8array").toBase64(u8, deleteStartLength(options));
+    return await _()._of("uint8array").toBase64(u8, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -140,7 +140,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const ab = await this.toArrayBuffer(input, options);
-    return C()._of("text").convert(ab, deleteStartLength(options));
+    return _()._of("text").convert(ab, deleteStartLength(options));
   }
 
   protected async _toUint8Array(

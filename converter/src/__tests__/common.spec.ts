@@ -1,5 +1,5 @@
 import { getAnyConv } from "../AnyConv";
-import { AnyConv } from "../converters/core";
+import { AnyConvInternal } from "../converters/core";
 import {
   hasBlob,
   hasBuffer,
@@ -11,9 +11,9 @@ const head = "大谷翔平";
 const tail = "ホームラン";
 const expected = "大谷翔平ホームラン";
 
-let c: AnyConv;
+let c: AnyConvInternal;
 it("initialize", async () => {
-  c = await getAnyConv();
+  c = (await getAnyConv()) as AnyConvInternal;
 });
 
 it("arraybuffer", async () => {

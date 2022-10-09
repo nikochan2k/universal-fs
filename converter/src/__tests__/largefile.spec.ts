@@ -2,13 +2,13 @@ import { createWriteStream, rmSync, statSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { getAnyConv } from "../AnyConv";
-import { AnyConv } from "../converters/core";
+import { AnyConvInternal } from "../converters/core";
 
 const source = Buffer.alloc(1000 * 1024);
 
-let c: AnyConv;
+let c: AnyConvInternal;
 it("initialize", async () => {
-  c = await getAnyConv();
+  c = (await getAnyConv()) as AnyConvInternal;
 });
 
 it("readable to buffer", async () => {

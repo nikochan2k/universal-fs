@@ -1,5 +1,5 @@
 import {
-  AnyConv,
+  AnyConvInternal,
   Converter,
   ConvertOptions,
   Data,
@@ -13,14 +13,14 @@ import {
 } from "./core";
 import { hasBlob, isBrowser, isNode } from "./NodeUtil";
 
-export function C() {
-  return AbstractConverter.C;
+export function _() {
+  return AbstractConverter._ANY_CONV;
 }
 
 export abstract class AbstractConverter<T extends Data>
   implements Converter<T>
 {
-  public static C: AnyConv;
+  public static _ANY_CONV: AnyConvInternal;
 
   public abstract type: DataType;
 

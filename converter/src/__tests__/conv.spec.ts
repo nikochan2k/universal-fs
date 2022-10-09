@@ -1,5 +1,5 @@
 import { getAnyConv } from "../AnyConv";
-import { AnyConv } from "../converters/core";
+import { AnyConvInternal } from "../converters/core";
 import {
   hasBlob,
   hasBuffer,
@@ -7,9 +7,9 @@ import {
   isNode,
 } from "../converters/NodeUtil";
 
-let c: AnyConv;
+let c: AnyConvInternal;
 it("initialize", async () => {
-  c = await getAnyConv();
+  c = (await getAnyConv()) as AnyConvInternal;
 });
 
 it("arraybuffer", async () => {

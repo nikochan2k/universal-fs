@@ -1,5 +1,5 @@
 import { Duplex, PassThrough, Readable } from "stream";
-import { C, AbstractConverter } from "./AbstractConverter";
+import { _, AbstractConverter } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -90,7 +90,7 @@ class ReadableOfReadableStream extends Readable {
   private async setup() {
     const reader = this.stream.getReader();
     try {
-      const converter = C()._of("buffer");
+      const converter = _()._of("buffer");
       let iStart = 0;
       let done: boolean;
       do {
@@ -170,7 +170,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (C()._is("blob", input, options) && hasStreamOnBlob) {
+    if (_()._is("blob", input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream;
     }
 
@@ -178,12 +178,12 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (C()._is("readablestream", input, options)) {
+    if (_()._is("readablestream", input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }
 
-    const buffer = await C().convert("buffer", input, options);
+    const buffer = await _().convert("buffer", input, options);
     const duplex = new Duplex();
     duplex.push(buffer);
     duplex.push(null);
@@ -249,7 +249,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     options: ConvertOptions
   ): Promise<string> {
     const buffer = (await this.toUint8Array(input, options)) as Buffer;
-    return await C()._of("buffer").toBase64(buffer, deleteStartLength(options));
+    return await _()._of("buffer").toBase64(buffer, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -269,7 +269,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     const bufferSize = options.bufferSize;
 
     let index = 0;
-    const converter = C()._of("buffer");
+    const converter = _()._of("buffer");
     const chunks: Buffer[] = [];
     await handleReadable(input, async (chunk) => {
       const buffer = await converter.convert(chunk, { bufferSize });

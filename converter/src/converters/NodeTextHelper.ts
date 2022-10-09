@@ -1,4 +1,4 @@
-import { C } from "./AbstractConverter";
+import { _ } from "./AbstractConverter";
 import { ConvertOptions } from "./core";
 import { TextHelper } from "./TextHelper";
 
@@ -8,10 +8,10 @@ export class NodeTextHelper extends TextHelper {
     options: ConvertOptions
   ): Promise<string> {
     let buffer: Buffer;
-    if (C()._is("buffer", buf, options)) {
+    if (_()._is("buffer", buf, options)) {
       buffer = buf;
     } else {
-      buffer = await C().convert("buffer", buf);
+      buffer = await _().convert("buffer", buf);
     }
     const bufCharset = options.bufferToTextCharset;
     if (bufCharset === "utf8" || bufCharset === "utf16le") {

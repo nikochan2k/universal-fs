@@ -1,4 +1,4 @@
-import { AbstractConverter, C } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -41,7 +41,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    const u8 = await C().convert("uint8array", input, options);
+    const u8 = await _().convert("uint8array", input, options);
     return new Blob([u8]);
   }
 
@@ -118,7 +118,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
   ): Promise<Uint8Array> {
     if (hasArrayBufferOnBlob) {
       const ab = await input.arrayBuffer();
-      return await C()._of("arraybuffer").toUint8Array(ab, options);
+      return await _()._of("arraybuffer").toUint8Array(ab, options);
     }
 
     const startEnd = await this._getStartEnd(input, options);
@@ -143,7 +143,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
       return u8;
     }
 
-    const u8ac = C()._of("uint8array");
+    const u8ac = _()._of("uint8array");
     if (hasStreamOnBlob) {
       const readable = input.stream() as unknown as ReadableStream<Uint8Array>;
       const chunks: Uint8Array[] = [];

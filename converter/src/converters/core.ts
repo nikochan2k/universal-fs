@@ -63,22 +63,13 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : Data;
 
 export interface AnyConv {
-  _empty<T extends Data>(input: T): T;
-  _emptyOf<T extends DataType>(type: T): ReturnData<T>;
-  _find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
-  _is<T extends DataType>(
-    type: T,
-    input: unknown,
-    options?: Partial<ConvertOptions>
-  ): input is ReturnData<T>;
-  _of<T extends DataType>(type: T): Converter<ReturnData<T>>;
   convert<T extends DataType>(
     returnType: T,
     input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>>;
   merge<T extends DataType>(
-    to: T,
+    returnType: T,
     chunks: Data[],
     options?: Partial<Options>
   ): Promise<ReturnData<T>>;
@@ -89,6 +80,18 @@ export interface AnyConv {
   ): Promise<void>;
   size(input: Data, options?: Partial<Options>): Promise<number>;
   slice(input: Data, options: Partial<ConvertOptions>): Promise<Data>;
+}
+
+export interface AnyConvInternal extends AnyConv {
+  _empty<T extends Data>(input: T): T;
+  _emptyOf<T extends DataType>(type: T): ReturnData<T>;
+  _find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
+  _is<T extends DataType>(
+    type: T,
+    input: unknown,
+    options?: Partial<ConvertOptions>
+  ): input is ReturnData<T>;
+  _of<T extends DataType>(type: T): Converter<ReturnData<T>>;
 }
 
 export const DEFAULT_BUFFER_SIZE = 96 * 1024;
