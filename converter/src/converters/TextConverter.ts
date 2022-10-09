@@ -86,8 +86,7 @@ export class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const textHelper = await getTextHelper();
-    const u8 = await textHelper.textToBuffer(input, options);
-    return await C().of("uint8array").toUint8Array(u8, options);
+    return await textHelper.textToBuffer(input, options);
   }
 }
 
