@@ -27,7 +27,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     return EMPTY_BLOB;
   }
 
-  public is(input: unknown): input is Blob {
+  public match(input: unknown): input is Blob {
     return hasBlob && input instanceof Blob;
   }
 
@@ -35,7 +35,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     input: Data,
     options: ConvertOptions
   ): Promise<Blob | undefined> {
-    if (this.is(input)) {
+    if (this.match(input)) {
       if (hasNoStartLength(options)) {
         return input;
       }

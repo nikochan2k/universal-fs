@@ -151,7 +151,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     });
   }
 
-  public is(input: unknown): input is Readable {
+  public match(input: unknown): input is Readable {
     return isReadable(input);
   }
 
@@ -171,15 +171,15 @@ export class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (DEFAULT_CONVERTER.of("blob").is(input, options) && hasStreamOnBlob) {
+    if (DEFAULT_CONVERTER.of("blob").match(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream;
     }
 
-    if (this.is(input)) {
+    if (this.match(input)) {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (DEFAULT_CONVERTER.of("readablestream").is(input, options)) {
+    if (DEFAULT_CONVERTER.of("readablestream").match(input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }

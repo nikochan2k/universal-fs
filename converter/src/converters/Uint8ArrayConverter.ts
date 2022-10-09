@@ -18,8 +18,8 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return EMPTY_UINT8_ARRAY;
   }
 
-  public is(input: unknown, options: ConvertOptions): input is Uint8Array {
-    if (DEFAULT_CONVERTER.of("buffer").is(input, options)) {
+  public match(input: unknown, options: ConvertOptions): input is Uint8Array {
+    if (DEFAULT_CONVERTER.of("buffer").match(input, options)) {
       return true;
     }
     return input instanceof Uint8Array;

@@ -54,7 +54,7 @@ export class DefaultConverter {
   private initialized = false;
 
   constructor() {
-    this.initialize()
+    this._initialize()
       .then(() => {
         this.initialized = true;
       })
@@ -62,15 +62,15 @@ export class DefaultConverter {
   }
 
   public async convert<T extends DataType>(
-    to: T,
+    returnType: T,
     input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>> {
     if (options?.length === 0) {
-      return this.emptyOfType(to);
+      return this.emptyOf(returnType);
     }
 
-    const converter = this.of(to);
+    const converter = this.of(returnType);
     return await converter.convert(input, options);
   }
 
@@ -79,15 +79,11 @@ export class DefaultConverter {
       return "" as T;
     }
     const converter = this.getConverter(input);
-    if (converter) {
-      return converter.empty() as T;
-    }
-
-    throw new Error("Illegal input: " + getType(input));
+    return converter.empty() as T;
   }
 
-  public emptyOfType<T extends DataType>(type: T): ReturnData<T> {
-    const converter = this.of(type);
+  public emptyOf<T extends DataType>(returnType: T): ReturnData<T> {
+    const converter = this.of(returnType);
     return converter.empty();
   }
 
@@ -96,7 +92,7 @@ export class DefaultConverter {
     options?: Partial<ConvertOptions>
   ): Converter<Data> {
     for (const converter of this.converters.values()) {
-      if (converter.is(input, options)) {
+      if (converter.match(input, options)) {
         return converter;
       }
     }
@@ -105,14 +101,6 @@ export class DefaultConverter {
         options?.srcStringType // eslint-disable-line
       }`
     );
-  }
-
-  public of<T extends DataType>(type: T): Converter<ReturnData<T>> {
-    const converter = this.converters.get(type);
-    if (converter) {
-      return converter as Converter<ReturnData<T>>;
-    }
-    throw new Error(`No converter: type=${type}`);
   }
 
   public async getSize(
@@ -124,14 +112,21 @@ export class DefaultConverter {
   }
 
   public async merge<T extends DataType>(
-    chunks: Data[],
     to: T,
+    chunks: Data[],
     options?: Partial<Options>
   ): Promise<ReturnData<T>> {
     const results = await this._convertAll(to, chunks, options);
     const converter = this.of(to);
-    // eslint-disable-next-line
-    return await converter.merge(results as any[], options); // TODO
+    return await converter.merge(results, options);
+  }
+
+  public of<T extends DataType>(type: T): Converter<ReturnData<T>> {
+    const converter = this.converters.get(type);
+    if (converter) {
+      return converter as Converter<ReturnData<T>>;
+    }
+    throw new Error(`No converter: type=${type}`);
   }
 
   public async pipe(
@@ -183,18 +178,6 @@ export class DefaultConverter {
     throw new Error("Illegal output type: " + getType(input));
   }
 
-  public typeEquals<T extends DataType>(
-    type: T,
-    input: unknown,
-    options?: Partial<ConvertOptions>
-  ): input is ReturnData<T> {
-    const converter = this.converters.get(type);
-    if (!converter) {
-      return false;
-    }
-    return converter.is(input, options);
-  }
-
   protected async _convertAll<T extends DataType>(
     to: T,
     chunks: Data[],
@@ -208,7 +191,7 @@ export class DefaultConverter {
     return results;
   }
 
-  private async initialize() {
+  protected async _initialize() {
     if (this.initialized) {
       return;
     }

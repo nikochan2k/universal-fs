@@ -20,7 +20,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     return EMPTY_ARRAY_BUFFER;
   }
 
-  public is(input: unknown): input is ArrayBufferLike {
+  public match(input: unknown): input is ArrayBufferLike {
     return (
       (hasSharedArrayBuffer && input instanceof SharedArrayBuffer) ||
       input instanceof ArrayBuffer

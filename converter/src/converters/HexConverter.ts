@@ -49,7 +49,7 @@ export class HexConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public is(input: unknown, options: ConvertOptions): input is string {
+  public match(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "hex";
   }
 

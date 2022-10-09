@@ -9,7 +9,7 @@ it("arraybuffer", async () => {
   const chunk1 = await c.of("arraybuffer").convert(head);
   const chunk2 = await c.of("arraybuffer").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text");
+  const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);
 });
 
@@ -17,7 +17,7 @@ it("uint8array", async () => {
   const chunk1 = await c.of("uint8array").convert(head);
   const chunk2 = await c.of("uint8array").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text");
+  const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);
 });
 
@@ -29,7 +29,7 @@ it("buffer", async () => {
   const chunk1 = await c.of("buffer").convert(head);
   const chunk2 = await c.of("buffer").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text");
+  const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);
 });
 
@@ -41,7 +41,7 @@ it("blob", async () => {
   const chunk1 = await c.of("blob").convert(head);
   const chunk2 = await c.of("blob").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text");
+  const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);
 });
 
@@ -49,7 +49,7 @@ it("base64", async () => {
   const chunk1 = await c.of("base64").convert(head);
   const chunk2 = await c.of("base64").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text", { srcStringType: "base64" });
+  const merged = await c.merge("text", chunks, { srcStringType: "base64" });
   expect(expected).toBe(merged);
 });
 
@@ -57,7 +57,7 @@ it("binary", async () => {
   const chunk1 = await c.of("binary").convert(head);
   const chunk2 = await c.of("binary").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text", { srcStringType: "binary" });
+  const merged = await c.merge("text", chunks, { srcStringType: "binary" });
   expect(expected).toBe(merged);
 });
 
@@ -69,7 +69,7 @@ it("readable", async () => {
   const chunk1 = await c.of("readable").convert(head);
   const chunk2 = await c.of("readable").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text");
+  const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);
 });
 
@@ -81,6 +81,6 @@ it("readablestream", async () => {
   const chunk1 = await c.of("readablestream").convert(head);
   const chunk2 = await c.of("readablestream").convert(tail);
   const chunks = [chunk1, chunk2];
-  const merged = await c.merge(chunks, "text");
+  const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);
 });

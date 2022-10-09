@@ -22,7 +22,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public is(input: unknown, options: ConvertOptions): input is string {
+  public match(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "binary";
   }
 
@@ -39,7 +39,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     }
 
     if (
-      DEFAULT_CONVERTER.of("blob").is(input, options) &&
+      DEFAULT_CONVERTER.of("blob").match(input, options) &&
       hasReadAsBinaryStringOnBlob
     ) {
       const startEnd = getStartEnd(options, input.size);

@@ -16,7 +16,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     return EMPTY_BUFFER;
   }
 
-  public is(input: unknown): input is Buffer {
+  public match(input: unknown): input is Buffer {
     return hasBuffer && input instanceof Buffer;
   }
 
@@ -24,7 +24,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     input: Data,
     options: ConvertOptions
   ): Promise<Buffer | undefined> {
-    if (this.is(input)) {
+    if (this.match(input)) {
       return await (this.toUint8Array(input, options) as Promise<Buffer>);
     }
 

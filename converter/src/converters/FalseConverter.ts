@@ -22,6 +22,10 @@ export class FalseConverter implements Converter<any> {
     throw new Error("Method not implemented.");
   }
 
+  public match(_: unknown): _ is any {
+    return false;
+  }
+
   public merge(): Promise<any> {
     throw new Error("merge method not implemented: " + this.key);
   }
@@ -40,9 +44,5 @@ export class FalseConverter implements Converter<any> {
 
   public toUint8Array(): Promise<Uint8Array> {
     throw new Error("toUint8Array method not implemented: " + this.key);
-  }
-
-  public is(_: unknown): _ is any {
-    return false;
   }
 }

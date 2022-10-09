@@ -8,7 +8,7 @@ class NodeTextHelper extends TextHelper {
     options: ConvertOptions
   ): Promise<string> {
     let buffer: Buffer;
-    if (DEFAULT_CONVERTER.of("buffer").is(buf, options)) {
+    if (DEFAULT_CONVERTER.of("buffer").match(buf, options)) {
       buffer = buf;
     } else {
       buffer = await DEFAULT_CONVERTER.of("buffer").convert(buf);
