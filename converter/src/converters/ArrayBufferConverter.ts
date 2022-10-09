@@ -1,16 +1,16 @@
 import { encode } from "base64-arraybuffer";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   EMPTY_ARRAY_BUFFER,
   getStartEnd,
   hasNoStartLength,
-} from "./AbstractConverter";
+} from "./core";
 import { isNode } from "./NodeUtil";
-import { getTextHelper } from "./Util";
+import { getTextHelper } from "./StringUtil";
 
 const hasSharedArrayBuffer = typeof SharedArrayBuffer === "function";
 

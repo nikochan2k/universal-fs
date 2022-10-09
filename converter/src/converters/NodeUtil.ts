@@ -3,7 +3,7 @@ import type { tmpdir } from "os";
 import type { join } from "path";
 import type { Readable, Writable } from "stream";
 import type { fileURLToPath, pathToFileURL } from "url";
-import { Data } from "./AbstractConverter";
+import { Data } from "./core";
 
 let _Writable: typeof Writable | undefined;
 let _fileURLToPath: typeof fileURLToPath | undefined;

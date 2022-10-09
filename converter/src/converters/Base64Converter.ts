@@ -1,7 +1,7 @@
 import { decode } from "base64-arraybuffer";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
@@ -9,9 +9,9 @@ import {
   getStartEnd,
   hasNoStartLength,
   Options,
-} from "./AbstractConverter";
+} from "./core";
 import { isBrowser, isNode } from "./NodeUtil";
-import { getTextHelper } from "./Util";
+import { getTextHelper } from "./StringUtil";
 
 export class Base64Converter extends AbstractConverter<string> {
   public type: DataType = "base64";

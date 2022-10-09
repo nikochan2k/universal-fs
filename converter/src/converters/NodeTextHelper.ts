@@ -1,8 +1,8 @@
 import { DEFAULT_CONVERTER } from "../AnyConv";
-import { ConvertOptions } from "./AbstractConverter";
+import { ConvertOptions } from "./core";
 import { TextHelper } from "./TextHelper";
 
-class NodeTextHelper extends TextHelper {
+export class NodeTextHelper extends TextHelper {
   public override async bufferToText(
     buf: Uint8Array,
     options: ConvertOptions
@@ -31,5 +31,3 @@ class NodeTextHelper extends TextHelper {
     return await super.textToBuffer(text, options);
   }
 }
-
-export const NODE_TEXT_HELPER = new NodeTextHelper();

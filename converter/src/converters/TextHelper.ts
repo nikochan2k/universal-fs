@@ -4,7 +4,7 @@ import type {
   ConvertStringOptions,
 } from "encoding-japanese";
 import "fast-text-encoding";
-import { ConvertOptions } from "./AbstractConverter";
+import { ConvertOptions } from "./core";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -95,5 +95,3 @@ export class TextHelper {
     return ab;
   }
 }
-
-export const TEXT_HELPER = new TextHelper();

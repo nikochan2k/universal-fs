@@ -1,16 +1,16 @@
 import { encode } from "base64-arraybuffer";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   EMPTY_UINT8_ARRAY,
   getStartEnd,
   hasNoStartLength,
-} from "./AbstractConverter";
+} from "./core";
 import { isNode } from "./NodeUtil";
-import { getTextHelper } from "./Util";
+import { getTextHelper } from "./StringUtil";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   public type: DataType = "uint8array";

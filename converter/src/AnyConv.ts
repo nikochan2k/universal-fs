@@ -1,29 +1,31 @@
 import type { Readable, Writable } from "stream";
+import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
+import { Base64Converter } from "./converters/Base64Converter";
+import { BinaryConverter } from "./converters/BinaryConverter";
 import {
-  closeStream,
   Converter,
   ConvertOptions,
   Data,
   DataType,
+  getType,
+  isEmpty,
+  Options,
+} from "./converters/core";
+import { FalseConverter } from "./converters/FalseConverter";
+import { HexConverter } from "./converters/HexConverter";
+import {
+  closeStream,
   hasBlob,
   hasBuffer,
   hasReadableStream,
-  isEmpty,
   isWritable,
   isWritableStream,
-  Options,
   pipeNodeStream,
   pipeWebStream,
-} from "./converters";
-import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
-import { Base64Converter } from "./converters/Base64Converter";
-import { BinaryConverter } from "./converters/BinaryConverter";
-import { FalseConverter } from "./converters/FalseConverter";
-import { HexConverter } from "./converters/HexConverter";
+} from "./converters/NodeUtil";
 import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
-import { getType } from "./converters/Util";
 
 export type ReturnData<T extends DataType> = T extends "arraybuffer"
   ? ArrayBuffer

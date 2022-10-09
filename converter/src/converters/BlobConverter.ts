@@ -1,12 +1,12 @@
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./AbstractConverter";
+} from "./core";
 import {
   EMPTY_BLOB,
   handleFileReader,
@@ -17,7 +17,7 @@ import {
   hasStreamOnBlob,
   hasTextOnBlob,
 } from "./NodeUtil";
-import { dataUrlToBase64, getTextHelper } from "./Util";
+import { dataUrlToBase64, getTextHelper } from "./StringUtil";
 
 export class BlobConverter extends AbstractConverter<Blob> {
   public type: DataType = "blob";

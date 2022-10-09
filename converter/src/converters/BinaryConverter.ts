@@ -1,19 +1,19 @@
 import { encode } from "base64-arraybuffer";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./AbstractConverter";
+} from "./core";
 import {
   handleFileReader,
   hasReadAsBinaryStringOnBlob,
   isNode,
 } from "./NodeUtil";
-import { getTextHelper } from "./Util";
+import { getTextHelper } from "./StringUtil";
 
 export class BinaryConverter extends AbstractConverter<string> {
   public type: DataType = "binary";

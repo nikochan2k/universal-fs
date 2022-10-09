@@ -1,14 +1,14 @@
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./AbstractConverter";
+} from "./core";
 import { EMPTY_BUFFER, hasBuffer } from "./NodeUtil";
-import { getTextHelper } from "./Util";
+import { getTextHelper } from "./StringUtil";
 
 export class BufferConverter extends AbstractConverter<Buffer> {
   public type: DataType = "buffer";

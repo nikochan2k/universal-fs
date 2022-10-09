@@ -1,13 +1,13 @@
 import { Duplex, PassThrough, Readable } from "stream";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   deleteStartLength,
   getStartEnd,
-} from "./AbstractConverter";
+} from "./core";
 import {
   EMPTY_BUFFER,
   fileURLToReadable,
@@ -16,7 +16,7 @@ import {
   isNode,
   isReadable,
 } from "./NodeUtil";
-import { getTextHelper } from "./Util";
+import { getTextHelper } from "./StringUtil";
 
 export class PartialReadable extends Readable {
   constructor(

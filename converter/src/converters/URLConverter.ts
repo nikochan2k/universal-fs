@@ -1,14 +1,14 @@
 import type { Readable } from "stream";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   deleteStartLength,
   getStartEnd,
   Options,
-} from "./AbstractConverter";
+} from "./core";
 import {
   fileURLToReadable,
   getFileSize,
@@ -16,7 +16,7 @@ import {
   isNode,
   toFileURL,
 } from "./NodeUtil";
-import { dataUrlToBase64 } from "./Util";
+import { dataUrlToBase64 } from "./StringUtil";
 
 export class URLConverter extends AbstractConverter<string> {
   public type: DataType = "url";

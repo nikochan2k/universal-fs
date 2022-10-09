@@ -1,6 +1,6 @@
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
@@ -8,8 +8,8 @@ import {
   getStartEnd,
   hasNoStartLength,
   Options,
-} from "./AbstractConverter";
-import { getTextHelper } from "./Util";
+} from "./core";
+import { getTextHelper } from "./StringUtil";
 
 export class TextConverter extends AbstractConverter<string> {
   public type: DataType = "text";

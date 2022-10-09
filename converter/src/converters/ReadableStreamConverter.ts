@@ -1,13 +1,13 @@
 import type { Readable } from "stream";
 import { DEFAULT_CONVERTER } from "../AnyConv";
+import { AbstractConverter } from "./AbstractConverter";
 import {
-  AbstractConverter,
   ConvertOptions,
   Data,
   DataType,
   EMPTY_UINT8_ARRAY,
   getStartEnd,
-} from "./AbstractConverter";
+} from "./core";
 import {
   closeStream,
   fileURLToReadable,
