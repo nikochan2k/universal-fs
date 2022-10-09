@@ -6,19 +6,19 @@ import { DEFAULT_CONVERTER as c } from "../converver";
 const source = Buffer.alloc(1000 * 1024);
 
 it("readable to buffer", async () => {
-  const readable = await c.convert(source, "readable");
-  const buffer = await c.convert(readable, "buffer");
+  const readable = await c.convert("readable", source);
+  const buffer = await c.convert("buffer", readable);
   expect(source.byteLength).toBe(buffer.byteLength);
 });
 
 it("readable to uint8array", async () => {
-  const readable = await c.convert(source, "readable");
-  const buffer = await c.convert(readable, "uint8array");
+  const readable = await c.convert("readable", source);
+  const buffer = await c.convert("uint8array", readable);
   expect(source.byteLength).toBe(buffer.byteLength);
 });
 
 it("pipe readable", async () => {
-  const readable = await c.convert(source, "readable");
+  const readable = await c.convert("readable", source);
   const outPath = join(tmpdir(), `univ-fs-${Date.now()}.jpg`);
   const writable = createWriteStream(outPath);
   await c.pipe(readable, writable);

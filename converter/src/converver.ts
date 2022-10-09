@@ -62,8 +62,8 @@ export class DefaultConverter {
   }
 
   public async convert<T extends DataType>(
-    input: Data,
     to: T,
+    input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>> {
     if (options?.length === 0) {
@@ -120,11 +120,7 @@ export class DefaultConverter {
     options?: Partial<Options>
   ): Promise<number> {
     const converter = this.getConverter(input, options);
-    if (converter) {
-      return await converter.getSize(input, options);
-    }
-
-    throw new Error("Illegal input: " + getType(input));
+    return await converter.getSize(input, options);
   }
 
   public async merge<T extends DataType>(
@@ -132,7 +128,10 @@ export class DefaultConverter {
     to: T,
     options?: Partial<Options>
   ): Promise<ReturnData<T>> {
-    return await this._merge(chunks, to, options);
+    const results = await this._convertAll(to, chunks, options);
+    const converter = this.of(to);
+    // eslint-disable-next-line
+    return await converter.merge(results as any[], options); // TODO
   }
 
   public async pipe(
@@ -141,7 +140,7 @@ export class DefaultConverter {
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
-      const readable = await this.toReadable(input, options);
+      const readable = await this.of("readable").convert(input, options);
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
@@ -150,7 +149,7 @@ export class DefaultConverter {
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<Uint8Array>;
       try {
-        stream = await this.toReadableStream(input, options);
+        stream = await this.of("readablestream").convert(input, options);
         await pipeWebStream(stream, output);
         closeStream(output);
       } catch (e) {
@@ -184,127 +183,6 @@ export class DefaultConverter {
     throw new Error("Illegal output type: " + getType(input));
   }
 
-  public async toArrayBuffer(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<ArrayBuffer> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "arraybuffer", options);
-    } else {
-      return await this.convert(input, "arraybuffer", options);
-    }
-  }
-
-  public async toBase64(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<string> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "base64", options);
-    } else {
-      return await this.convert(input, "base64", options);
-    }
-  }
-
-  public async toBinary(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<string> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "binary", options);
-    } else {
-      return await this.convert(input, "binary", options);
-    }
-  }
-
-  public async toBlob(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<Blob> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "blob", options);
-    } else {
-      return await this.convert(input, "blob", options);
-    }
-  }
-
-  public async toBuffer(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<Buffer> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "buffer", options);
-    } else {
-      return await this.convert(input, "buffer", options);
-    }
-  }
-
-  public async toHex(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<string> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "hex", options);
-    } else {
-      return await this.convert(input, "hex", options);
-    }
-  }
-
-  public async toReadable(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<Readable> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "readable", options);
-    } else {
-      return await this.convert(input, "readable", options);
-    }
-  }
-
-  public async toReadableStream(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<ReadableStream<Uint8Array>> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "readablestream", options);
-    } else {
-      return await this.convert(input, "readablestream", options);
-    }
-  }
-
-  public async toText(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<string> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "text", options);
-    } else {
-      return await this.convert(input, "text", options);
-    }
-  }
-
-  public async toURL(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<string> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "url", options);
-    } else {
-      return await this.convert(input, "url", options);
-    }
-  }
-
-  public async toUint8Array(
-    input: Data | Data[],
-    options?: Partial<ConvertOptions>
-  ): Promise<Uint8Array> {
-    if (Array.isArray(input)) {
-      return await this.merge(input, "uint8array", options);
-    } else {
-      return await this.convert(input, "uint8array", options);
-    }
-  }
-
   public typeEquals<T extends DataType>(
     type: T,
     input: unknown,
@@ -318,27 +196,16 @@ export class DefaultConverter {
   }
 
   protected async _convertAll<T extends DataType>(
-    chunks: Data[],
     to: T,
+    chunks: Data[],
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>[]> {
     const results: ReturnData<T>[] = [];
     for (const chunk of chunks) {
-      const converted = await this.convert(chunk, to, options);
+      const converted = await this.convert(to, chunk, options);
       results.push(converted);
     }
     return results;
-  }
-
-  protected async _merge<T extends DataType>(
-    chunks: Data[],
-    to: T,
-    options?: Partial<Options>
-  ) {
-    const results = await this._convertAll(chunks, to, options);
-    const converter = this.of(to);
-    // eslint-disable-next-line
-    return await converter.merge(results as any[], options); // TODO
   }
 
   private async initialize() {
