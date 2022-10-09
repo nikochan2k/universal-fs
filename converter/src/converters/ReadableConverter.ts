@@ -1,10 +1,5 @@
 import { Duplex, PassThrough, Readable } from "stream";
-import {
-  blobConverter,
-  bufferConverter,
-  getTextHelper,
-  readableStreamConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -16,6 +11,7 @@ import {
 import {
   EMPTY_BUFFER,
   fileURLToReadable,
+  getTextHelper,
   handleReadable,
   hasStreamOnBlob,
   isNode,
@@ -95,7 +91,7 @@ class ReadableOfReadableStream extends Readable {
   private async setup() {
     const reader = this.stream.getReader();
     try {
-      const converter = bufferConverter();
+      const converter = DEFAULT_CONVERTER.of("buffer");
       let iStart = 0;
       let done: boolean;
       do {
@@ -143,7 +139,7 @@ class ReadableOfReadableStream extends Readable {
   }
 }
 
-class ReadableConverter extends AbstractConverter<Readable> {
+export class ReadableConverter extends AbstractConverter<Readable> {
   public type: DataType = "readable";
 
   public empty(): Readable {
@@ -175,7 +171,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (blobConverter().is(input, options) && hasStreamOnBlob) {
+    if (DEFAULT_CONVERTER.of("blob").is(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream;
     }
 
@@ -183,12 +179,12 @@ class ReadableConverter extends AbstractConverter<Readable> {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (readableStreamConverter().is(input, options)) {
+    if (DEFAULT_CONVERTER.of("readablestream").is(input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }
 
-    const buffer = await bufferConverter().convert(input, options);
+    const buffer = await DEFAULT_CONVERTER.of("buffer").convert(input, options);
     const duplex = new Duplex();
     duplex.push(buffer);
     duplex.push(null);
@@ -254,7 +250,10 @@ class ReadableConverter extends AbstractConverter<Readable> {
     options: ConvertOptions
   ): Promise<string> {
     const buffer = (await this.toUint8Array(input, options)) as Buffer;
-    return await bufferConverter().toBase64(buffer, deleteStartLength(options));
+    return await DEFAULT_CONVERTER.of("buffer").toBase64(
+      buffer,
+      deleteStartLength(options)
+    );
   }
 
   protected async _toText(
@@ -274,7 +273,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
     const bufferSize = options.bufferSize;
 
     let index = 0;
-    const converter = bufferConverter();
+    const converter = DEFAULT_CONVERTER.of("buffer");
     const chunks: Buffer[] = [];
     await handleReadable(input, async (chunk) => {
       const buffer = await converter.convert(chunk, { bufferSize });

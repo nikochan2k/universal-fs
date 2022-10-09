@@ -1,6 +1,5 @@
 import { encode } from "base64-arraybuffer";
 import { DEFAULT_CONVERTER } from "../converver";
-import { getTextHelper } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -10,9 +9,9 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isNode } from "./util";
+import { getTextHelper, isNode } from "./util";
 
-class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
+export class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
   public type: DataType = "arraybuffer";
 
   public empty(): ArrayBuffer {

@@ -1,5 +1,4 @@
 import { DEFAULT_CONVERTER } from "../converver";
-import { getTextHelper, uint8ArrayConverter } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -10,8 +9,9 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
+import { getTextHelper } from "./util";
 
-class TextConverter extends AbstractConverter<string> {
+export class TextConverter extends AbstractConverter<string> {
   public type: DataType = "text";
 
   public empty(): string {
@@ -64,7 +64,10 @@ class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await uint8ArrayConverter().toBase64(u8, deleteStartLength(options));
+    return await DEFAULT_CONVERTER.of("uint8array").toBase64(
+      u8,
+      deleteStartLength(options)
+    );
   }
 
   protected async _toText(
@@ -88,7 +91,7 @@ class TextConverter extends AbstractConverter<string> {
   ): Promise<Uint8Array> {
     const textHelper = await getTextHelper();
     const u8 = await textHelper.textToBuffer(input, options);
-    return await uint8ArrayConverter().toUint8Array(u8, options);
+    return await DEFAULT_CONVERTER.of("uint8array").toUint8Array(u8, options);
   }
 }
 

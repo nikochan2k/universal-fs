@@ -1,10 +1,5 @@
 import type { Readable } from "stream";
-import {
-  blobConverter,
-  bufferConverter,
-  readableConverter,
-  uint8ArrayConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -96,7 +91,7 @@ function createReadableStreamOfReader(
   const start = startEnd.start;
   const end = startEnd.end ?? Number.MAX_SAFE_INTEGER;
   const bufferSize = options.bufferSize;
-  const converter = uint8ArrayConverter();
+  const converter = DEFAULT_CONVERTER.of("uint8array");
   let iStart = 0;
   return new ReadableStream({
     start: async (controller) => {
@@ -138,7 +133,7 @@ function createReadableStreamOfReader(
   });
 }
 
-class ReadableStreamConverter extends AbstractConverter<
+export class ReadableStreamConverter extends AbstractConverter<
   ReadableStream<Uint8Array>
 > {
   public type: DataType = "readablestream";
@@ -163,7 +158,7 @@ class ReadableStreamConverter extends AbstractConverter<
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
-        if (readableConverter().is(resp.body, options)) {
+        if (DEFAULT_CONVERTER.of("readable").is(resp.body, options)) {
           input = resp.body as unknown as Readable;
         } else {
           input = resp.body as ReadableStream<Uint8Array>;
@@ -172,16 +167,16 @@ class ReadableStreamConverter extends AbstractConverter<
         input = await fileURLToReadable(input);
       }
     }
-    if (blobConverter().is(input, options) && hasStreamOnBlob) {
+    if (DEFAULT_CONVERTER.of("blob").is(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
-    if (readableConverter().is(input, options)) {
+    if (DEFAULT_CONVERTER.of("readable").is(input, options)) {
       return createReadableStreamOfReader(input, options);
     }
 
     if (!this.is(input) && hasStreamOnBlob) {
-      const blob = await blobConverter().convert(input, options);
+      const blob = await DEFAULT_CONVERTER.of("blob").convert(input, options);
       input = blob.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
@@ -192,7 +187,7 @@ class ReadableStreamConverter extends AbstractConverter<
       );
     }
 
-    const u8 = await uint8ArrayConverter().convert(input, options);
+    const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, options);
     const { start, end } = getStartEnd(options, u8.byteLength);
     return createReadableStream(u8.slice(start, end));
   }
@@ -262,14 +257,20 @@ class ReadableStreamConverter extends AbstractConverter<
   ): Promise<string> {
     const bufferSize = options.bufferSize;
     if (isBrowser) {
-      const blob = await blobConverter().convert(input, { bufferSize });
-      return await blobConverter().toBase64(blob, options);
+      const blob = await DEFAULT_CONVERTER.of("blob").convert(input, {
+        bufferSize,
+      });
+      return await DEFAULT_CONVERTER.of("blob").toBase64(blob, options);
     } else if (isNode) {
-      const buffer = await bufferConverter().convert(input, { bufferSize });
-      return await bufferConverter().toBase64(buffer, options);
+      const buffer = await DEFAULT_CONVERTER.of("buffer").convert(input, {
+        bufferSize,
+      });
+      return await DEFAULT_CONVERTER.of("buffer").toBase64(buffer, options);
     } else {
-      const u8 = await uint8ArrayConverter().convert(input, { bufferSize });
-      return await uint8ArrayConverter().toBase64(u8, options);
+      const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, {
+        bufferSize,
+      });
+      return await DEFAULT_CONVERTER.of("uint8array").toBase64(u8, options);
     }
   }
 
@@ -279,14 +280,20 @@ class ReadableStreamConverter extends AbstractConverter<
   ): Promise<string> {
     const bufferSize = options.bufferSize;
     if (isBrowser) {
-      const blob = await blobConverter().convert(input, { bufferSize });
-      return await blobConverter().toText(blob, options);
+      const blob = await DEFAULT_CONVERTER.of("blob").convert(input, {
+        bufferSize,
+      });
+      return await DEFAULT_CONVERTER.of("blob").toText(blob, options);
     } else if (isNode) {
-      const buffer = await bufferConverter().convert(input, { bufferSize });
-      return await bufferConverter().toText(buffer, options);
+      const buffer = await DEFAULT_CONVERTER.of("buffer").convert(input, {
+        bufferSize,
+      });
+      return await DEFAULT_CONVERTER.of("buffer").toText(buffer, options);
     } else {
-      const u8 = await uint8ArrayConverter().convert(input, { bufferSize });
-      return await uint8ArrayConverter().toText(u8, options);
+      const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, {
+        bufferSize,
+      });
+      return await DEFAULT_CONVERTER.of("uint8array").toText(u8, options);
     }
   }
 
@@ -299,7 +306,7 @@ class ReadableStreamConverter extends AbstractConverter<
       chunks.push(chunk);
       return Promise.resolve(true);
     });
-    const converter = uint8ArrayConverter();
+    const converter = DEFAULT_CONVERTER.of("uint8array");
     return await converter.merge(chunks, options);
   }
 }

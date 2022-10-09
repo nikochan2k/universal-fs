@@ -1,4 +1,4 @@
-import { arrayBufferConverter, getTextHelper } from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -7,9 +7,9 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { EMPTY_BUFFER } from "./util";
+import { EMPTY_BUFFER, getTextHelper } from "./util";
 
-class BufferConverter extends AbstractConverter<Buffer> {
+export class BufferConverter extends AbstractConverter<Buffer> {
   public type: DataType = "buffer";
 
   public empty(): Buffer {
@@ -51,7 +51,10 @@ class BufferConverter extends AbstractConverter<Buffer> {
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }
 
-    const ab = await arrayBufferConverter().convert(input, options);
+    const ab = await DEFAULT_CONVERTER.of("arraybuffer").convert(
+      input,
+      options
+    );
     return Buffer.from(ab);
   }
 

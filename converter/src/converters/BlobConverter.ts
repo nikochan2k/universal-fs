@@ -1,8 +1,4 @@
-import {
-  arrayBufferConverter,
-  getTextHelper,
-  uint8ArrayConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -14,6 +10,7 @@ import {
 import {
   dataUrlToBase64,
   EMPTY_BLOB,
+  getTextHelper,
   handleFileReader,
   handleReadableStream,
   hasArrayBufferOnBlob,
@@ -22,7 +19,7 @@ import {
   hasTextOnBlob,
 } from "./util";
 
-class BlobConverter extends AbstractConverter<Blob> {
+export class BlobConverter extends AbstractConverter<Blob> {
   public type: DataType = "blob";
 
   public empty(): Blob {
@@ -49,7 +46,7 @@ class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    const u8 = await uint8ArrayConverter().convert(input, options);
+    const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, options);
     return new Blob([u8]);
   }
 
@@ -126,7 +123,10 @@ class BlobConverter extends AbstractConverter<Blob> {
   ): Promise<Uint8Array> {
     if (hasArrayBufferOnBlob) {
       const ab = await input.arrayBuffer();
-      return await arrayBufferConverter().toUint8Array(ab, options);
+      return await DEFAULT_CONVERTER.of("arraybuffer").toUint8Array(
+        ab,
+        options
+      );
     }
 
     const startEnd = await this._getStartEnd(input, options);
@@ -168,11 +168,11 @@ class BlobConverter extends AbstractConverter<Blob> {
         index += size;
         return Promise.resolve(end == null || index < end);
       });
-      return await uint8ArrayConverter().merge(chunks, options);
+      return await DEFAULT_CONVERTER.of("uint8array").merge(chunks, options);
     }
 
     const base64 = await this.toBase64(input, options);
-    return await uint8ArrayConverter().convert(base64);
+    return await DEFAULT_CONVERTER.of("uint8array").convert(base64);
   }
 }
 

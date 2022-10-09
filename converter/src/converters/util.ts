@@ -4,6 +4,7 @@ import type { join } from "path";
 import type { Readable, Writable } from "stream";
 import type { fileURLToPath, pathToFileURL } from "url";
 import { Data } from "./core";
+import { TextHelper } from "./TextHelper";
 
 let _Writable: typeof Writable | undefined;
 let _fileURLToPath: typeof fileURLToPath | undefined;
@@ -322,4 +323,16 @@ export function dataUrlToBase64(dataUrl: string) {
     return dataUrl.substring(index + 1);
   }
   return dataUrl;
+}
+
+let textHelper: TextHelper | undefined;
+export async function getTextHelper() {
+  if (!textHelper) {
+    if (isNode) {
+      textHelper = (await import("./NodeTextHelper")).NODE_TEXT_HELPER;
+    } else {
+      textHelper = (await import("./TextHelper")).TEXT_HELPER;
+    }
+  }
+  return textHelper;
 }

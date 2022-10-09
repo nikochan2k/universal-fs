@@ -1,8 +1,4 @@
-import {
-  base64Converter,
-  getTextHelper,
-  uint8ArrayConverter,
-} from "./converters";
+import { DEFAULT_CONVERTER } from "../converver";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -12,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isNode } from "./util";
+import { getTextHelper, isNode } from "./util";
 
 const BYTE_TO_HEX: string[] = [];
 for (let n = 0; n <= 0xff; ++n) {
@@ -46,7 +42,7 @@ const MAP_HEX: { [key: string]: number } = {
   F: 15,
 };
 
-class HexConverter extends AbstractConverter<string> {
+export class HexConverter extends AbstractConverter<string> {
   public type: DataType = "hex";
 
   public empty(): string {
@@ -69,7 +65,7 @@ class HexConverter extends AbstractConverter<string> {
       return input.slice(start * 2, end ? end * 2 : undefined);
     }
 
-    const u8 = await uint8ArrayConverter().convert(input, options);
+    const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, options);
     return (
       Array.from(u8)
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -110,7 +106,10 @@ class HexConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await base64Converter().convert(u8, deleteStartLength(options));
+    return await DEFAULT_CONVERTER.of("base64").convert(
+      u8,
+      deleteStartLength(options)
+    );
   }
 
   protected async _toText(

@@ -1,29 +1,29 @@
 import type { Readable, Writable } from "stream";
 import {
-  arrayBufferConverter,
-  base64Converter,
-  binaryConverter,
-  blobConverter,
-  bufferConverter,
   closeStream,
   Converter,
   ConvertOptions,
   Data,
   DataType,
   getType,
-  hexConverter,
+  hasBlob,
+  hasBuffer,
+  hasReadableStream,
   isEmpty,
   isWritable,
   isWritableStream,
   Options,
   pipeNodeStream,
   pipeWebStream,
-  readableConverter,
-  readableStreamConverter,
-  textConverter,
-  uint8ArrayConverter,
-  urlConverter,
 } from "./converters";
+import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
+import { Base64Converter } from "./converters/Base64Converter";
+import { BinaryConverter } from "./converters/BinaryConverter";
+import { FalseConverter } from "./converters/FalseConverter";
+import { HexConverter } from "./converters/HexConverter";
+import { TextConverter } from "./converters/TextConverter";
+import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
+import { URLConverter } from "./converters/URLConverter";
 
 export type ReturnData<T extends DataType> = T extends "arraybuffer"
   ? ArrayBuffer
@@ -51,19 +51,14 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
 
 export class DefaultConverter {
   private converters = new Map<DataType, Converter<Data>>();
+  private initialized = false;
 
   constructor() {
-    this.converters.set("arraybuffer", arrayBufferConverter());
-    this.converters.set("buffer", bufferConverter());
-    this.converters.set("uint8array", uint8ArrayConverter());
-    this.converters.set("blob", blobConverter());
-    this.converters.set("readable", readableConverter());
-    this.converters.set("readablestream", readableStreamConverter());
-    this.converters.set("base64", base64Converter());
-    this.converters.set("binary", binaryConverter());
-    this.converters.set("hex", hexConverter());
-    this.converters.set("url", urlConverter());
-    this.converters.set("text", textConverter());
+    this.initialize()
+      .then(() => {
+        this.initialized = true;
+      })
+      .catch((e) => console.warn(e));
   }
 
   public async convert<T extends DataType>(
@@ -71,7 +66,12 @@ export class DefaultConverter {
     to: T,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>> {
-    return await (this._convert(input, to, options) as Promise<ReturnData<T>>);
+    if (options?.length === 0) {
+      return this.emptyOfType(to);
+    }
+
+    const converter = this.of(to);
+    return await converter.convert(input, options);
   }
 
   public empty<T extends Data>(input: T): T {
@@ -87,8 +87,8 @@ export class DefaultConverter {
   }
 
   public emptyOfType<T extends DataType>(type: T): ReturnData<T> {
-    const converter = this.getConverterOfType(type);
-    return converter.empty() as ReturnData<T>;
+    const converter = this.of(type);
+    return converter.empty();
   }
 
   public getConverter(
@@ -107,10 +107,10 @@ export class DefaultConverter {
     );
   }
 
-  public getConverterOfType(type: DataType): Converter<Data> {
+  public of<T extends DataType>(type: T): Converter<ReturnData<T>> {
     const converter = this.converters.get(type);
     if (converter) {
-      return converter;
+      return converter as Converter<ReturnData<T>>;
     }
     throw new Error(`No converter: type=${type}`);
   }
@@ -132,7 +132,7 @@ export class DefaultConverter {
     to: T,
     options?: Partial<Options>
   ): Promise<ReturnData<T>> {
-    return (await this._merge(chunks, to, options)) as ReturnData<T>;
+    return await this._merge(chunks, to, options);
   }
 
   public async pipe(
@@ -141,7 +141,7 @@ export class DefaultConverter {
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
-      const readable = await readableConverter().convert(input, options);
+      const readable = await this.toReadable(input, options);
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
@@ -150,7 +150,7 @@ export class DefaultConverter {
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<Uint8Array>;
       try {
-        stream = await readableStreamConverter().convert(input, options);
+        stream = await this.toReadableStream(input, options);
         await pipeWebStream(stream, output);
         closeStream(output);
       } catch (e) {
@@ -305,17 +305,16 @@ export class DefaultConverter {
     }
   }
 
-  protected async _convert<T extends DataType>(
-    input: Data,
-    to: T,
+  public typeEquals<T extends DataType>(
+    type: T,
+    input: unknown,
     options?: Partial<ConvertOptions>
-  ): Promise<Data> {
-    if (options?.length === 0) {
-      return this.emptyOfType(to);
+  ): input is ReturnData<T> {
+    const converter = this.converters.get(type);
+    if (!converter) {
+      return false;
     }
-
-    const converter = this.getConverterOfType(to);
-    return await converter.convert(input, options);
+    return converter.is(input, options);
   }
 
   protected async _convertAll<T extends DataType>(
@@ -337,9 +336,58 @@ export class DefaultConverter {
     options?: Partial<Options>
   ) {
     const results = await this._convertAll(chunks, to, options);
-    const converter = this.getConverterOfType(to);
+    const converter = this.of(to);
     // eslint-disable-next-line
     return await converter.merge(results as any[], options); // TODO
+  }
+
+  private async initialize() {
+    if (this.initialized) {
+      return;
+    }
+
+    this.converters.set("base64", new Base64Converter());
+    this.converters.set("binary", new BinaryConverter());
+    this.converters.set("hex", new HexConverter());
+    this.converters.set("url", new URLConverter());
+    this.converters.set("text", new TextConverter());
+    this.converters.set("arraybuffer", new ArrayBufferConverter());
+    if (hasBuffer) {
+      const bc = new (
+        await import("./converters/BufferConverter")
+      ).BufferConverter();
+      this.converters.set("buffer", bc);
+    } else {
+      this.converters.set("buffer", new FalseConverter("Buffer"));
+    }
+    this.converters.set("uint8array", new Uint8ArrayConverter());
+    if (hasBlob) {
+      const bc = new (
+        await import("./converters/BlobConverter")
+      ).BlobConverter();
+      this.converters.set("blob", bc);
+    } else {
+      this.converters.set("blob", new FalseConverter("Blob"));
+    }
+    try {
+      const rc = new (
+        await import("./converters/ReadableConverter")
+      ).ReadableConverter();
+      this.converters.set("readable", rc);
+    } catch {
+      this.converters.set("readable", new FalseConverter("Readable"));
+    }
+    if (hasReadableStream) {
+      const rsc = new (
+        await import("./converters/ReadableStreamConverter")
+      ).ReadableStreamConverter();
+      this.converters.set("readablestream", rsc);
+    } else {
+      this.converters.set(
+        "readablestream",
+        new FalseConverter("ReadableStream")
+      );
+    }
   }
 }
 

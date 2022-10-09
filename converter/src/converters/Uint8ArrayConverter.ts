@@ -1,6 +1,5 @@
 import { encode } from "base64-arraybuffer";
 import { DEFAULT_CONVERTER } from "../converver";
-import { bufferConverter, getTextHelper } from "./converters";
 import {
   AbstractConverter,
   ConvertOptions,
@@ -10,8 +9,9 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isNode } from "./util";
-class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
+import { getTextHelper, isNode } from "./util";
+
+export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   public type: DataType = "uint8array";
 
   public empty(): Uint8Array {
@@ -19,7 +19,7 @@ class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is Uint8Array {
-    if (bufferConverter().is(input, options)) {
+    if (DEFAULT_CONVERTER.of("buffer").is(input, options)) {
       return true;
     }
     return (
