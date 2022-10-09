@@ -152,7 +152,7 @@ class ReadableStreamConverter extends AbstractConverter<
     });
   }
 
-  public typeEquals(input: unknown): input is ReadableStream<Uint8Array> {
+  public is(input: unknown): input is ReadableStream<Uint8Array> {
     return isReadableStream(input);
   }
 
@@ -163,7 +163,7 @@ class ReadableStreamConverter extends AbstractConverter<
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
-        if (readableConverter().typeEquals(resp.body, options)) {
+        if (readableConverter().is(resp.body, options)) {
           input = resp.body as unknown as Readable;
         } else {
           input = resp.body as ReadableStream<Uint8Array>;
@@ -172,20 +172,20 @@ class ReadableStreamConverter extends AbstractConverter<
         input = await fileURLToReadable(input);
       }
     }
-    if (blobConverter().typeEquals(input, options) && hasStreamOnBlob) {
+    if (blobConverter().is(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
-    if (readableConverter().typeEquals(input, options)) {
+    if (readableConverter().is(input, options)) {
       return createReadableStreamOfReader(input, options);
     }
 
-    if (!this.typeEquals(input) && hasStreamOnBlob) {
+    if (!this.is(input) && hasStreamOnBlob) {
       const blob = await blobConverter().convert(input, options);
       input = blob.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
-    if (this.typeEquals(input)) {
+    if (this.is(input)) {
       return createPartialReadableStream(
         input,
         await this._getStartEnd(input, options)

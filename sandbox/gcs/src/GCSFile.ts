@@ -45,7 +45,7 @@ export class GCSFile extends AbstractFile {
     const file = this.gfs._getEntry(path, false);
 
     try {
-      if (readableConverter().typeEquals(data)) {
+      if (readableConverter().is(data)) {
         const readable = await converter.toReadable(data, options);
         const writable = file.createWriteStream();
         await converter.pipe(readable, writable, options);

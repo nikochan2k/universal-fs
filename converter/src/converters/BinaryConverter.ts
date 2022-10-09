@@ -21,7 +21,7 @@ class BinaryConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public typeEquals(input: unknown, options: ConvertOptions): input is string {
+  public is(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "binary";
   }
 
@@ -37,10 +37,7 @@ class BinaryConverter extends AbstractConverter<string> {
       return input.substring(start, end);
     }
 
-    if (
-      blobConverter().typeEquals(input, options) &&
-      hasReadAsBinaryStringOnBlob
-    ) {
+    if (blobConverter().is(input, options) && hasReadAsBinaryStringOnBlob) {
       const startEnd = getStartEnd(options, input.size);
       let start = startEnd.start;
       const end = startEnd.end as number;

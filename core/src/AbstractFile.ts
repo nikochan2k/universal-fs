@@ -182,7 +182,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
 
     const hash = createHash();
-    if (readableConverter().typeEquals(data)) {
+    if (readableConverter().is(data)) {
       await handleReadable(data, async (chunk) => {
         const buffer = await bufferConverter().convert(chunk, {
           bufferSize: options?.bufferSize,
@@ -190,7 +190,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
         hash.update(buffer);
         return true;
       });
-    } else if (readableStreamConverter().typeEquals(data)) {
+    } else if (readableStreamConverter().is(data)) {
       await handleReadableStream(data, async (chunk) => {
         const u8 = await uint8ArrayConverter().convert(chunk, {
           bufferSize: options?.bufferSize,
@@ -295,9 +295,9 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       options.append = false;
       const head = await this._read({ bufferSize: options.bufferSize });
       const converter = this._getConverter();
-      if (rc.typeEquals(head) || rc.typeEquals(data)) {
+      if (rc.is(head) || rc.is(data)) {
         data = await converter.merge([head, data], "readable");
-      } else if (rsc.typeEquals(head) || rsc.typeEquals(data)) {
+      } else if (rsc.is(head) || rsc.is(data)) {
         data = await converter.merge([head, data], "readablestream");
       } else if (isBrowser) {
         data = await converter.merge([head, data], "blob");
@@ -313,9 +313,9 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       delete options.start;
       delete options.length;
       const src = await this._read({ bufferSize: options.bufferSize });
-      if (rc.typeEquals(src)) {
+      if (rc.is(src)) {
         data = new ModifiedReadable(src, { data, start, length });
-      } else if (rsc.typeEquals(src)) {
+      } else if (rsc.is(src)) {
         data = createModifiedReadableStream(src, { data, start, length });
       } else {
         data = await modify(src, { data, start, length });

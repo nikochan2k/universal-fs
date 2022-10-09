@@ -31,12 +31,12 @@ export interface Converter<T extends Data> {
   convert(input: Data, options?: Partial<ConvertOptions>): Promise<T>;
   empty(): T;
   getSize(input: T, options?: Partial<Options>): Promise<number>;
+  is(input: unknown, options?: Partial<ConvertOptions>): input is T;
   merge(chunks: T[], options?: Partial<Options>): Promise<T>;
   toArrayBuffer(input: T, options: ConvertOptions): Promise<ArrayBuffer>;
   toBase64(input: T, options: ConvertOptions): Promise<string>;
   toText(input: T, options: ConvertOptions): Promise<string>;
   toUint8Array(input: T, options: ConvertOptions): Promise<Uint8Array>;
-  typeEquals(input: unknown, options?: Partial<ConvertOptions>): input is T;
 }
 
 export function getType(input: unknown): string {
@@ -176,7 +176,7 @@ export abstract class AbstractConverter<T extends Data>
   }
 
   public abstract empty(): T;
-  public abstract typeEquals(
+  public abstract is(
     input: Data,
     options?: Partial<ConvertOptions>
   ): input is T;

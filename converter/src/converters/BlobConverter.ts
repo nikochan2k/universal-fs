@@ -29,7 +29,7 @@ class BlobConverter extends AbstractConverter<Blob> {
     return EMPTY_BLOB;
   }
 
-  public typeEquals(input: unknown): input is Blob {
+  public is(input: unknown): input is Blob {
     return (
       input instanceof Blob ||
       toString.call(input) === "[object Blob]" ||
@@ -41,7 +41,7 @@ class BlobConverter extends AbstractConverter<Blob> {
     input: Data,
     options: ConvertOptions
   ): Promise<Blob | undefined> {
-    if (this.typeEquals(input)) {
+    if (this.is(input)) {
       if (hasNoStartLength(options)) {
         return input;
       }

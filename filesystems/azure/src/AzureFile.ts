@@ -65,13 +65,13 @@ export class AzureFile extends AbstractFile {
 
     try {
       const client = afs._getBlockBlobClient(path, false);
-      if (readableConverter().typeEquals(data)) {
+      if (readableConverter().is(data)) {
         const readable = await converter.toReadable(data, options);
         await client.uploadStream(readable);
-      } else if (uint8ArrayConverter().typeEquals(data)) {
+      } else if (uint8ArrayConverter().is(data)) {
         const u8 = await converter.toUint8Array(data);
         await client.uploadData(u8);
-      } else if (arrayBufferConverter().typeEquals(data)) {
+      } else if (arrayBufferConverter().is(data)) {
         const ab = await converter.toArrayBuffer(data);
         await client.uploadData(ab);
       } else if (isBrowser) {

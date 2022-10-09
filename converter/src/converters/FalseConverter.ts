@@ -42,7 +42,7 @@ export class FalseConverter implements Converter<any> {
     throw new Error("toUint8Array method not implemented: " + this.key);
   }
 
-  public typeEquals(_: unknown): _ is any {
+  public is(_: unknown): _ is any {
     return false;
   }
 }

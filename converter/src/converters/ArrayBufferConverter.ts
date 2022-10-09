@@ -19,7 +19,7 @@ class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
     return EMPTY_ARRAY_BUFFER;
   }
 
-  public typeEquals(input: unknown): input is ArrayBuffer {
+  public is(input: unknown): input is ArrayBuffer {
     return (
       input instanceof ArrayBuffer ||
       toString.call(input) === "[object ArrayBuffer]"

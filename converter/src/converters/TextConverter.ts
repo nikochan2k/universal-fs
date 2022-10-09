@@ -18,7 +18,7 @@ class TextConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public typeEquals(input: unknown, options: ConvertOptions): input is string {
+  public is(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "text";
   }
 

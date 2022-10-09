@@ -155,7 +155,7 @@ class ReadableConverter extends AbstractConverter<Readable> {
     });
   }
 
-  public typeEquals(input: unknown): input is Readable {
+  public is(input: unknown): input is Readable {
     return isReadable(input);
   }
 
@@ -175,15 +175,15 @@ class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (blobConverter().typeEquals(input, options) && hasStreamOnBlob) {
+    if (blobConverter().is(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream;
     }
 
-    if (this.typeEquals(input)) {
+    if (this.is(input)) {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (readableStreamConverter().typeEquals(input, options)) {
+    if (readableStreamConverter().is(input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }

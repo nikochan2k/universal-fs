@@ -78,9 +78,9 @@ export class S3File extends AbstractFile {
 
     try {
       let body: Readable | ReadableStream<unknown> | Blob | Uint8Array;
-      if (readableConverter().typeEquals(data)) {
+      if (readableConverter().is(data)) {
         body = await converter.toReadable(data, options);
-      } else if (readableStreamConverter().typeEquals(data)) {
+      } else if (readableStreamConverter().is(data)) {
         body = await converter.toReadableStream(data, options);
       } else if (isBrowser) {
         body = await converter.toBlob(data, options);
@@ -96,10 +96,7 @@ export class S3File extends AbstractFile {
       }
 
       const client = await s3fs._getClient();
-      if (
-        readableConverter().typeEquals(body) ||
-        readableStreamConverter().typeEquals(body)
-      ) {
+      if (readableConverter().is(body) || readableStreamConverter().is(body)) {
         const upload = new Upload({
           client,
           params: {
