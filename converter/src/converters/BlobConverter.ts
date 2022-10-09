@@ -8,9 +8,7 @@ import {
   hasNoStartLength,
 } from "./core";
 import {
-  dataUrlToBase64,
   EMPTY_BLOB,
-  getTextHelper,
   handleFileReader,
   handleReadableStream,
   hasArrayBufferOnBlob,
@@ -18,7 +16,8 @@ import {
   hasReadAsArrayBufferOnBlob,
   hasStreamOnBlob,
   hasTextOnBlob,
-} from "./util";
+} from "./NodeUtil";
+import { dataUrlToBase64, getTextHelper } from "./Util";
 
 export class BlobConverter extends AbstractConverter<Blob> {
   public type: DataType = "blob";

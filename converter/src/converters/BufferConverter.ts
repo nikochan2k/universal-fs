@@ -7,7 +7,8 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { EMPTY_BUFFER, getTextHelper, hasBuffer } from "./util";
+import { EMPTY_BUFFER, hasBuffer } from "./NodeUtil";
+import { getTextHelper } from "./Util";
 
 export class BufferConverter extends AbstractConverter<Buffer> {
   public type: DataType = "buffer";

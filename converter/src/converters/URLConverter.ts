@@ -10,13 +10,13 @@ import {
   Options,
 } from "./core";
 import {
-  dataUrlToBase64,
   fileURLToReadable,
   getFileSize,
   isBrowser,
   isNode,
   toFileURL,
-} from "./util";
+} from "./NodeUtil";
+import { dataUrlToBase64 } from "./Util";
 
 export class URLConverter extends AbstractConverter<string> {
   public type: DataType = "url";

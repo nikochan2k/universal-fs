@@ -9,7 +9,8 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper, isNode } from "./util";
+import { isNode } from "./NodeUtil";
+import { getTextHelper } from "./Util";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   public type: DataType = "uint8array";

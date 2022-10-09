@@ -1,5 +1,6 @@
 import type { Readable } from "stream";
-import { hasBlob, isBrowser, isNode } from "./util";
+import { hasBlob, isBrowser, isNode } from "./NodeUtil";
+import { getType } from "./Util";
 
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
 export type URLType = "file" | "data" | "blob";
@@ -37,15 +38,6 @@ export interface Converter<T extends Data> {
   toBase64(input: T, options: ConvertOptions): Promise<string>;
   toText(input: T, options: ConvertOptions): Promise<string>;
   toUint8Array(input: T, options: ConvertOptions): Promise<Uint8Array>;
-}
-
-export function getType(input: unknown): string {
-  const type = typeof input;
-  if (type === "function" || type === "object") {
-    // eslint-disable-next-line
-    return (input as any)?.constructor?.name || String.toString.call(input);
-  }
-  return type;
 }
 
 export const DEFAULT_BUFFER_SIZE = 96 * 1024;

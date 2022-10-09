@@ -17,7 +17,7 @@ import {
   isBrowser,
   isNode,
   isReadableStream,
-} from "./util";
+} from "./NodeUtil";
 
 function createReadableStream(u8: Uint8Array) {
   return new ReadableStream<Uint8Array>({

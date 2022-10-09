@@ -9,11 +9,11 @@ import {
   hasNoStartLength,
 } from "./core";
 import {
-  getTextHelper,
   handleFileReader,
   hasReadAsBinaryStringOnBlob,
   isNode,
-} from "./util";
+} from "./NodeUtil";
+import { getTextHelper } from "./Util";
 
 export class BinaryConverter extends AbstractConverter<string> {
   public type: DataType = "binary";

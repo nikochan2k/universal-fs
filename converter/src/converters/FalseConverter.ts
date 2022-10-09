@@ -14,10 +14,6 @@ export class FalseConverter implements Converter<any> {
     throw new Error("Method not implemented.");
   }
 
-  public size(): Promise<number> {
-    throw new Error("getSize method not implemented: " + this.key);
-  }
-
   public getStartEnd(): Promise<{ start: number; end: number | undefined }> {
     throw new Error("Method not implemented.");
   }
@@ -28,6 +24,10 @@ export class FalseConverter implements Converter<any> {
 
   public merge(): Promise<any> {
     throw new Error("merge method not implemented: " + this.key);
+  }
+
+  public size(): Promise<number> {
+    throw new Error("getSize method not implemented: " + this.key);
   }
 
   public toArrayBuffer(): Promise<ArrayBuffer> {

@@ -11,12 +11,12 @@ import {
 import {
   EMPTY_BUFFER,
   fileURLToReadable,
-  getTextHelper,
   handleReadable,
   hasStreamOnBlob,
   isNode,
   isReadable,
-} from "./util";
+} from "./NodeUtil";
+import { getTextHelper } from "./Util";
 
 export class PartialReadable extends Readable {
   constructor(

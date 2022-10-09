@@ -8,7 +8,8 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { getTextHelper, isNode } from "./util";
+import { isNode } from "./NodeUtil";
+import { getTextHelper } from "./Util";
 
 const BYTE_TO_HEX: string[] = [];
 for (let n = 0; n <= 0xff; ++n) {

@@ -5,7 +5,6 @@ import {
   ConvertOptions,
   Data,
   DataType,
-  getType,
   hasBlob,
   hasBuffer,
   hasReadableStream,
@@ -24,6 +23,7 @@ import { HexConverter } from "./converters/HexConverter";
 import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
+import { getType } from "./converters/Util";
 
 export type ReturnData<T extends DataType> = T extends "arraybuffer"
   ? ArrayBuffer

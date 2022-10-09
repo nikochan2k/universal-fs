@@ -10,7 +10,8 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { getTextHelper, isBrowser, isNode } from "./util";
+import { isBrowser, isNode } from "./NodeUtil";
+import { getTextHelper } from "./Util";
 
 export class Base64Converter extends AbstractConverter<string> {
   public type: DataType = "base64";

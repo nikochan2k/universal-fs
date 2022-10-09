@@ -9,7 +9,7 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { getTextHelper } from "./util";
+import { getTextHelper } from "./Util";
 
 export class TextConverter extends AbstractConverter<string> {
   public type: DataType = "text";
