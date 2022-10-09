@@ -1,4 +1,4 @@
-import { DEFAULT_CONVERTER as c } from "../converver";
+import { DEFAULT_CONVERTER as c } from "../AnyConv";
 
 const ab = new ArrayBuffer(1000 * 1024);
 

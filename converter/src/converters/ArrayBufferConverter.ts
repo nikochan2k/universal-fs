@@ -1,5 +1,5 @@
 import { encode } from "base64-arraybuffer";
-import { DEFAULT_CONVERTER } from "../converver";
+import { DEFAULT_CONVERTER } from "../AnyConv";
 import {
   AbstractConverter,
   ConvertOptions,

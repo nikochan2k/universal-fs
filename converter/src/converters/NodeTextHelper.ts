@@ -1,4 +1,4 @@
-import { DEFAULT_CONVERTER } from "../converver";
+import { DEFAULT_CONVERTER } from "../AnyConv";
 import { ConvertOptions } from "./core";
 import { TextHelper } from "./TextHelper";
 

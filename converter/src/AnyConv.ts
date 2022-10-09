@@ -49,7 +49,7 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   ? string
   : Data;
 
-export class DefaultConverter {
+export class AnyConv {
   private converters = new Map<DataType, Converter<Data>>();
   private initialized = false;
 
@@ -241,4 +241,4 @@ export class DefaultConverter {
   }
 }
 
-export const DEFAULT_CONVERTER = new DefaultConverter();
+export const DEFAULT_CONVERTER = new AnyConv();

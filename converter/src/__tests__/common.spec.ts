@@ -1,5 +1,5 @@
 import { hasBlob, hasBuffer, hasReadableStream, isNode } from "../converters";
-import { DEFAULT_CONVERTER as c } from "../converver";
+import { DEFAULT_CONVERTER as c } from "../AnyConv";
 
 const head = "大谷翔平";
 const tail = "ホームラン";

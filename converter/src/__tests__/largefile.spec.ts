@@ -1,7 +1,7 @@
 import { createWriteStream, rmSync, statSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import { DEFAULT_CONVERTER as c } from "../converver";
+import { DEFAULT_CONVERTER as c } from "../AnyConv";
 
 const source = Buffer.alloc(1000 * 1024);
 

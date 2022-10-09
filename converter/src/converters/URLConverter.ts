@@ -1,5 +1,5 @@
 import type { Readable } from "stream";
-import { DEFAULT_CONVERTER } from "../converver";
+import { DEFAULT_CONVERTER } from "../AnyConv";
 import {
   AbstractConverter,
   ConvertOptions,
