@@ -56,19 +56,10 @@ export class Base64Converter extends AbstractConverter<string> {
 
   protected async _merge(chunks: string[], options: Options): Promise<string> {
     if (isBrowser) {
-      const converter = C().converterOf("blob");
-      const blobs: Blob[] = [];
-      for (const chunk of chunks) {
-        blobs.push(await converter.convert(chunk, options));
-      }
-      const blob = await converter.merge(blobs, options);
+      const blob = await C().merge("blob", chunks, options);
       return await this.convert(blob);
     } else {
-      const buffers: Uint8Array[] = [];
-      for (const chunk of chunks) {
-        buffers.push(await this.toUint8Array(chunk, options));
-      }
-      const u8 = await C().converterOf("uint8array").merge(buffers, options);
+      const u8 = await C().merge("uint8array", chunks, options);
       return await this.convert(u8);
     }
   }

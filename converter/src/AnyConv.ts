@@ -154,13 +154,13 @@ class DefaultAnyConv implements AnyConv {
   }
 
   protected async _convertAll<T extends DataType>(
-    to: T,
+    returnType: T,
     chunks: Data[],
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>[]> {
     const results: ReturnData<T>[] = [];
     for (const chunk of chunks) {
-      const converted = await this.convert(to, chunk, options);
+      const converted = await this.convert(returnType, chunk, options);
       results.push(converted);
     }
     return results;
