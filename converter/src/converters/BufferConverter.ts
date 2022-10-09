@@ -49,7 +49,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }
 
-    const ab = await C().of("arraybuffer").convert(input, options);
+    const ab = await C().convert("arraybuffer", input, options);
     return Buffer.from(ab);
   }
 
