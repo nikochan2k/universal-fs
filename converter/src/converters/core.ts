@@ -63,25 +63,25 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : Data;
 
 export interface AnyConv {
+  _empty<T extends Data>(input: T): T;
+  _emptyOf<T extends DataType>(type: T): ReturnData<T>;
+  _find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
+  _is<T extends DataType>(
+    type: T,
+    input: unknown,
+    options?: Partial<ConvertOptions>
+  ): input is ReturnData<T>;
+  _of<T extends DataType>(type: T): Converter<ReturnData<T>>;
   convert<T extends DataType>(
     returnType: T,
     input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>>;
-  find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
-  empty<T extends Data>(input: T): T;
-  emptyOf<T extends DataType>(type: T): ReturnData<T>;
-  is<T extends DataType>(
-    type: T,
-    input: unknown,
-    options?: Partial<ConvertOptions>
-  ): input is ReturnData<T>;
   merge<T extends DataType>(
     to: T,
     chunks: Data[],
     options?: Partial<Options>
   ): Promise<ReturnData<T>>;
-  of<T extends DataType>(type: T): Converter<ReturnData<T>>;
   pipe(
     input: Data,
     output: Writable | WritableStream<Uint8Array>,

@@ -66,7 +66,7 @@ export class URLConverter extends AbstractConverter<string> {
       return blob.size;
     } else if (input.startsWith("data:")) {
       const base64 = dataUrlToBase64(input);
-      return await C().of("base64").size(base64);
+      return await C()._of("base64").size(base64);
     } else {
       const resp = await fetch(input, { method: "HEAD" });
       const str = resp.headers.get("Content-Length");
@@ -118,11 +118,11 @@ export class URLConverter extends AbstractConverter<string> {
   ): Promise<ArrayBuffer> {
     if (input.startsWith("file:") && fileURLToReadable) {
       const readable = await fileURLToReadable(input);
-      return await C().of("readable").toArrayBuffer(readable, options);
+      return await C()._of("readable").toArrayBuffer(readable, options);
     } else {
       const resp = await fetch(input);
       return await C()
-        .of("readablestream")
+        ._of("readablestream")
         .toArrayBuffer(resp.body as ReadableStream<Uint8Array>, options);
     }
   }
@@ -132,7 +132,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await C().of("uint8array").toBase64(u8, deleteStartLength(options));
+    return await C()._of("uint8array").toBase64(u8, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -140,7 +140,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const ab = await this.toArrayBuffer(input, options);
-    return C().of("text").convert(ab, deleteStartLength(options));
+    return C()._of("text").convert(ab, deleteStartLength(options));
   }
 
   protected async _toUint8Array(

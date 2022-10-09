@@ -33,20 +33,23 @@ import { URLConverter } from "./converters/URLConverter";
 class DefaultAnyConv implements AnyConv {
   constructor(private converters: Map<DataType, Converter<Data>>) {}
 
-  public async convert<T extends DataType>(
-    returnType: T,
-    input: Data,
-    options?: Partial<ConvertOptions>
-  ): Promise<ReturnData<T>> {
-    if (options?.length === 0) {
-      return this.emptyOf(returnType);
+  public _empty<T extends Data>(input: T): T {
+    if (typeof input === "string") {
+      return "" as T;
     }
-
-    const converter = this.of(returnType);
-    return await converter.convert(input, options);
+    const converter = this._find(input);
+    return converter.empty() as T;
   }
 
-  public find(input: Data, options?: Partial<ConvertOptions>): Converter<Data> {
+  public _emptyOf<T extends DataType>(type: T): ReturnData<T> {
+    const converter = this._of(type);
+    return converter.empty();
+  }
+
+  public _find(
+    input: Data,
+    options?: Partial<ConvertOptions>
+  ): Converter<Data> {
     for (const converter of this.converters.values()) {
       if (converter.is(input, options)) {
         return converter;
@@ -59,26 +62,34 @@ class DefaultAnyConv implements AnyConv {
     );
   }
 
-  public empty<T extends Data>(input: T): T {
-    if (typeof input === "string") {
-      return "" as T;
-    }
-    const converter = this.find(input);
-    return converter.empty() as T;
-  }
-
-  public emptyOf<T extends DataType>(type: T): ReturnData<T> {
-    const converter = this.of(type);
-    return converter.empty();
-  }
-
-  is<T extends DataType>(
+  _is<T extends DataType>(
     type: T,
     input: unknown,
     options?: Partial<ConvertOptions> | undefined
   ): input is ReturnData<T> {
-    const converter = this.of(type);
+    const converter = this._of(type);
     return converter.is(input, options);
+  }
+
+  public _of<T extends DataType>(type: T): Converter<ReturnData<T>> {
+    const converter = this.converters.get(type);
+    if (converter) {
+      return converter as Converter<ReturnData<T>>;
+    }
+    throw new Error(`No converter: type=${type}`);
+  }
+
+  public async convert<T extends DataType>(
+    returnType: T,
+    input: Data,
+    options?: Partial<ConvertOptions>
+  ): Promise<ReturnData<T>> {
+    if (options?.length === 0) {
+      return this._emptyOf(returnType);
+    }
+
+    const converter = this._of(returnType);
+    return await converter.convert(input, options);
   }
 
   public async merge<T extends DataType>(
@@ -87,16 +98,8 @@ class DefaultAnyConv implements AnyConv {
     options?: Partial<Options>
   ): Promise<ReturnData<T>> {
     const results = await this._convertAll(to, chunks, options);
-    const converter = this.of(to);
+    const converter = this._of(to);
     return await converter.merge(results, options);
-  }
-
-  public of<T extends DataType>(type: T): Converter<ReturnData<T>> {
-    const converter = this.converters.get(type);
-    if (converter) {
-      return converter as Converter<ReturnData<T>>;
-    }
-    throw new Error(`No converter: type=${type}`);
   }
 
   public async pipe(
@@ -105,7 +108,7 @@ class DefaultAnyConv implements AnyConv {
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
-      const readable = await this.of("readable").convert(input, options);
+      const readable = await this._of("readable").convert(input, options);
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
@@ -114,7 +117,7 @@ class DefaultAnyConv implements AnyConv {
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<Uint8Array>;
       try {
-        stream = await this.of("readablestream").convert(input, options);
+        stream = await this._of("readablestream").convert(input, options);
         await pipeWebStream(stream, output);
         closeStream(output);
       } catch (e) {
@@ -126,7 +129,7 @@ class DefaultAnyConv implements AnyConv {
   }
 
   public async size(input: Data, options?: Partial<Options>): Promise<number> {
-    const converter = this.find(input, options);
+    const converter = this._find(input, options);
     return await converter.size(input, options);
   }
 
@@ -143,10 +146,10 @@ class DefaultAnyConv implements AnyConv {
       );
     }
     if (isEmpty(input, options)) {
-      return Promise.resolve(this.empty(input));
+      return Promise.resolve(this._empty(input));
     }
 
-    const converter = this.find(input, options);
+    const converter = this._find(input, options);
     if (converter) {
       return await converter.convert(input, options);
     }

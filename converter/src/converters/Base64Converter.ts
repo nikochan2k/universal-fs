@@ -27,7 +27,7 @@ export class Base64Converter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    const converter = C().find(input, options);
+    const converter = C()._find(input, options);
     return await converter.toBase64(input, options);
   }
 

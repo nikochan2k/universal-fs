@@ -25,7 +25,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    const converter = C().find(input, options);
+    const converter = C()._find(input, options);
     return await converter.toText(input, options);
   }
 
@@ -63,7 +63,7 @@ export class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await C().of("uint8array").toBase64(u8, deleteStartLength(options));
+    return await C()._of("uint8array").toBase64(u8, deleteStartLength(options));
   }
 
   protected async _toText(
