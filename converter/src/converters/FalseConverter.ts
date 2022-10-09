@@ -14,7 +14,7 @@ export class FalseConverter implements Converter<any> {
     throw new Error("Method not implemented.");
   }
 
-  public getSize(): Promise<number> {
+  public size(): Promise<number> {
     throw new Error("getSize method not implemented: " + this.key);
   }
 

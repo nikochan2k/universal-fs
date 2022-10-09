@@ -31,7 +31,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     input: Data,
     options: ConvertOptions
   ): Promise<ArrayBufferLike | undefined> {
-    const converter = DEFAULT_CONVERTER.getConverter(input, options);
+    const converter = DEFAULT_CONVERTER.converter(input, options);
     return await converter.toArrayBuffer(input, options);
   }
 

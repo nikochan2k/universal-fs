@@ -65,7 +65,10 @@ export class HexConverter extends AbstractConverter<string> {
       return input.slice(start * 2, end ? end * 2 : undefined);
     }
 
-    const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, options);
+    const u8 = await DEFAULT_CONVERTER.converterOf("uint8array").convert(
+      input,
+      options
+    );
     return (
       Array.from(u8)
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -106,7 +109,7 @@ export class HexConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await DEFAULT_CONVERTER.of("base64").convert(
+    return await DEFAULT_CONVERTER.converterOf("base64").convert(
       u8,
       deleteStartLength(options)
     );

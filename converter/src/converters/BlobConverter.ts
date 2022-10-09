@@ -43,7 +43,10 @@ export class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, options);
+    const u8 = await DEFAULT_CONVERTER.converterOf("uint8array").convert(
+      input,
+      options
+    );
     return new Blob([u8]);
   }
 
@@ -120,7 +123,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
   ): Promise<Uint8Array> {
     if (hasArrayBufferOnBlob) {
       const ab = await input.arrayBuffer();
-      return await DEFAULT_CONVERTER.of("arraybuffer").toUint8Array(
+      return await DEFAULT_CONVERTER.converterOf("arraybuffer").toUint8Array(
         ab,
         options
       );
@@ -165,11 +168,14 @@ export class BlobConverter extends AbstractConverter<Blob> {
         index += size;
         return Promise.resolve(end == null || index < end);
       });
-      return await DEFAULT_CONVERTER.of("uint8array").merge(chunks, options);
+      return await DEFAULT_CONVERTER.converterOf("uint8array").merge(
+        chunks,
+        options
+      );
     }
 
     const base64 = await this.toBase64(input, options);
-    return await DEFAULT_CONVERTER.of("uint8array").convert(base64);
+    return await DEFAULT_CONVERTER.converterOf("uint8array").convert(base64);
   }
 }
 

@@ -26,7 +26,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: Data,
     options: ConvertOptions
   ): Promise<string | undefined> {
-    const converter = DEFAULT_CONVERTER.getConverter(input, options);
+    const converter = DEFAULT_CONVERTER.converter(input, options);
     return await converter.toText(input, options);
   }
 
@@ -39,7 +39,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<{ start: number; end: number | undefined }> {
-    const size = await this.getSize(input, options);
+    const size = await this.size(input, options);
     return getStartEnd(options, size);
   }
 
@@ -64,7 +64,7 @@ export class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await DEFAULT_CONVERTER.of("uint8array").toBase64(
+    return await DEFAULT_CONVERTER.converterOf("uint8array").toBase64(
       u8,
       deleteStartLength(options)
     );
@@ -91,7 +91,10 @@ export class TextConverter extends AbstractConverter<string> {
   ): Promise<Uint8Array> {
     const textHelper = await getTextHelper();
     const u8 = await textHelper.textToBuffer(input, options);
-    return await DEFAULT_CONVERTER.of("uint8array").toUint8Array(u8, options);
+    return await DEFAULT_CONVERTER.converterOf("uint8array").toUint8Array(
+      u8,
+      options
+    );
   }
 }
 

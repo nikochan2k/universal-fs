@@ -47,16 +47,19 @@ export class URLConverter extends AbstractConverter<string> {
     let url: string;
     const type = options.dstURLType;
     if (type === "file" && toFileURL) {
-      const readable = await DEFAULT_CONVERTER.of("readable").convert(
+      const readable = await DEFAULT_CONVERTER.converterOf("readable").convert(
         input,
         options
       );
       url = await toFileURL(readable);
     } else if (type === "blob") {
-      const blob = await DEFAULT_CONVERTER.of("blob").convert(input, options);
+      const blob = await DEFAULT_CONVERTER.converterOf("blob").convert(
+        input,
+        options
+      );
       url = URL.createObjectURL(blob);
     } else {
-      const base64 = await DEFAULT_CONVERTER.of("base64").convert(
+      const base64 = await DEFAULT_CONVERTER.converterOf("base64").convert(
         input,
         options
       );
@@ -74,7 +77,7 @@ export class URLConverter extends AbstractConverter<string> {
       return blob.size;
     } else if (input.startsWith("data:")) {
       const base64 = dataUrlToBase64(input);
-      return await DEFAULT_CONVERTER.of("base64").getSize(base64);
+      return await DEFAULT_CONVERTER.converterOf("base64").size(base64);
     } else {
       const resp = await fetch(input, { method: "HEAD" });
       const str = resp.headers.get("Content-Length");
@@ -100,7 +103,7 @@ export class URLConverter extends AbstractConverter<string> {
 
   protected async _merge(urls: string[], options: Options): Promise<string> {
     if (isNode) {
-      const converter = DEFAULT_CONVERTER.of("readable");
+      const converter = DEFAULT_CONVERTER.converterOf("readable");
       const readables: Readable[] = [];
       for (const url of urls) {
         const readable = await converter.convert(url);
@@ -112,7 +115,7 @@ export class URLConverter extends AbstractConverter<string> {
         dstURLType: "file",
       })) as string;
     } else if (isBrowser) {
-      const converter = DEFAULT_CONVERTER.of("readablestream");
+      const converter = DEFAULT_CONVERTER.converterOf("readablestream");
       const readables: ReadableStream<Uint8Array>[] = [];
       for (const url of urls) {
         const readable = await converter.convert(url, options);
@@ -129,7 +132,7 @@ export class URLConverter extends AbstractConverter<string> {
         const buffer = await this.toArrayBuffer(url, options);
         buffers.push(buffer);
       }
-      const merged = await DEFAULT_CONVERTER.of("arraybuffer").merge(
+      const merged = await DEFAULT_CONVERTER.converterOf("arraybuffer").merge(
         buffers,
         options
       );
@@ -146,16 +149,15 @@ export class URLConverter extends AbstractConverter<string> {
   ): Promise<ArrayBuffer> {
     if (input.startsWith("file:") && fileURLToReadable) {
       const readable = await fileURLToReadable(input);
-      return await DEFAULT_CONVERTER.of("readable").toArrayBuffer(
+      return await DEFAULT_CONVERTER.converterOf("readable").toArrayBuffer(
         readable,
         options
       );
     } else {
       const resp = await fetch(input);
-      return await DEFAULT_CONVERTER.of("readablestream").toArrayBuffer(
-        resp.body as ReadableStream<Uint8Array>,
-        options
-      );
+      return await DEFAULT_CONVERTER.converterOf(
+        "readablestream"
+      ).toArrayBuffer(resp.body as ReadableStream<Uint8Array>, options);
     }
   }
 
@@ -164,7 +166,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await DEFAULT_CONVERTER.of("uint8array").toBase64(
+    return await DEFAULT_CONVERTER.converterOf("uint8array").toBase64(
       u8,
       deleteStartLength(options)
     );
@@ -175,7 +177,10 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const ab = await this.toArrayBuffer(input, options);
-    return DEFAULT_CONVERTER.of("text").convert(ab, deleteStartLength(options));
+    return DEFAULT_CONVERTER.converterOf("text").convert(
+      ab,
+      deleteStartLength(options)
+    );
   }
 
   protected async _toUint8Array(

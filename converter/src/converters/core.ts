@@ -30,9 +30,9 @@ export interface Converter<T extends Data> {
 
   convert(input: Data, options?: Partial<ConvertOptions>): Promise<T>;
   empty(): T;
-  getSize(input: T, options?: Partial<Options>): Promise<number>;
   match(input: unknown, options?: Partial<ConvertOptions>): input is T;
   merge(chunks: T[], options?: Partial<Options>): Promise<T>;
+  size(input: T, options?: Partial<Options>): Promise<number>;
   toArrayBuffer(input: T, options: ConvertOptions): Promise<ArrayBuffer>;
   toBase64(input: T, options: ConvertOptions): Promise<string>;
   toText(input: T, options: ConvertOptions): Promise<string>;
@@ -115,14 +115,6 @@ export abstract class AbstractConverter<T extends Data>
     );
   }
 
-  public async getSize(input: T, options?: Partial<Options>): Promise<number> {
-    if (this._isEmpty(input)) {
-      return 0;
-    }
-
-    return await this._getSize(input, this._initOptions(options));
-  }
-
   public isEmpty(input: T, options?: Partial<Options>) {
     if (isEmpty(input, options)) {
       return true;
@@ -139,6 +131,14 @@ export abstract class AbstractConverter<T extends Data>
     }
 
     return await this._merge(chunks, this._initOptions(options));
+  }
+
+  public async size(input: T, options?: Partial<Options>): Promise<number> {
+    if (this._isEmpty(input)) {
+      return 0;
+    }
+
+    return await this._getSize(input, this._initOptions(options));
   }
 
   public async toArrayBuffer(

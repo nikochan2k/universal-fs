@@ -39,7 +39,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     }
 
     if (
-      DEFAULT_CONVERTER.of("blob").match(input, options) &&
+      DEFAULT_CONVERTER.converterOf("blob").match(input, options) &&
       hasReadAsBinaryStringOnBlob
     ) {
       const startEnd = getStartEnd(options, input.size);
@@ -59,7 +59,10 @@ export class BinaryConverter extends AbstractConverter<string> {
       return chunks.join("");
     }
 
-    const u8 = await DEFAULT_CONVERTER.of("uint8array").convert(input, options);
+    const u8 = await DEFAULT_CONVERTER.converterOf("uint8array").convert(
+      input,
+      options
+    );
     return Array.from(u8, (e) => String.fromCharCode(e)).join("");
   }
 

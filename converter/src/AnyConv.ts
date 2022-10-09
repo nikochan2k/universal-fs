@@ -70,7 +70,7 @@ export class AnyConv {
       return this.emptyOf(returnType);
     }
 
-    const converter = this.of(returnType);
+    const converter = this.converterOf(returnType);
     return await converter.convert(input, options);
   }
 
@@ -78,16 +78,16 @@ export class AnyConv {
     if (typeof input === "string") {
       return "" as T;
     }
-    const converter = this.getConverter(input);
+    const converter = this.converter(input);
     return converter.empty() as T;
   }
 
   public emptyOf<T extends DataType>(returnType: T): ReturnData<T> {
-    const converter = this.of(returnType);
+    const converter = this.converterOf(returnType);
     return converter.empty();
   }
 
-  public getConverter(
+  public converter(
     input: Data,
     options?: Partial<ConvertOptions>
   ): Converter<Data> {
@@ -103,25 +103,17 @@ export class AnyConv {
     );
   }
 
-  public async getSize(
-    input: Data,
-    options?: Partial<Options>
-  ): Promise<number> {
-    const converter = this.getConverter(input, options);
-    return await converter.getSize(input, options);
-  }
-
   public async merge<T extends DataType>(
     to: T,
     chunks: Data[],
     options?: Partial<Options>
   ): Promise<ReturnData<T>> {
     const results = await this._convertAll(to, chunks, options);
-    const converter = this.of(to);
+    const converter = this.converterOf(to);
     return await converter.merge(results, options);
   }
 
-  public of<T extends DataType>(type: T): Converter<ReturnData<T>> {
+  public converterOf<T extends DataType>(type: T): Converter<ReturnData<T>> {
     const converter = this.converters.get(type);
     if (converter) {
       return converter as Converter<ReturnData<T>>;
@@ -135,7 +127,10 @@ export class AnyConv {
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
-      const readable = await this.of("readable").convert(input, options);
+      const readable = await this.converterOf("readable").convert(
+        input,
+        options
+      );
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
@@ -144,7 +139,10 @@ export class AnyConv {
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<Uint8Array>;
       try {
-        stream = await this.of("readablestream").convert(input, options);
+        stream = await this.converterOf("readablestream").convert(
+          input,
+          options
+        );
         await pipeWebStream(stream, output);
         closeStream(output);
       } catch (e) {
@@ -153,6 +151,11 @@ export class AnyConv {
     } else {
       throw new Error("Illegal output type: " + getType(output));
     }
+  }
+
+  public async size(input: Data, options?: Partial<Options>): Promise<number> {
+    const converter = this.converter(input, options);
+    return await converter.size(input, options);
   }
 
   public async slice(
@@ -171,7 +174,7 @@ export class AnyConv {
       return Promise.resolve(this.empty(input));
     }
 
-    const converter = this.getConverter(input, options);
+    const converter = this.converter(input, options);
     if (converter) {
       return await converter.convert(input, options);
     }
