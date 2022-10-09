@@ -8,10 +8,10 @@ export class NodeTextHelper extends TextHelper {
     options: ConvertOptions
   ): Promise<string> {
     let buffer: Buffer;
-    if (C().converterOf("buffer").match(buf, options)) {
+    if (C().of("buffer").is(buf, options)) {
       buffer = buf;
     } else {
-      buffer = await C().converterOf("buffer").convert(buf);
+      buffer = await C().of("buffer").convert(buf);
     }
     const bufCharset = options.bufferToTextCharset;
     if (bufCharset === "utf8" || bufCharset === "utf16le") {

@@ -16,7 +16,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     return EMPTY_BUFFER;
   }
 
-  public match(input: unknown): input is Buffer {
+  public is(input: unknown): input is Buffer {
     return hasBuffer && input instanceof Buffer;
   }
 
@@ -24,7 +24,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     input: Data,
     options: ConvertOptions
   ): Promise<Buffer | undefined> {
-    if (this.match(input)) {
+    if (this.is(input)) {
       return await (this.toUint8Array(input, options) as Promise<Buffer>);
     }
 
@@ -49,7 +49,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }
 
-    const ab = await C().converterOf("arraybuffer").convert(input, options);
+    const ab = await C().of("arraybuffer").convert(input, options);
     return Buffer.from(ab);
   }
 

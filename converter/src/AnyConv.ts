@@ -42,21 +42,8 @@ class DefaultAnyConv implements AnyConv {
       return this.emptyOf(returnType);
     }
 
-    const converter = this.converterOf(returnType);
+    const converter = this.of(returnType);
     return await converter.convert(input, options);
-  }
-
-  public empty<T extends Data>(input: T): T {
-    if (typeof input === "string") {
-      return "" as T;
-    }
-    const converter = this.converter(input);
-    return converter.empty() as T;
-  }
-
-  public emptyOf<T extends DataType>(returnType: T): ReturnData<T> {
-    const converter = this.converterOf(returnType);
-    return converter.empty();
   }
 
   public converter(
@@ -64,7 +51,7 @@ class DefaultAnyConv implements AnyConv {
     options?: Partial<ConvertOptions>
   ): Converter<Data> {
     for (const converter of this.converters.values()) {
-      if (converter.match(input, options)) {
+      if (converter.is(input, options)) {
         return converter;
       }
     }
@@ -75,17 +62,39 @@ class DefaultAnyConv implements AnyConv {
     );
   }
 
+  public empty<T extends Data>(input: T): T {
+    if (typeof input === "string") {
+      return "" as T;
+    }
+    const converter = this.converter(input);
+    return converter.empty() as T;
+  }
+
+  public emptyOf<T extends DataType>(type: T): ReturnData<T> {
+    const converter = this.of(type);
+    return converter.empty();
+  }
+
+  is<T extends DataType>(
+    type: T,
+    input: unknown,
+    options?: Partial<ConvertOptions> | undefined
+  ): input is ReturnData<T> {
+    const converter = this.of(type);
+    return converter.is(input, options);
+  }
+
   public async merge<T extends DataType>(
     to: T,
     chunks: Data[],
     options?: Partial<Options>
   ): Promise<ReturnData<T>> {
     const results = await this._convertAll(to, chunks, options);
-    const converter = this.converterOf(to);
+    const converter = this.of(to);
     return await converter.merge(results, options);
   }
 
-  public converterOf<T extends DataType>(type: T): Converter<ReturnData<T>> {
+  public of<T extends DataType>(type: T): Converter<ReturnData<T>> {
     const converter = this.converters.get(type);
     if (converter) {
       return converter as Converter<ReturnData<T>>;
@@ -99,10 +108,7 @@ class DefaultAnyConv implements AnyConv {
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
-      const readable = await this.converterOf("readable").convert(
-        input,
-        options
-      );
+      const readable = await this.of("readable").convert(input, options);
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
@@ -111,10 +117,7 @@ class DefaultAnyConv implements AnyConv {
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<Uint8Array>;
       try {
-        stream = await this.converterOf("readablestream").convert(
-          input,
-          options
-        );
+        stream = await this.of("readablestream").convert(input, options);
         await pipeWebStream(stream, output);
         closeStream(output);
       } catch (e) {

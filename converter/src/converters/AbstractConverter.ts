@@ -103,7 +103,7 @@ export abstract class AbstractConverter<T extends Data>
   }
 
   public abstract empty(): T;
-  public abstract match(
+  public abstract is(
     input: Data,
     options?: Partial<ConvertOptions>
   ): input is T;

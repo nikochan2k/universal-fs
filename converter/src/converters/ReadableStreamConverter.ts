@@ -90,7 +90,7 @@ function createReadableStreamOfReader(
   const start = startEnd.start;
   const end = startEnd.end ?? Number.MAX_SAFE_INTEGER;
   const bufferSize = options.bufferSize;
-  const converter = C().converterOf("uint8array");
+  const converter = C().of("uint8array");
   let iStart = 0;
   return new ReadableStream({
     start: async (controller) => {
@@ -146,7 +146,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     });
   }
 
-  public match(input: unknown): input is ReadableStream<Uint8Array> {
+  public is(input: unknown): input is ReadableStream<Uint8Array> {
     return isReadableStream(input);
   }
 
@@ -157,7 +157,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
-        if (C().converterOf("readable").match(resp.body, options)) {
+        if (C().of("readable").is(resp.body, options)) {
           input = resp.body as unknown as Readable;
         } else {
           input = resp.body as ReadableStream<Uint8Array>;
@@ -166,27 +166,27 @@ export class ReadableStreamConverter extends AbstractConverter<
         input = await fileURLToReadable(input);
       }
     }
-    if (C().converterOf("blob").match(input, options) && hasStreamOnBlob) {
+    if (C().of("blob").is(input, options) && hasStreamOnBlob) {
       input = input.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
-    if (C().converterOf("readable").match(input, options)) {
+    if (C().of("readable").is(input, options)) {
       return createReadableStreamOfReader(input, options);
     }
 
-    if (!this.match(input) && hasStreamOnBlob) {
-      const blob = await C().converterOf("blob").convert(input, options);
+    if (!this.is(input) && hasStreamOnBlob) {
+      const blob = await C().of("blob").convert(input, options);
       input = blob.stream() as unknown as ReadableStream<Uint8Array>;
     }
 
-    if (this.match(input)) {
+    if (this.is(input)) {
       return createPartialReadableStream(
         input,
         await this._getStartEnd(input, options)
       );
     }
 
-    const u8 = await C().converterOf("uint8array").convert(input, options);
+    const u8 = await C().of("uint8array").convert(input, options);
     const { start, end } = getStartEnd(options, u8.byteLength);
     return createReadableStream(u8.slice(start, end));
   }
@@ -256,20 +256,20 @@ export class ReadableStreamConverter extends AbstractConverter<
   ): Promise<string> {
     const bufferSize = options.bufferSize;
     if (isBrowser) {
-      const blob = await C().converterOf("blob").convert(input, {
+      const blob = await C().of("blob").convert(input, {
         bufferSize,
       });
-      return await C().converterOf("blob").toBase64(blob, options);
+      return await C().of("blob").toBase64(blob, options);
     } else if (isNode) {
-      const buffer = await C().converterOf("buffer").convert(input, {
+      const buffer = await C().of("buffer").convert(input, {
         bufferSize,
       });
-      return await C().converterOf("buffer").toBase64(buffer, options);
+      return await C().of("buffer").toBase64(buffer, options);
     } else {
-      const u8 = await C().converterOf("uint8array").convert(input, {
+      const u8 = await C().of("uint8array").convert(input, {
         bufferSize,
       });
-      return await C().converterOf("uint8array").toBase64(u8, options);
+      return await C().of("uint8array").toBase64(u8, options);
     }
   }
 
@@ -279,20 +279,20 @@ export class ReadableStreamConverter extends AbstractConverter<
   ): Promise<string> {
     const bufferSize = options.bufferSize;
     if (isBrowser) {
-      const blob = await C().converterOf("blob").convert(input, {
+      const blob = await C().of("blob").convert(input, {
         bufferSize,
       });
-      return await C().converterOf("blob").toText(blob, options);
+      return await C().of("blob").toText(blob, options);
     } else if (isNode) {
-      const buffer = await C().converterOf("buffer").convert(input, {
+      const buffer = await C().of("buffer").convert(input, {
         bufferSize,
       });
-      return await C().converterOf("buffer").toText(buffer, options);
+      return await C().of("buffer").toText(buffer, options);
     } else {
-      const u8 = await C().converterOf("uint8array").convert(input, {
+      const u8 = await C().of("uint8array").convert(input, {
         bufferSize,
       });
-      return await C().converterOf("uint8array").toText(u8, options);
+      return await C().of("uint8array").toText(u8, options);
     }
   }
 
@@ -305,7 +305,7 @@ export class ReadableStreamConverter extends AbstractConverter<
       chunks.push(chunk);
       return Promise.resolve(true);
     });
-    const converter = C().converterOf("uint8array");
+    const converter = C().of("uint8array");
     return await converter.merge(chunks, options);
   }
 }

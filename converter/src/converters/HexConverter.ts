@@ -49,7 +49,7 @@ export class HexConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public match(input: unknown, options: ConvertOptions): input is string {
+  public is(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "hex";
   }
 
@@ -65,7 +65,7 @@ export class HexConverter extends AbstractConverter<string> {
       return input.slice(start * 2, end ? end * 2 : undefined);
     }
 
-    const u8 = await C().converterOf("uint8array").convert(input, options);
+    const u8 = await C().of("uint8array").convert(input, options);
     return (
       Array.from(u8)
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -106,9 +106,7 @@ export class HexConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await C()
-      .converterOf("base64")
-      .convert(u8, deleteStartLength(options));
+    return await C().of("base64").convert(u8, deleteStartLength(options));
   }
 
   protected async _toText(

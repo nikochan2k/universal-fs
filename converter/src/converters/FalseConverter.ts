@@ -18,7 +18,7 @@ export class FalseConverter implements Converter<any> {
     throw new Error("Method not implemented.");
   }
 
-  public match(_: unknown): _ is any {
+  public is(_: unknown): _ is any {
     return false;
   }
 

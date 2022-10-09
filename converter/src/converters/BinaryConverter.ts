@@ -21,7 +21,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public match(input: unknown, options: ConvertOptions): input is string {
+  public is(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "binary";
   }
 
@@ -37,10 +37,7 @@ export class BinaryConverter extends AbstractConverter<string> {
       return input.substring(start, end);
     }
 
-    if (
-      C().converterOf("blob").match(input, options) &&
-      hasReadAsBinaryStringOnBlob
-    ) {
+    if (C().of("blob").is(input, options) && hasReadAsBinaryStringOnBlob) {
       const startEnd = getStartEnd(options, input.size);
       let start = startEnd.start;
       const end = startEnd.end as number;
@@ -58,7 +55,7 @@ export class BinaryConverter extends AbstractConverter<string> {
       return chunks.join("");
     }
 
-    const u8 = await C().converterOf("uint8array").convert(input, options);
+    const u8 = await C().of("uint8array").convert(input, options);
     return Array.from(u8, (e) => String.fromCharCode(e)).join("");
   }
 

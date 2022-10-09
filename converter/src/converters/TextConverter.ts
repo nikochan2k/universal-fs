@@ -17,7 +17,7 @@ export class TextConverter extends AbstractConverter<string> {
     return "";
   }
 
-  public match(input: unknown, options: ConvertOptions): input is string {
+  public is(input: unknown, options: ConvertOptions): input is string {
     return typeof input === "string" && options.srcStringType === "text";
   }
 
@@ -63,9 +63,7 @@ export class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this.toUint8Array(input, options);
-    return await C()
-      .converterOf("uint8array")
-      .toBase64(u8, deleteStartLength(options));
+    return await C().of("uint8array").toBase64(u8, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -89,7 +87,7 @@ export class TextConverter extends AbstractConverter<string> {
   ): Promise<Uint8Array> {
     const textHelper = await getTextHelper();
     const u8 = await textHelper.textToBuffer(input, options);
-    return await C().converterOf("uint8array").toUint8Array(u8, options);
+    return await C().of("uint8array").toUint8Array(u8, options);
   }
 }
 

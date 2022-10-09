@@ -25,7 +25,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     return EMPTY_BLOB;
   }
 
-  public match(input: unknown): input is Blob {
+  public is(input: unknown): input is Blob {
     return hasBlob && input instanceof Blob;
   }
 
@@ -33,7 +33,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     input: Data,
     options: ConvertOptions
   ): Promise<Blob | undefined> {
-    if (this.match(input)) {
+    if (this.is(input)) {
       if (hasNoStartLength(options)) {
         return input;
       }
@@ -41,7 +41,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    const u8 = await C().converterOf("uint8array").convert(input, options);
+    const u8 = await C().of("uint8array").convert(input, options);
     return new Blob([u8]);
   }
 
@@ -118,7 +118,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
   ): Promise<Uint8Array> {
     if (hasArrayBufferOnBlob) {
       const ab = await input.arrayBuffer();
-      return await C().converterOf("arraybuffer").toUint8Array(ab, options);
+      return await C().of("arraybuffer").toUint8Array(ab, options);
     }
 
     const startEnd = await this._getStartEnd(input, options);
@@ -160,11 +160,11 @@ export class BlobConverter extends AbstractConverter<Blob> {
         index += size;
         return Promise.resolve(end == null || index < end);
       });
-      return await C().converterOf("uint8array").merge(chunks, options);
+      return await C().of("uint8array").merge(chunks, options);
     }
 
     const base64 = await this.toBase64(input, options);
-    return await C().converterOf("uint8array").convert(base64);
+    return await C().of("uint8array").convert(base64);
   }
 }
 
