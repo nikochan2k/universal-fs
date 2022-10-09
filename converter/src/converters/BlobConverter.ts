@@ -1,4 +1,4 @@
-import { C, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, C } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -41,7 +41,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
       return input.slice(start, end);
     }
 
-    const u8 = await C().of("uint8array").convert(input, options);
+    const u8 = await C().convert("uint8array", input, options);
     return new Blob([u8]);
   }
 
@@ -142,6 +142,8 @@ export class BlobConverter extends AbstractConverter<Blob> {
 
       return u8;
     }
+
+    const u8ac = C().of("uint8array");
     if (hasStreamOnBlob) {
       const readable = input.stream() as unknown as ReadableStream<Uint8Array>;
       const chunks: Uint8Array[] = [];
@@ -160,11 +162,11 @@ export class BlobConverter extends AbstractConverter<Blob> {
         index += size;
         return Promise.resolve(end == null || index < end);
       });
-      return await C().of("uint8array").merge(chunks, options);
+      return await u8ac.merge(chunks, options);
     }
 
     const base64 = await this.toBase64(input, options);
-    return await C().of("uint8array").convert(base64);
+    return await u8ac.convert(base64);
   }
 }
 
