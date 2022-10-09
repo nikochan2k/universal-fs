@@ -1,4 +1,4 @@
-□ArrayBuffer => ArrayBufferLike
+☑︎ArrayBuffer => ArrayBufferLike
 □Memory filesystem
 □add glob to find/delete method.
 ☑︎Azure
