@@ -156,7 +156,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
           let e = index + size;
           if (end < e) e = end;
           if (index < start && start < e) {
-            chunks.push(u8.slice(start, e));
+            chunks.push(u8.subarray(start, e));
           } else if (start <= index) {
             chunks.push(u8);
           }

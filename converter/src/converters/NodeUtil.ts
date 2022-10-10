@@ -327,7 +327,3 @@ export function newBuffer(size: number) {
 export function newBufferFrom(ab: ArrayBufferLike) {
   return isNode ? Buffer.from(ab) : new Uint8Array(ab);
 }
-
-export function slice(u8: Uint8Array, start: number, end: number | undefined) {
-  return isBuffer(u8) ? u8.subarray(start, end) : u8.slice(start, end);
-}

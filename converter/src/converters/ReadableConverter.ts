@@ -47,7 +47,7 @@ export class PartialReadable extends Readable {
         range :   |--|
         buffer: |-------|
         */
-        chunk = u8.slice(this.start - iStart, u8End);
+        chunk = u8.subarray(this.start - iStart, u8End);
       } else if (this.start < iStart && iStart < this.end) {
         /*
         range : |-------|
@@ -55,7 +55,7 @@ export class PartialReadable extends Readable {
         range : |-------|
         buffer:   |-----|
         */
-        chunk = u8.slice(0, u8End);
+        chunk = u8.subarray(0, u8End);
       }
       if (chunk) {
         this.push(chunk);
@@ -111,7 +111,7 @@ class ReadableOfReadableStream extends Readable {
             range :   |--|
             buffer: |-------|
             */
-            chunk = u8.slice(this.start - iStart, u8End);
+            chunk = u8.subarray(this.start - iStart, u8End);
           } else if (this.start < iStart && iStart < this.end) {
             /*
             range : |-------|
@@ -119,7 +119,7 @@ class ReadableOfReadableStream extends Readable {
             range : |-------|
             buffer:   |-----|
             */
-            chunk = u8.slice(0, u8End);
+            chunk = u8.subarray(0, u8End);
           }
           if (chunk) {
             this.push(chunk);

@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isBuffer, isNode, newBuffer, newBufferFrom, slice } from "./NodeUtil";
+import { isBuffer, isNode, newBuffer, newBufferFrom } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
@@ -116,6 +116,6 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
       return input;
     }
     const { start, end } = await this._getStartEnd(input, options);
-    return slice(input, start, end);
+    return input.subarray(start, end);
   }
 }

@@ -54,7 +54,7 @@ export function createPartialReadableStream(
             range :   |--|
             buffer: |-------|
             */
-            chunk = u8.slice(start - iStart, u8End);
+            chunk = u8.subarray(start - iStart, u8End);
           } else if (start < iStart && iStart < end) {
             /*
             range : |-------|
@@ -62,7 +62,7 @@ export function createPartialReadableStream(
             range : |-------|
             buffer:   |-----|
             */
-            chunk = u8.slice(0, u8End);
+            chunk = u8.subarray(0, u8End);
           }
           if (chunk) {
             controller.enqueue(chunk);
@@ -108,7 +108,7 @@ function createReadableStreamOfReader(
           range :   |--|
           buffer: |-------|
           */
-          chunk = u8.slice(start - iStart, u8End);
+          chunk = u8.subarray(start - iStart, u8End);
         } else if (start < iStart && iStart < end) {
           /*
           range : |-------|
@@ -116,7 +116,7 @@ function createReadableStreamOfReader(
           range : |-------|
           buffer:   |-----|
           */
-          chunk = u8.slice(0, u8End);
+          chunk = u8.subarray(0, u8End);
         }
         if (chunk) {
           controller.enqueue(chunk);
