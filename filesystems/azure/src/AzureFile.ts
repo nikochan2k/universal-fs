@@ -1,12 +1,5 @@
 import { Readable } from "stream";
-import {
-  arrayBufferConverter,
-  Data,
-  isBrowser,
-  isNode,
-  readableConverter,
-  uint8ArrayConverter,
-} from "univ-conv";
+import { Data, isNode } from "univ-conv";
 import {
   AbstractFile,
   createMetadata,
@@ -61,24 +54,20 @@ export class AzureFile extends AbstractFile {
   ): Promise<void> {
     const afs = this.afs;
     const path = this.path;
-    const converter = this._getConverter();
 
     try {
+      const conv = await this._getConverter();
       const client = afs._getBlockBlobClient(path, false);
-      if (readableConverter().is(data)) {
-        const readable = await converter.toReadable(data, options);
-        await client.uploadStream(readable);
-      } else if (uint8ArrayConverter().is(data)) {
-        const u8 = await converter.toUint8Array(data);
-        await client.uploadData(u8);
-      } else if (arrayBufferConverter().is(data)) {
-        const ab = await converter.toArrayBuffer(data);
-        await client.uploadData(ab);
-      } else if (isBrowser) {
-        const blob = await converter.toBlob(data, options);
-        await client.uploadData(blob);
+      if (conv.is("readable", data)) {
+        await client.uploadStream(data);
+      } else if (
+        conv.is("uint8array", data) ||
+        conv.is("arraybuffer", data) ||
+        conv.is("blob", data)
+      ) {
+        await client.uploadData(data);
       } else {
-        const u8 = await converter.toUint8Array(data, options);
+        const u8 = await conv.convert("uint8array", data, options);
         await client.uploadData(u8);
       }
 
