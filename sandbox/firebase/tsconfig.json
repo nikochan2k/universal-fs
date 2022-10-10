@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
   "include": ["src/**/*.ts", "src/**/*.json"],
-  "exclude": ["lib"]
+  "exclude": ["lib", "commonjs", "dist"]
 }

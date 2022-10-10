@@ -1,6 +1,6 @@
 import { ExistsAction, NoParentAction, NotExistAction } from "univ-fs";
 import { FirebaseFileSystem } from "../FirebaseFileSystem";
-import * as config from "./secret.json";
+import config from "./secret.json";
 
 export const fs = new FirebaseFileSystem("nikochan2k-test", config);
 

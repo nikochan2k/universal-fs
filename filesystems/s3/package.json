@@ -2,11 +2,13 @@
   "name": "univ-fs-s3",
   "version": "0.10.1",
   "description": "The universal Filesystem API for S3 SDK v2",
-  "main": "lib/index.js",
+  "main": "commonjs/index.js",
   "browser": "dist/univ-fs-s3.js",
+  "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
   "files": [
+    "commonjs",
     "lib",
     "dist"
   ],

@@ -6,5 +6,5 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*.ts", "src/**/*.json"],
-  "exclude": ["lib"]
+  "exclude": ["lib", "commonjs"]
 }

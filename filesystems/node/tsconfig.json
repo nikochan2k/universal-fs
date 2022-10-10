@@ -4,5 +4,5 @@
     "outDir": "lib",
     "rootDir": "src"
   },
-  "exclude": ["commonjs"]
+  "exclude": ["lib", "commonjs"]
 }

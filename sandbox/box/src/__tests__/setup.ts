@@ -1,6 +1,6 @@
 import { ExistsAction, NoParentAction, NotExistAction } from "univ-fs";
 import { BoxFileSystem } from "../BoxFileSystem";
-import * as config from "./secret-developer.json";
+import config from "./secret-developer.json";
 
 export const fs = new BoxFileSystem(
   "univ-fs-test",

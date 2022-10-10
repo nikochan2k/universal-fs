@@ -6,13 +6,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { Readable } from "stream";
-import {
-  Data,
-  isBrowser,
-  isNode,
-  readableConverter,
-  readableStreamConverter,
-} from "univ-conv";
+import { Data, isBrowser } from "univ-conv";
 import {
   AbstractFile,
   createMetadata,
@@ -74,20 +68,21 @@ export class S3File extends AbstractFile {
   ): Promise<void> {
     const s3fs = this.s3fs;
     const path = this.path;
-    const converter = this._getConverter();
 
     try {
-      let body: Readable | ReadableStream<unknown> | Blob | Uint8Array;
-      if (readableConverter().is(data)) {
-        body = await converter.toReadable(data, options);
-      } else if (readableStreamConverter().is(data)) {
-        body = await converter.toReadableStream(data, options);
+      const conv = await this._getConverter();
+      let body: Readable | Blob | Uint8Array | string;
+      if (
+        conv.is("readable", data) ||
+        conv.is("blob", data) ||
+        conv.is("uint8array", data) ||
+        conv.is("text", data, options)
+      ) {
+        body = data;
       } else if (isBrowser) {
-        body = await converter.toBlob(data, options);
-      } else if (isNode) {
-        body = await converter.toBuffer(data, options);
+        body = await conv.convert("blob", data, options);
       } else {
-        body = await converter.toUint8Array(data, options);
+        body = await conv.convert("uint8array", data, options);
       }
 
       let metadata: { [key: string]: string } | undefined;
@@ -96,7 +91,7 @@ export class S3File extends AbstractFile {
       }
 
       const client = await s3fs._getClient();
-      if (readableConverter().is(body) || readableStreamConverter().is(body)) {
+      if (conv.is("readable", body)) {
         const upload = new Upload({
           client,
           params: {
@@ -107,7 +102,7 @@ export class S3File extends AbstractFile {
         });
         await upload.done();
       } else {
-        const length = await converter.getSize(body as Data);
+        const length = await conv.size(body);
         const cmd = new PutObjectCommand({
           ...s3fs._createCommand(path, false),
           Body: body,

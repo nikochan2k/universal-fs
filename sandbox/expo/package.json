@@ -6,6 +6,7 @@
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
   "files": [
+    "commonjs",
     "lib"
   ],
   "keywords": [
@@ -17,9 +18,10 @@
     "expo"
   ],
   "scripts": {
-    "clean": "rimraf ./commonjs ./dist ./tsconfig.tsbuildinfo",
+    "clean": "rimraf ./lib ./commonjs ./tsconfig.tsbuildinfo",
+    "compile-lib": "tsc --module ES2020 --outDir lib",
     "compile-commonjs": "tsc --module CommonJS --outDir commonjs",
-    "build": "npm-run-all clean compile-commonjs",
+    "build": "npm-run-all clean compile-lib compile-commonjs",
     "jest": "jest --runInBand",
     "test": "npm-run-all compile-commonjs jest",
     "npm-publish-dry-run": "npm publish --dry-run",

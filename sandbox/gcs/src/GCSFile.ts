@@ -1,4 +1,4 @@
-import { Data, hasReadable, readableConverter } from "univ-conv";
+import { Data, isNode } from "univ-conv";
 import { AbstractFile, Stats, WriteOptions } from "univ-fs";
 import { GCSFileSystem } from "./GCSFileSystem";
 
@@ -23,7 +23,7 @@ export class GCSFile extends AbstractFile {
     const path = this.path;
     try {
       const file = gfs._getEntry(path, false);
-      if (hasReadable) {
+      if (isNode) {
         return file.createReadStream();
       } else {
         const res = await file.download();
@@ -41,16 +41,16 @@ export class GCSFile extends AbstractFile {
   ): Promise<void> {
     const gfs = this.gfs;
     const path = this.path;
-    const converter = this._getConverter();
     const file = this.gfs._getEntry(path, false);
 
     try {
-      if (readableConverter().is(data)) {
-        const readable = await converter.toReadable(data, options);
+      const conv = await this._getConverter();
+      if (conv.is("readable", data)) {
+        const readable = data;
         const writable = file.createWriteStream();
-        await converter.pipe(readable, writable, options);
+        await conv.pipe(readable, writable, options);
       } else {
-        const buffer = await converter.toBuffer(data);
+        const buffer = (await conv.convert("uint8array", data)) as Buffer;
         await file.save(buffer);
       }
     } catch (e) {

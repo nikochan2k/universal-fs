@@ -1,6 +1,6 @@
 import { deleteObject, uploadBytes } from "@firebase/storage";
 import fetch from "isomorphic-fetch";
-import { Data, isNode } from "univ-conv";
+import { Data, isBrowser } from "univ-conv";
 import {
   AbstractFile,
   NotFoundError,
@@ -66,16 +66,16 @@ export class FirebaseFile extends AbstractFile {
   ): Promise<void> {
     const ffs = this.ffs;
     const path = this.path;
-    const converter = this._getConverter();
+    const conv = await this._getConverter();
 
     const file = await this.ffs._getEntry(path, false);
     try {
-      if (isNode) {
-        const buffer = await converter.toBuffer(data, options);
-        await uploadBytes(file, buffer);
-      } else {
-        const blob = await converter.toBlob(data, options);
+      if (isBrowser) {
+        const blob = await conv.convert("blob", data, options);
         await uploadBytes(file, blob);
+      } else {
+        const buffer = await conv.convert("arraybuffer", data, options);
+        await uploadBytes(file, buffer);
       }
     } catch (e) {
       throw ffs._error(path, e, true);
