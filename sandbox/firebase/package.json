@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.36",
-    "firebase": "^9.10.0",
+    "firebase": "^9.11.0",
     "isomorphic-fetch": "^3.0.0",
     "univ-fs": "file:../../core"
   },

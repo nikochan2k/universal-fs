@@ -41,7 +41,7 @@
     ]
   },
   "devDependencies": {
-    "box-node-sdk": "^2.5.0",
+    "box-node-sdk": "^2.6.0",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

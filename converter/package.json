@@ -51,7 +51,7 @@
     ]
   },
   "devDependencies": {
-    "@types/encoding-japanese": "^2.0.0",
+    "@types/encoding-japanese": "^2.0.1",
     "@types/fast-text-encoding": "^1.0.1",
     "encoding-japanese": "^2.0.0"
   },
