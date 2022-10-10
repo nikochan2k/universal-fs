@@ -47,13 +47,13 @@ export class IdbFile extends AbstractFile {
                 });
               }
 
-              const converter = this._getConverter();
+              const conv = await this._getConverter();
               if (idbFS.storeType === "blob") {
-                result = await converter.toBlob(result);
+                result = await conv.convert("blob", result);
               } else if (idbFS.storeType === "arraybuffer") {
-                result = await converter.toArrayBuffer(result);
+                result = await conv.convert("arraybuffer", result);
               } else {
-                result = await converter.toArrayBuffer(result, {
+                result = await conv.convert("binary", result, {
                   srcStringType: "binary",
                 });
               }
@@ -75,14 +75,14 @@ export class IdbFile extends AbstractFile {
     options: WriteOptions
   ): Promise<void> {
     const idbFS = this.idbFS;
-    const converter = this._getConverter();
+    const conv = await this._getConverter();
     let content: Blob | ArrayBuffer | string;
     if (idbFS.storeType === "blob") {
-      content = await converter.toBlob(data, options);
+      content = await conv.convert("blob", data, options);
     } else if (idbFS.storeType === "arraybuffer") {
-      content = await converter.toArrayBuffer(data, options);
+      content = await conv.convert("arraybuffer", data, options);
     } else {
-      content = await converter.toBinary(data, options);
+      content = await conv.convert("binary", data, options);
     }
 
     const path = this.path;
@@ -95,7 +95,7 @@ export class IdbFile extends AbstractFile {
           contentReq.onsuccess = async () => {
             try {
               stats = stats ?? { created: Date.now() };
-              stats.size = await converter.getSize(content, options);
+              stats.size = await conv.size(content, options);
               stats.accessed = stats.modified = Date.now();
               await idbFS._doPatch(path, {}, stats, options);
               resolve();
