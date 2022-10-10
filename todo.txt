@@ -2,6 +2,7 @@ export MINIO_ACCESS_KEY=minioadmin
 export MINIO_SECRET_KEY=minioadmin
 
 ☑︎ArrayBuffer => ArrayBufferLike
+□NumberArrayConverter
 □Memory filesystem
 □add glob to find/delete method.
 ☑︎Azure
@@ -13,5 +14,4 @@ export MINIO_SECRET_KEY=minioadmin
 　□Firebase
 　□GCS
 □Delete Version Management on S3, etc...
-□Readable to NodeJS.ReadableStream
 □MIME type detection
