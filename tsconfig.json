@@ -20,7 +20,6 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   }
 }
