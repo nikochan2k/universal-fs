@@ -56,7 +56,7 @@ export class HexConverter extends AbstractConverter<string> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<string | undefined> {
+  ): Promise<string> {
     if (typeof input === "string" && options.srcStringType === "hex") {
       if (hasNoStartLength(options)) {
         return input;
@@ -74,10 +74,6 @@ export class HexConverter extends AbstractConverter<string> {
     );
   }
 
-  protected _size(input: string): Promise<number> {
-    return Promise.resolve(input.length / 2);
-  }
-
   protected _getStartEnd(
     input: string,
     options: ConvertOptions
@@ -91,6 +87,10 @@ export class HexConverter extends AbstractConverter<string> {
 
   protected async _merge(chunks: string[]): Promise<string> {
     return Promise.resolve(chunks.join(""));
+  }
+
+  protected _size(input: string): Promise<number> {
+    return Promise.resolve(input.length / 2);
   }
 
   protected async _toArrayBuffer(

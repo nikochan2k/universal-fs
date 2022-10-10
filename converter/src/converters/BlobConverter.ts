@@ -32,7 +32,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<Blob | undefined> {
+  ): Promise<Blob> {
     if (this.is(input)) {
       if (hasNoStartLength(options)) {
         return input;
@@ -43,10 +43,6 @@ export class BlobConverter extends AbstractConverter<Blob> {
 
     const u8 = await _().convert("uint8array", input, options);
     return new Blob([u8]);
-  }
-
-  protected _size(input: Blob): Promise<number> {
-    return Promise.resolve(input.size);
   }
 
   protected _getStartEnd(
@@ -62,6 +58,10 @@ export class BlobConverter extends AbstractConverter<Blob> {
 
   protected _merge(chunks: Blob[]): Promise<Blob> {
     return Promise.resolve(new Blob(chunks));
+  }
+
+  protected _size(input: Blob): Promise<number> {
+    return Promise.resolve(input.size);
   }
 
   protected async _toArrayBuffer(

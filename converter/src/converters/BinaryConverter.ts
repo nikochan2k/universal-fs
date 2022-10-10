@@ -28,7 +28,7 @@ export class BinaryConverter extends AbstractConverter<string> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<string | undefined> {
+  ): Promise<string> {
     if (typeof input === "string" && options.srcStringType === "binary") {
       if (hasNoStartLength(options)) {
         return input;
@@ -59,10 +59,6 @@ export class BinaryConverter extends AbstractConverter<string> {
     return Array.from(u8, (e) => String.fromCharCode(e)).join("");
   }
 
-  protected _size(input: string): Promise<number> {
-    return Promise.resolve(input.length);
-  }
-
   protected _getStartEnd(
     input: string,
     options: ConvertOptions
@@ -76,6 +72,10 @@ export class BinaryConverter extends AbstractConverter<string> {
 
   protected _merge(chunks: string[]): Promise<string> {
     return Promise.resolve(chunks.join(""));
+  }
+
+  protected _size(input: string): Promise<number> {
+    return Promise.resolve(input.length);
   }
 
   protected async _toArrayBuffer(

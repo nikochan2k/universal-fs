@@ -105,10 +105,7 @@ export abstract class AbstractConverter<T extends Data>
     options?: Partial<ConvertOptions>
   ): input is T;
 
-  protected abstract _convert(
-    input: Data,
-    options: ConvertOptions
-  ): Promise<T | undefined>;
+  protected abstract _convert(input: Data, options: ConvertOptions): Promise<T>;
   protected abstract _getStartEnd(
     input: T,
     options: ConvertOptions

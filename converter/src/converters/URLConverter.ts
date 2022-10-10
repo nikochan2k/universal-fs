@@ -41,7 +41,7 @@ export class URLConverter extends AbstractConverter<string> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<string | undefined> {
+  ): Promise<string> {
     let url: string;
     const type = options.dstURLType;
     if (type === "file" && toFileURL) {
@@ -55,6 +55,40 @@ export class URLConverter extends AbstractConverter<string> {
       url = "data:application/octet-stream;base64," + base64;
     }
     return url;
+  }
+
+  protected async _getStartEnd(
+    input: string,
+    options: ConvertOptions
+  ): Promise<{ start: number; end: number | undefined }> {
+    const size = await this._size(input);
+    return getStartEnd(options, size);
+  }
+
+  protected _isEmpty(input: string): boolean {
+    return !/^(file|http|https|blob|data):/.test(input);
+  }
+
+  protected async _merge(urls: string[], options: Options): Promise<string> {
+    if (isNode) {
+      const merged = await _().merge("readable", urls, options);
+      return await this._convert(merged, {
+        ...options,
+        dstURLType: "file",
+      });
+    } else if (isBrowser) {
+      const merged = await _().merge("readablestream", urls, options);
+      return await this._convert(merged, {
+        ...options,
+        dstURLType: "blob",
+      });
+    } else {
+      const merged = await _().merge("arraybuffer", urls, options);
+      return await this._convert(merged, {
+        ...options,
+        dstURLType: "data",
+      });
+    }
   }
 
   protected async _size(input: string): Promise<number> {
@@ -76,40 +110,6 @@ export class URLConverter extends AbstractConverter<string> {
       }
     }
     throw new Error(`Cannot get size of ${input}`);
-  }
-
-  protected async _getStartEnd(
-    input: string,
-    options: ConvertOptions
-  ): Promise<{ start: number; end: number | undefined }> {
-    const size = await this._size(input);
-    return getStartEnd(options, size);
-  }
-
-  protected _isEmpty(input: string): boolean {
-    return !/^(file|http|https|blob|data):/.test(input);
-  }
-
-  protected async _merge(urls: string[], options: Options): Promise<string> {
-    if (isNode) {
-      const merged = await _().merge("readable", urls, options);
-      return (await this._convert(merged, {
-        ...options,
-        dstURLType: "file",
-      })) as string;
-    } else if (isBrowser) {
-      const merged = await _().merge("readablestream", urls, options);
-      return (await this._convert(merged, {
-        ...options,
-        dstURLType: "blob",
-      })) as string;
-    } else {
-      const merged = await _().merge("arraybuffer", urls, options);
-      return (await this._convert(merged, {
-        ...options,
-        dstURLType: "data",
-      })) as string;
-    }
   }
 
   protected async _toArrayBuffer(

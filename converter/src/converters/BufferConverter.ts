@@ -23,7 +23,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<Buffer | undefined> {
+  ): Promise<Buffer> {
     if (this.is(input)) {
       return await (this.toUint8Array(input, options) as Promise<Buffer>);
     }
@@ -53,10 +53,6 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     return Buffer.from(ab);
   }
 
-  protected _size(input: Buffer): Promise<number> {
-    return Promise.resolve(input.byteLength);
-  }
-
   protected _getStartEnd(
     input: ArrayBuffer,
     options: ConvertOptions
@@ -70,6 +66,10 @@ export class BufferConverter extends AbstractConverter<Buffer> {
 
   protected _merge(chunks: Buffer[]): Promise<Buffer> {
     return Promise.resolve(Buffer.concat(chunks));
+  }
+
+  protected _size(input: Buffer): Promise<number> {
+    return Promise.resolve(input.byteLength);
   }
 
   protected async _toArrayBuffer(

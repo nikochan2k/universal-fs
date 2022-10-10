@@ -153,7 +153,7 @@ export class ReadableStreamConverter extends AbstractConverter<
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<ReadableStream<Uint8Array> | undefined> {
+  ): Promise<ReadableStream<Uint8Array>> {
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
@@ -190,10 +190,6 @@ export class ReadableStreamConverter extends AbstractConverter<
     const u8 = await _().convert("uint8array", input, options);
     const { start, end } = getStartEnd(options, u8.byteLength);
     return createReadableStream(u8.slice(start, end));
-  }
-
-  protected _size(): Promise<number> {
-    throw new Error("Cannot get size of ReadableStream");
   }
 
   protected _getStartEnd(
@@ -241,6 +237,10 @@ export class ReadableStreamConverter extends AbstractConverter<
         },
       })
     );
+  }
+
+  protected _size(): Promise<number> {
+    throw new Error("Cannot get size of ReadableStream");
   }
 
   protected async _toArrayBuffer(

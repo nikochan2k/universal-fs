@@ -28,13 +28,9 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<Uint8Array | undefined> {
+  ): Promise<Uint8Array> {
     const converter = _()._find(input, options);
     return await converter.toUint8Array(input, options);
-  }
-
-  protected _size(input: Uint8Array): Promise<number> {
-    return Promise.resolve(input.byteLength);
   }
 
   protected _getStartEnd(
@@ -60,6 +56,10 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
       pos += chunk.byteLength;
     }
     return Promise.resolve(u8);
+  }
+
+  protected _size(input: Uint8Array): Promise<number> {
+    return Promise.resolve(input.byteLength);
   }
 
   protected async _toArrayBuffer(

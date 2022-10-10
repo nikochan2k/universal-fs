@@ -24,14 +24,9 @@ export class TextConverter extends AbstractConverter<string> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<string | undefined> {
+  ): Promise<string> {
     const converter = _()._find(input, options);
     return await converter.toText(input, options);
-  }
-
-  protected async _size(input: string, options: Options): Promise<number> {
-    const u8 = await this.toUint8Array(input, deleteStartLength(options));
-    return u8.byteLength;
   }
 
   protected async _getStartEnd(
@@ -48,6 +43,11 @@ export class TextConverter extends AbstractConverter<string> {
 
   protected _merge(chunks: string[]): Promise<string> {
     return Promise.resolve(chunks.join(""));
+  }
+
+  protected async _size(input: string, options: Options): Promise<number> {
+    const u8 = await this.toUint8Array(input, deleteStartLength(options));
+    return u8.byteLength;
   }
 
   protected async _toArrayBuffer(

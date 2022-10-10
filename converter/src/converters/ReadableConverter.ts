@@ -157,7 +157,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
   protected async _convert(
     input: Data,
     options: ConvertOptions
-  ): Promise<Readable | undefined> {
+  ): Promise<Readable> {
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
@@ -188,10 +188,6 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     duplex.push(buffer);
     duplex.push(null);
     return duplex;
-  }
-
-  protected _size(): Promise<number> {
-    throw new Error("Cannot get size of Readable");
   }
 
   protected _getStartEnd(
@@ -234,6 +230,10 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     };
     process(0);
     return Promise.resolve(pt);
+  }
+
+  protected _size(): Promise<number> {
+    throw new Error("Cannot get size of Readable");
   }
 
   protected async _toArrayBuffer(
