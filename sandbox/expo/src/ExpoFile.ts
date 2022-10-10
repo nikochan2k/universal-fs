@@ -53,8 +53,8 @@ export class ExpoFile extends AbstractFile {
         position,
         length,
       });
-      const converter = this._getConverter();
-      const u8 = await converter.toUint8Array(base64, {
+      const conv = await this._getConverter();
+      const u8 = await conv.convert("uint8array", base64, {
         srcStringType: "base64",
         bufferSize: options.bufferSize,
       });
@@ -73,8 +73,8 @@ export class ExpoFile extends AbstractFile {
     options: WriteOptions
   ): Promise<void> {
     try {
-      const converter = this._getConverter();
-      const base64 = await converter.toBase64(data, {
+      const conv = await this._getConverter();
+      const base64 = await conv.convert("base64", data, {
         srcStringType: options.srcStringType,
         bufferSize: options.bufferSize,
       });
