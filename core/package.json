@@ -40,13 +40,13 @@
     ]
   },
   "dependencies": {
-    "sha256-uint8array": "^0.10.3"
+    "sha256-uint8array": "^0.10.0"
   },
   "devDependencies": {
     "univ-conv": "file:../converter"
   },
   "peerDependencies": {
-    "univ-conv": "~0.9.0"
+    "univ-conv": "~0.10.0"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT",
