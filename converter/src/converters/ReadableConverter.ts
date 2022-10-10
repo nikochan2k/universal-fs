@@ -1,5 +1,5 @@
 import { Duplex, PassThrough, Readable } from "stream";
-import { _, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -11,7 +11,6 @@ import {
   EMPTY_BUFFER,
   fileURLToReadable,
   handleReadable,
-  hasStreamOnBlob,
   isNode,
   isReadable,
 } from "./NodeUtil";
@@ -170,10 +169,6 @@ export class ReadableConverter extends AbstractConverter<Readable> {
         input = await fileURLToReadable(input);
       }
     }
-    if (_()._is("blob", input, options) && hasStreamOnBlob) {
-      input = input.stream() as unknown as ReadableStream;
-    }
-
     if (this.is(input)) {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
@@ -240,7 +235,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     input: Readable,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
   }
 
@@ -248,7 +243,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     input: Readable,
     options: ConvertOptions
   ): Promise<string> {
-    const buffer = (await this.toUint8Array(input, options)) as Buffer;
+    const buffer = (await this._toUint8Array(input, options)) as Buffer;
     return await _()._of("buffer").toBase64(buffer, deleteStartLength(options));
   }
 
@@ -256,7 +251,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     input: Readable,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     const textHelper = await getTextHelper();
     return await textHelper.bufferToText(u8, options);
   }
@@ -277,7 +272,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       let e = index + size;
       if (end != null && end < e) e = end;
       if (index < start && start < e) {
-        chunks.push(buffer.slice(start, e));
+        chunks.push(buffer.subarray(start, e));
       } else if (start <= index) {
         chunks.push(buffer);
       }
@@ -287,5 +282,3 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     return Buffer.concat(chunks);
   }
 }
-
-export const INSTANCE = new ReadableConverter();
