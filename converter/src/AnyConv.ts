@@ -40,7 +40,7 @@ class DefaultAnyConv implements AnyConvInternal {
       return "" as T;
     }
     const converter = this._find(input);
-    return converter.empty() as T;
+    return converter.empty();
   }
 
   public _emptyOf<T extends DataType>(type: T): ReturnData<T> {
@@ -48,13 +48,13 @@ class DefaultAnyConv implements AnyConvInternal {
     return converter.empty();
   }
 
-  public _find(
-    input: Data,
+  public _find<T extends Data>(
+    input: T,
     options?: Partial<ConvertOptions>
-  ): Converter<Data> {
+  ): Converter<T> {
     for (const converter of this.converters.values()) {
       if (converter.is(input, options)) {
-        return converter;
+        return converter as Converter<T>;
       }
     }
     throw new Error(
@@ -135,10 +135,10 @@ class DefaultAnyConv implements AnyConvInternal {
     return await converter.size(input, options);
   }
 
-  public async slice(
-    input: Data,
+  public async slice<T extends Data>(
+    input: T,
     options: Partial<ConvertOptions>
-  ): Promise<Data> {
+  ): Promise<T> {
     if (
       typeof options.start !== "number" &&
       typeof options.length !== "number"
