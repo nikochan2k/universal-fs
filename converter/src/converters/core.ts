@@ -84,7 +84,7 @@ export interface AnyConv {
     options?: Partial<ConvertOptions>
   ): Promise<void>;
   size(input: Data, options?: Partial<Options>): Promise<number>;
-  slice(input: Data, options: Partial<ConvertOptions>): Promise<Data>;
+  slice<T extends Data>(input: T, options: Partial<ConvertOptions>): Promise<T>;
 }
 
 export const DEFAULT_BUFFER_SIZE = 96 * 1024;
