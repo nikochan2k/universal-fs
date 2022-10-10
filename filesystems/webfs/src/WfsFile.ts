@@ -59,10 +59,10 @@ export class WfsFile extends AbstractFile {
     const path = this.path;
     const fullPath = joinPaths(repository, path);
 
-    const converter = this._getConverter();
+    const conv = await this._getConverter();
     const co: Partial<ConvertOptions> = { ...options };
     delete co.start;
-    const stream = await converter.toReadableStream(data, co);
+    const stream = await conv.convert("readablestream", data, co);
 
     const fs = await this.wfs._getFS();
     const writer = await new Promise<FileWriter>((resolve, reject) => {
@@ -92,7 +92,7 @@ export class WfsFile extends AbstractFile {
     });
 
     await handleReadableStream(stream, async (chunk) => {
-      const blob = await converter.toBlob(chunk);
+      const blob = await conv.convert("blob", chunk);
       await new Promise((resolve, reject) => {
         this._handle(writer, resolve, reject);
         writer.write(blob);
