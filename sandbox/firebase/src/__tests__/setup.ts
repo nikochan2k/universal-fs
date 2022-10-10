@@ -1,8 +1,8 @@
 import { ExistsAction, NoParentAction, NotExistAction } from "univ-fs";
 import { FirebaseFileSystem } from "../FirebaseFileSystem";
-import firebaseConfig from "./secret.json";
+import * as config from "./secret.json";
 
-export const fs = new FirebaseFileSystem("nikochan2k-test", firebaseConfig);
+export const fs = new FirebaseFileSystem("nikochan2k-test", config);
 
 export const setup = async () => {
   const root = fs.getDirectory("/");

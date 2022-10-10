@@ -1,11 +1,11 @@
 import { ExistsAction, NoParentAction, NotExistAction } from "univ-fs";
 import { BoxFileSystem } from "../BoxFileSystem";
-import secret from "./secret-developer.json";
+import * as config from "./secret-developer.json";
 
 export const fs = new BoxFileSystem(
   "univ-fs-test",
-  secret.boxAppSettings,
-  secret.developerToken
+  config.boxAppSettings,
+  config.developerToken
 );
 
 export const setup = async () => {

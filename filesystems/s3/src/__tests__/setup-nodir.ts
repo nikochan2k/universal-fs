@@ -1,6 +1,6 @@
 import { ExistsAction, NoParentAction, NotExistAction } from "univ-fs";
 import { S3FileSystem } from "../S3FileSystem";
-import config from "./secret.json";
+import * as config from "./secret.json";
 
 export const fs = new S3FileSystem("univ-fs-test", "test-nodir", config, {
   canCreateDirectory: false,
