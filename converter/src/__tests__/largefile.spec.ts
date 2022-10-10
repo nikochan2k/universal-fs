@@ -2,7 +2,7 @@ import { createWriteStream, rmSync, statSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { getAnyConv } from "../AnyConv";
-import { AnyConvInternal } from "../converters/core";
+import { AnyConvInternal } from "../converters/AbstractConverter";
 
 const source = Buffer.alloc(1000 * 1024);
 

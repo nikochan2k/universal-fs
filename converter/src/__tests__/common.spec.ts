@@ -1,5 +1,5 @@
 import { getAnyConv } from "../AnyConv";
-import { AnyConvInternal } from "../converters/core";
+import { AnyConvInternal } from "../converters/AbstractConverter";
 import { hasBlob, hasReadableStream, isNode } from "../converters/NodeUtil";
 
 const head = "大谷翔平";

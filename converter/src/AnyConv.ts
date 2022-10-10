@@ -1,11 +1,13 @@
 import type { Writable } from "stream";
-import { AbstractConverter } from "./converters/AbstractConverter";
+import {
+  AbstractConverter,
+  AnyConvInternal,
+} from "./converters/AbstractConverter";
 import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
 import { Base64Converter } from "./converters/Base64Converter";
 import { BinaryConverter } from "./converters/BinaryConverter";
 import {
   AnyConv,
-  AnyConvInternal,
   Converter,
   ConvertOptions,
   Data,

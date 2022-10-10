@@ -82,18 +82,6 @@ export interface AnyConv {
   slice(input: Data, options: Partial<ConvertOptions>): Promise<Data>;
 }
 
-export interface AnyConvInternal extends AnyConv {
-  _empty<T extends Data>(input: T): T;
-  _emptyOf<T extends DataType>(type: T): ReturnData<T>;
-  _find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
-  _is<T extends DataType>(
-    type: T,
-    input: unknown,
-    options?: Partial<ConvertOptions>
-  ): input is ReturnData<T>;
-  _of<T extends DataType>(type: T): Converter<ReturnData<T>>;
-}
-
 export const DEFAULT_BUFFER_SIZE = 96 * 1024;
 export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);

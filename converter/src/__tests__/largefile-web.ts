@@ -1,5 +1,5 @@
 import { getAnyConv } from "../AnyConv";
-import { AnyConvInternal } from "../converters/core";
+import { AnyConvInternal } from "../converters/AbstractConverter";
 
 const ab = new ArrayBuffer(1000 * 1024);
 

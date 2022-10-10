@@ -1,5 +1,5 @@
 import {
-  AnyConvInternal,
+  AnyConv,
   Converter,
   ConvertOptions,
   Data,
@@ -10,8 +10,21 @@ import {
   getType,
   isEmpty,
   Options,
+  ReturnData,
 } from "./core";
 import { hasBlob, isNode } from "./NodeUtil";
+
+export interface AnyConvInternal extends AnyConv {
+  _empty<T extends Data>(input: T): T;
+  _emptyOf<T extends DataType>(type: T): ReturnData<T>;
+  _find(input: Data, options?: Partial<ConvertOptions>): Converter<Data>;
+  _is<T extends DataType>(
+    type: T,
+    input: unknown,
+    options?: Partial<ConvertOptions>
+  ): input is ReturnData<T>;
+  _of<T extends DataType>(type: T): Converter<ReturnData<T>>;
+}
 
 export function _() {
   return AbstractConverter._ANY_CONV;
