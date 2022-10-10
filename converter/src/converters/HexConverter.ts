@@ -126,7 +126,8 @@ export class HexConverter extends AbstractConverter<string> {
     let start = startEnd.start;
     const end = startEnd.end as number;
 
-    const u8 = isNode ? Buffer.alloc(end - start) : new Uint8Array(end - start);
+    const size = end - start;
+    const u8 = isNode ? Buffer.alloc(size) : new Uint8Array(size);
     for (; start < end; start++) {
       const ai = input[start * 2] as string;
       const a = MAP_HEX[ai];

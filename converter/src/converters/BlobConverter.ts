@@ -15,6 +15,7 @@ import {
   hasReadAsArrayBufferOnBlob,
   hasStreamOnBlob,
   hasTextOnBlob,
+  isNode,
 } from "./NodeUtil";
 import { dataUrlToBase64, getTextHelper } from "./StringUtil";
 
@@ -127,7 +128,8 @@ export class BlobConverter extends AbstractConverter<Blob> {
 
     const bufferSize = options.bufferSize;
     if (hasReadAsArrayBufferOnBlob) {
-      const u8 = new Uint8Array(end - start);
+      const size = end - start;
+      const u8 = isNode ? Buffer.alloc(size) : new Uint8Array(size);
       for (let index = 0; start < end; start += bufferSize) {
         let e = start + bufferSize;
         if (end < e) e = end;
@@ -136,7 +138,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
           (reader) => reader.readAsArrayBuffer(blobChunk),
           (data) => data as ArrayBuffer
         );
-        u8.set(new Uint8Array(chunk), index);
+        u8.set(isNode ? Buffer.from(chunk) : new Uint8Array(chunk), index);
         index += chunk.byteLength;
       }
 

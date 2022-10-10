@@ -1,5 +1,5 @@
 import { encode } from "base64-arraybuffer";
-import { _, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -54,10 +54,10 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     const byteLength = chunks.reduce((sum, chunk) => {
       return sum + chunk.byteLength;
     }, 0);
-    const u8 = new Uint8Array(byteLength);
+    const u8 = isNode ? Buffer.alloc(byteLength) : new Uint8Array(byteLength);
     let pos = 0;
     for (const chunk of chunks) {
-      u8.set(new Uint8Array(chunk), pos);
+      u8.set(isNode ? Buffer.from(chunk) : new Uint8Array(chunk), pos);
       pos += chunk.byteLength;
     }
     return Promise.resolve(u8.buffer);

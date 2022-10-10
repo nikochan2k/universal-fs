@@ -131,7 +131,7 @@ export class URLConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return await _()._of("uint8array").toBase64(u8, deleteStartLength(options));
   }
 
@@ -139,7 +139,7 @@ export class URLConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<string> {
-    const ab = await this.toArrayBuffer(input, options);
+    const ab = await this._toArrayBuffer(input, options);
     return _()._of("text").convert(ab, deleteStartLength(options));
   }
 
@@ -147,8 +147,8 @@ export class URLConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    const ab = await this.toArrayBuffer(input, options);
-    return new Uint8Array(ab);
+    const ab = await this._toArrayBuffer(input, options);
+    return isNode ? Buffer.from(ab) : new Uint8Array(ab);
   }
 }
 
