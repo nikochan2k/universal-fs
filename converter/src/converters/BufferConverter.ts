@@ -108,5 +108,3 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     return input.subarray(start, end);
   }
 }
-
-export const INSTANCE = new BufferConverter();

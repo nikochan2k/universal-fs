@@ -97,7 +97,7 @@ export class HexConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
   }
 
@@ -105,7 +105,7 @@ export class HexConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return await _().convert("base64", u8, deleteStartLength(options));
   }
 
@@ -113,7 +113,7 @@ export class HexConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     const textHelper = await getTextHelper();
     return await textHelper.bufferToText(u8, options);
   }
@@ -140,5 +140,3 @@ export class HexConverter extends AbstractConverter<string> {
     return u8;
   }
 }
-
-export const INSTANCE = new HexConverter();
