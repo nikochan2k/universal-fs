@@ -74,13 +74,13 @@ export class URLConverter extends AbstractConverter<string> {
       const merged = await _().merge("readable", urls, options);
       return await this._convert(merged, {
         ...options,
-        dstURLType: "file",
+        dstURLType: options.dstURLType || "file",
       });
     } else if (isBrowser) {
       const merged = await _().merge("readablestream", urls, options);
       return await this._convert(merged, {
         ...options,
-        dstURLType: "blob",
+        dstURLType: options.dstURLType || "blob",
       });
     } else {
       const merged = await _().merge("arraybuffer", urls, options);

@@ -15,7 +15,7 @@ export type Data = BlockData | StreamData;
 export interface Options {
   bufferSize: number;
   bufferToTextCharset: Charset;
-  dstURLType: URLType;
+  dstURLType?: URLType;
   srcStringType: StringType;
   textToBufferCharset: Charset;
 }

@@ -46,7 +46,7 @@ export class TextConverter extends AbstractConverter<string> {
   }
 
   protected async _size(input: string, options: Options): Promise<number> {
-    const u8 = await this.toUint8Array(input, deleteStartLength(options));
+    const u8 = await this._toUint8Array(input, deleteStartLength(options));
     return u8.byteLength;
   }
 
@@ -54,7 +54,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
   }
 
@@ -62,7 +62,7 @@ export class TextConverter extends AbstractConverter<string> {
     input: string,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return await _()._of("uint8array").toBase64(u8, deleteStartLength(options));
   }
 
@@ -76,7 +76,7 @@ export class TextConverter extends AbstractConverter<string> {
     ) {
       return input;
     }
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     const textHelper = await getTextHelper();
     return await textHelper.bufferToText(u8, options);
   }
@@ -89,5 +89,3 @@ export class TextConverter extends AbstractConverter<string> {
     return await textHelper.textToBuffer(input, options);
   }
 }
-
-export const INSTANCE = new TextConverter();

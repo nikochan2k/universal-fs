@@ -11,7 +11,7 @@ import {
   isEmpty,
   Options,
 } from "./core";
-import { hasBlob, isBrowser, isNode } from "./NodeUtil";
+import { hasBlob, isNode } from "./NodeUtil";
 
 export function _() {
   return AbstractConverter._ANY_CONV;
@@ -152,16 +152,6 @@ export abstract class AbstractConverter<T extends Data>
     } else if (options.dstURLType === "blob") {
       if (!hasBlob || typeof URL?.createObjectURL !== "function") {
         throw new Error("Blob URL is not supported");
-      }
-    } else if (options.dstURLType === "data") {
-      // Do nothing
-    } else {
-      if (isNode) {
-        options.dstURLType = "file";
-      } else if (isBrowser) {
-        options.dstURLType = "blob";
-      } else {
-        options.dstURLType = "data";
       }
     }
     return options as T;

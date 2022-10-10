@@ -66,7 +66,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Uint8Array,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
   }
 
@@ -74,7 +74,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Uint8Array,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return encode(u8);
   }
 
@@ -82,7 +82,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Uint8Array,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     const textHelper = await getTextHelper();
     return await textHelper.bufferToText(u8, options);
   }
@@ -98,5 +98,3 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return input.slice(start, end);
   }
 }
-
-export const INSTANCE = new Uint8ArrayConverter();
