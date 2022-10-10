@@ -173,7 +173,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       const { start, end } = getStartEnd(options);
       return new PartialReadable(input, start, end);
     }
-    if (_()._is("readablestream", input, options)) {
+    if (_().is("readablestream", input, options)) {
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }

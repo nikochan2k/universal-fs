@@ -68,6 +68,11 @@ export interface AnyConv {
     input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<ReturnData<T>>;
+  is<T extends DataType>(
+    type: T,
+    input: unknown,
+    options?: Partial<ConvertOptions>
+  ): input is ReturnData<T>;
   merge<T extends DataType>(
     returnType: T,
     chunks: Data[],

@@ -456,5 +456,3 @@ export interface Modification {
   length?: number;
   start?: number;
 }
-
-export const DEFAULT_BUFFER_SIZE = 96 * 1024;

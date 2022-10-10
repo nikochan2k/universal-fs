@@ -37,7 +37,7 @@ export class BinaryConverter extends AbstractConverter<string> {
       return input.substring(start, end);
     }
 
-    if (_()._is("blob", input, options) && hasReadAsBinaryStringOnBlob) {
+    if (_().is("blob", input, options) && hasReadAsBinaryStringOnBlob) {
       const startEnd = getStartEnd(options, input.size);
       let start = startEnd.start;
       const end = startEnd.end as number;

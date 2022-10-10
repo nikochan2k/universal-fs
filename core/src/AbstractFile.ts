@@ -1,18 +1,14 @@
 import { createHash } from "sha256-uint8array";
 import {
-  bufferConverter,
   Data,
   DataType,
-  DEFAULT_CONVERTER,
   EMPTY_UINT8_ARRAY,
+  getAnyConv,
   handleReadable,
   handleReadableStream,
   isBrowser,
   isNode,
-  readableConverter,
-  readableStreamConverter,
   ReturnData,
-  uint8ArrayConverter,
 } from "univ-conv";
 import { AbstractEntry } from "./AbstractEntry";
 import { AbstractFileSystem } from "./AbstractFileSystem";
@@ -182,7 +178,9 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
 
     const hash = createHash();
-    if (readableConverter().is(data)) {
+    const conv = await getAnyConv();
+    conv.
+    if (conv.is("readable", data)) {
       await handleReadable(data, async (chunk) => {
         const buffer = await bufferConverter().convert(chunk, {
           bufferSize: options?.bufferSize,

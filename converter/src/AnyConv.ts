@@ -64,15 +64,6 @@ class DefaultAnyConv implements AnyConvInternal {
     );
   }
 
-  _is<T extends DataType>(
-    type: T,
-    input: unknown,
-    options?: Partial<ConvertOptions> | undefined
-  ): input is ReturnData<T> {
-    const converter = this._of(type);
-    return converter.is(input, options);
-  }
-
   public _of<T extends DataType>(type: T): Converter<ReturnData<T>> {
     const converter = this.converters.get(type);
     if (converter) {
@@ -92,6 +83,15 @@ class DefaultAnyConv implements AnyConvInternal {
 
     const converter = this._of(returnType);
     return await converter.convert(input, options);
+  }
+
+  is<T extends DataType>(
+    type: T,
+    input: unknown,
+    options?: Partial<ConvertOptions> | undefined
+  ): input is ReturnData<T> {
+    const converter = this._of(type);
+    return converter.is(input, options);
   }
 
   public async merge<T extends DataType>(
