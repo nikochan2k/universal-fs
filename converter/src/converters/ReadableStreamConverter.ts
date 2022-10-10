@@ -1,5 +1,5 @@
 import type { Readable } from "stream";
-import { _, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -14,7 +14,6 @@ import {
   handleReadableStream,
   hasStreamOnBlob,
   isBrowser,
-  isNode,
   isReadableStream,
 } from "./NodeUtil";
 
@@ -256,7 +255,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     options: ConvertOptions
   ): Promise<string> {
     const opts = { bufferSize: options.bufferSize };
-    const t: DataType = isBrowser ? "blob" : isNode ? "buffer" : "uint8array";
+    const t: DataType = isBrowser ? "blob" : "uint8array";
     const convertd = await _().convert(t, input, opts);
     return await _()._of(t).toBase64(convertd, options);
   }
@@ -266,7 +265,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     options: ConvertOptions
   ): Promise<string> {
     const opts = { bufferSize: options.bufferSize };
-    const t: DataType = isBrowser ? "blob" : isNode ? "buffer" : "uint8array";
+    const t: DataType = isBrowser ? "blob" : "uint8array";
     const convertd = await _().convert(t, input, opts);
     return await _()._of(t).toText(convertd, options);
   }

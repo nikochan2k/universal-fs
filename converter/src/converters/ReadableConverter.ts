@@ -89,7 +89,7 @@ class ReadableOfReadableStream extends Readable {
   private async setup() {
     const reader = this.stream.getReader();
     try {
-      const converter = _()._of("buffer");
+      const converter = _()._of("uint8array");
       let iStart = 0;
       let done: boolean;
       do {
@@ -178,7 +178,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       return new ReadableOfReadableStream(input, start, end);
     }
 
-    const buffer = await _().convert("buffer", input, options);
+    const buffer = await _().convert("uint8array", input, options);
     const duplex = new Duplex();
     duplex.push(buffer);
     duplex.push(null);
@@ -243,8 +243,10 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     input: Readable,
     options: ConvertOptions
   ): Promise<string> {
-    const buffer = (await this._toUint8Array(input, options)) as Buffer;
-    return await _()._of("buffer").toBase64(buffer, deleteStartLength(options));
+    const buffer = await this._toUint8Array(input, options);
+    return await _()
+      ._of("uint8array")
+      .toBase64(buffer, deleteStartLength(options));
   }
 
   protected async _toText(
@@ -264,8 +266,8 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     const bufferSize = options.bufferSize;
 
     let index = 0;
-    const converter = _()._of("buffer");
-    const chunks: Buffer[] = [];
+    const converter = _()._of("uint8array");
+    const chunks: Uint8Array[] = [];
     await handleReadable(input, async (chunk) => {
       const buffer = await converter.convert(chunk, { bufferSize });
       const size = buffer.byteLength;

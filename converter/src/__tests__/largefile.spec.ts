@@ -11,12 +11,6 @@ it("initialize", async () => {
   c = (await getAnyConv()) as AnyConvInternal;
 });
 
-it("readable to buffer", async () => {
-  const readable = await c.convert("readable", source);
-  const buffer = await c.convert("buffer", readable);
-  expect(source.byteLength).toBe(buffer.byteLength);
-});
-
 it("readable to uint8array", async () => {
   const readable = await c.convert("readable", source);
   const buffer = await c.convert("uint8array", readable);

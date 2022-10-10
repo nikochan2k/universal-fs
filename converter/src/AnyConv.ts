@@ -20,7 +20,6 @@ import { HexConverter } from "./converters/HexConverter";
 import {
   closeStream,
   hasBlob,
-  hasBuffer,
   hasReadableStream,
   isWritable,
   isWritableStream,
@@ -183,14 +182,6 @@ export const getAnyConv = async () => {
   converters.set("url", new URLConverter());
   converters.set("text", new TextConverter());
   converters.set("arraybuffer", new ArrayBufferConverter());
-  if (hasBuffer) {
-    const bc = new (
-      await import("./converters/BufferConverter")
-    ).BufferConverter();
-    converters.set("buffer", bc);
-  } else {
-    converters.set("buffer", new FalseConverter("Buffer"));
-  }
   converters.set("uint8array", new Uint8ArrayConverter());
   if (hasBlob) {
     const bc = new (await import("./converters/BlobConverter")).BlobConverter();

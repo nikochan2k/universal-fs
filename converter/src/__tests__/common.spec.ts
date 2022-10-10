@@ -1,11 +1,6 @@
 import { getAnyConv } from "../AnyConv";
 import { AnyConvInternal } from "../converters/core";
-import {
-  hasBlob,
-  hasBuffer,
-  hasReadableStream,
-  isNode,
-} from "../converters/NodeUtil";
+import { hasBlob, hasReadableStream, isNode } from "../converters/NodeUtil";
 
 const head = "大谷翔平";
 const tail = "ホームラン";
@@ -27,18 +22,6 @@ it("arraybuffer", async () => {
 it("uint8array", async () => {
   const chunk1 = await c._of("uint8array").convert(head);
   const chunk2 = await c._of("uint8array").convert(tail);
-  const chunks = [chunk1, chunk2];
-  const merged = await c.merge("text", chunks);
-  expect(expected).toBe(merged);
-});
-
-it("buffer", async () => {
-  if (!hasBuffer) {
-    return;
-  }
-
-  const chunk1 = await c._of("buffer").convert(head);
-  const chunk2 = await c._of("buffer").convert(tail);
   const chunks = [chunk1, chunk2];
   const merged = await c.merge("text", chunks);
   expect(expected).toBe(merged);

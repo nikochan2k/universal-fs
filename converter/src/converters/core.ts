@@ -3,7 +3,7 @@ import type { Readable, Writable } from "stream";
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
 export type URLType = "file" | "data" | "blob";
 export type StringType = "text" | "url" | "base64" | "binary" | "hex";
-export type BinaryType = "arraybuffer" | "uint8array" | "buffer" | "blob";
+export type BinaryType = "arraybuffer" | "uint8array" | "blob";
 export type BlockType = StringType | BinaryType;
 export type StreamType = "readable" | "readablestream";
 export type DataType = BlockType | StreamType | "unknown";

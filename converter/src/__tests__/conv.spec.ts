@@ -1,11 +1,6 @@
 import { getAnyConv } from "../AnyConv";
 import { AnyConvInternal } from "../converters/core";
-import {
-  hasBlob,
-  hasBuffer,
-  hasReadableStream,
-  isNode,
-} from "../converters/NodeUtil";
+import { hasBlob, hasReadableStream, isNode } from "../converters/NodeUtil";
 
 let c: AnyConvInternal;
 it("initialize", async () => {
@@ -30,12 +25,6 @@ it("arraybuffer", async () => {
   if (hasBlob) {
     const blob = await c._of("blob").convert(ab);
     const actual = await c._of("text").convert(blob);
-    expect(actual).toBe(expected);
-  }
-
-  if (hasBuffer) {
-    const buf = await c._of("buffer").convert(ab);
-    const actual = await c._of("text").convert(buf);
     expect(actual).toBe(expected);
   }
 
@@ -77,12 +66,6 @@ it("uint8array", async () => {
     expect(actual).toBe(expected);
   }
 
-  if (hasBuffer) {
-    const buf = await c._of("buffer").convert(u8);
-    const actual = await c._of("text").convert(buf);
-    expect(actual).toBe(expected);
-  }
-
   {
     const base64 = await c._of("base64").convert(u8);
     const actual = await c
@@ -93,54 +76,6 @@ it("uint8array", async () => {
 
   {
     const binary = await c._of("binary").convert(u8);
-    const actual = await c
-      ._of("text")
-      .convert(binary, { srcStringType: "binary" });
-    expect(actual).toBe(expected);
-  }
-});
-
-it("buffer", async () => {
-  if (!hasBuffer) {
-    return;
-  }
-
-  const expected = "大谷翔平ホームラン";
-  const buffer = await c._of("buffer").convert(expected);
-
-  {
-    const actual = await c._of("text").convert(buffer);
-    expect(actual).toBe(expected);
-  }
-
-  {
-    const ab = await c._of("arraybuffer").convert(buffer);
-    const actual = await c._of("text").convert(ab);
-    expect(actual).toBe(expected);
-  }
-
-  {
-    const u8 = await c._of("uint8array").convert(buffer);
-    const actual = await c._of("text").convert(u8);
-    expect(actual).toBe(expected);
-  }
-
-  if (hasBlob) {
-    const blob = await c._of("blob").convert(buffer);
-    const actual = await c._of("text").convert(blob);
-    expect(actual).toBe(expected);
-  }
-
-  {
-    const base64 = await c._of("base64").convert(buffer);
-    const actual = await c
-      ._of("text")
-      .convert(base64, { srcStringType: "base64" });
-    expect(actual).toBe(expected);
-  }
-
-  {
-    const binary = await c._of("binary").convert(buffer);
     const actual = await c
       ._of("text")
       .convert(binary, { srcStringType: "binary" });
@@ -170,12 +105,6 @@ it("blob", async () => {
   {
     const u8 = await c._of("uint8array").convert(blob);
     const actual = await c._of("text").convert(u8);
-    expect(actual).toBe(expected);
-  }
-
-  if (hasBuffer) {
-    const buffer = await c._of("buffer").convert(blob);
-    const actual = await c._of("text").convert(buffer);
     expect(actual).toBe(expected);
   }
 
@@ -231,14 +160,6 @@ it("base64", async () => {
     expect(actual).toBe(expected);
   }
 
-  if (hasBuffer) {
-    const buf = await c
-      ._of("buffer")
-      .convert(base64, { srcStringType: "base64" });
-    const actual = await c._of("text").convert(buf);
-    expect(actual).toBe(expected);
-  }
-
   {
     const binary = await c
       ._of("binary")
@@ -282,14 +203,6 @@ it("binary", async () => {
       ._of("blob")
       .convert(binary, { srcStringType: "binary" });
     const actual = await c._of("text").convert(blob);
-    expect(actual).toBe(expected);
-  }
-
-  if (hasBuffer) {
-    const buf = await c
-      ._of("buffer")
-      .convert(binary, { srcStringType: "binary" });
-    const actual = await c._of("text").convert(buf);
     expect(actual).toBe(expected);
   }
 
@@ -338,13 +251,6 @@ it("readable", async () => {
     expect(actual).toBe(expected);
   }
 
-  if (hasBuffer) {
-    const readable = await c._of("readable").convert(expected);
-    const buf = await c._of("buffer").convert(readable);
-    const actual = await c._of("text").convert(buf);
-    expect(actual).toBe(expected);
-  }
-
   {
     const readable = await c._of("readable").convert(expected);
     const base64 = await c._of("base64").convert(readable);
@@ -386,13 +292,6 @@ it("readablestream", async () => {
     const readable = await c._of("readablestream").convert(expected);
     const blob = await c._of("blob").convert(readable);
     const actual = await c._of("text").convert(blob);
-    expect(actual).toBe(expected);
-  }
-
-  if (hasBuffer) {
-    const readable = await c._of("readablestream").convert(expected);
-    const buf = await c._of("buffer").convert(readable);
-    const actual = await c._of("text").convert(buf);
     expect(actual).toBe(expected);
   }
 
