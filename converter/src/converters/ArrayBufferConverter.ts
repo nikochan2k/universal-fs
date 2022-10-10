@@ -99,5 +99,3 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     return isNode ? Buffer.from(ab) : new Uint8Array(ab);
   }
 }
-
-export const INSTANCE = new ArrayBufferConverter();

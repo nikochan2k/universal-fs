@@ -104,5 +104,3 @@ export class Base64Converter extends AbstractConverter<string> {
     return isNode ? Buffer.from(ab) : new Uint8Array(ab);
   }
 }
-
-export const INSTANCE = new Base64Converter();
