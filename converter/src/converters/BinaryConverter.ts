@@ -114,12 +114,9 @@ export class BinaryConverter extends AbstractConverter<string> {
       input = input.substring(start, end);
     }
 
-    let u8: Uint8Array;
-    if (isNode) {
-      u8 = Buffer.from(input, "binary");
-    } else {
-      u8 = Uint8Array.from(input.split(""), (e) => e.charCodeAt(0));
-    }
+    const u8 = isNode
+      ? Buffer.from(input, "binary")
+      : Uint8Array.from(input.split(""), (e) => e.charCodeAt(0));
     return u8;
   }
 }

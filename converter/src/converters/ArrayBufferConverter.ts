@@ -78,7 +78,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     input: ArrayBufferLike,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return encode(u8);
   }
 
@@ -86,7 +86,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     input: ArrayBufferLike,
     options: ConvertOptions
   ): Promise<string> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     const textHelper = await getTextHelper();
     return await textHelper.bufferToText(u8, options);
   }
@@ -95,7 +95,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     input: ArrayBufferLike,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    const ab = await this.toArrayBuffer(input, options);
+    const ab = await this._toArrayBuffer(input, options);
     return isNode ? Buffer.from(ab) : new Uint8Array(ab);
   }
 }

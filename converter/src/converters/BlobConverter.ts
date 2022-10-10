@@ -167,7 +167,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
       return await u8ac.merge(chunks, options);
     }
 
-    const base64 = await this.toBase64(input, options);
+    const base64 = await this._toBase64(input, options);
     return await u8ac.convert(base64);
   }
 }
