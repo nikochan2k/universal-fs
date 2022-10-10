@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-webfs",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The universal Filesystem for Web File System API",
   "main": "lib/index.js",
   "browser": "dist/univ-fs-webfs.js",

@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-azure",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The universal Filesystem API for Azure Blob Storage",
   "main": "lib/index.js",
   "browser": "dist/univ-fs-azure.js",

@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-webnfs",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The universal Filesystem for Web File System Access API (Native File System API)",
   "main": "lib/index.js",
   "browser": "dist/univ-fs-webnfs.js",
