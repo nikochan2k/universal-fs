@@ -48,11 +48,10 @@ export class IdbFile extends AbstractFile {
               }
 
               const conv = await this._getConverter();
-              if (idbFS.storeType === "blob") {
-                result = await conv.convert("blob", result);
-              } else if (idbFS.storeType === "arraybuffer") {
-                result = await conv.convert("arraybuffer", result);
-              } else {
+              if (
+                idbFS.storeType !== "blob" &&
+                idbFS.storeType !== "arraybuffer"
+              ) {
                 result = await conv.convert("arraybuffer", result, {
                   srcStringType: "binary",
                 });
