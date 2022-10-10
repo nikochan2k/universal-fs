@@ -47,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "aws-sdk": "^2.1219.0",
+    "aws-sdk": "^2.1231.0",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

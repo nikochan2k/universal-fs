@@ -1,5 +1,6 @@
 import { AWSError } from "aws-sdk";
-import S3, {
+import * as S3 from "aws-sdk/clients/s3";
+import {
   ClientConfiguration,
   HeadObjectOutput,
   ListObjectsV2Output,
