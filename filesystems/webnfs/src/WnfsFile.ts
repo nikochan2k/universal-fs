@@ -36,11 +36,11 @@ export class WnfsFile extends AbstractFile {
       await writable.seek(stats.size as number);
     }
 
-    const converter = this._getConverter();
+    const conv = await this._getConverter();
     const co: Partial<ConvertOptions> = { ...options };
     delete co.start;
-    const readable = await converter.toReadableStream(data, co);
-    await converter.pipe(readable, writable);
+    const readable = await conv.convert("readablestream", data, co);
+    await conv.pipe(readable, writable);
   }
 
   public supportAppend(): boolean {
