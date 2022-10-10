@@ -44,7 +44,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
       }
       if (buffer) {
         const { start, end } = await this._getStartEnd(buffer, options);
-        return buffer.slice(start, end);
+        return buffer.subarray(start, end);
       }
       // 'type === "url"' is handled by arrayBufferConverter().convert();
     }

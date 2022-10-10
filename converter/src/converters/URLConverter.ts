@@ -152,5 +152,3 @@ export class URLConverter extends AbstractConverter<string> {
     return newBufferFrom(ab);
   }
 }
-
-export const INSTANCE = new URLConverter();

@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isBuffer, newBuffer, slice } from "./NodeUtil";
+import { isBuffer, isNode, newBuffer, newBufferFrom, slice } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
@@ -26,8 +26,29 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    const converter = _()._find(input, options);
-    return await converter.toUint8Array(input, options);
+    if (isNode && typeof input === "string") {
+      const type = options.srcStringType;
+      let buffer: Buffer | undefined;
+      if (type === "base64") {
+        buffer = Buffer.from(input, "base64");
+      } else if (type === "binary") {
+        buffer = Buffer.from(input, "binary");
+      } else if (type === "hex") {
+        buffer = Buffer.from(input, "hex");
+      } else if (type === "text") {
+        const textHelper = await getTextHelper();
+        const u8 = await textHelper.textToBuffer(input, options);
+        buffer = u8 as Buffer;
+      }
+      if (buffer) {
+        const { start, end } = await this._getStartEnd(buffer, options);
+        return buffer.subarray(start, end);
+      }
+      // 'type === "url"' is handled by arrayBufferConverter().convert();
+    }
+
+    const ab = await _().convert("arraybuffer", input, options);
+    return newBufferFrom(ab);
   }
 
   protected _getStartEnd(
@@ -41,11 +62,14 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return input.byteLength === 0;
   }
 
-  protected async _merge(chunks: Uint8Array[]): Promise<Uint8Array> {
+  protected _merge(chunks: Uint8Array[]): Promise<Uint8Array> {
+    if (isNode) {
+      return Promise.resolve(Buffer.concat(chunks));
+    }
+
     const byteLength = chunks.reduce((sum, chunk) => {
       return sum + chunk.byteLength;
     }, 0);
-
     const u8 = newBuffer(byteLength);
     let pos = 0;
     for (const chunk of chunks) {
