@@ -53,7 +53,7 @@ export class IdbFile extends AbstractFile {
               } else if (idbFS.storeType === "arraybuffer") {
                 result = await conv.convert("arraybuffer", result);
               } else {
-                result = await conv.convert("binary", result, {
+                result = await conv.convert("arraybuffer", result, {
                   srcStringType: "binary",
                 });
               }
