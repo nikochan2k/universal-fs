@@ -1,5 +1,5 @@
 import { encode } from "base64-arraybuffer";
-import { _, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isNode } from "./NodeUtil";
+import { isBuffer, newBuffer, slice } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
@@ -18,11 +18,8 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return EMPTY_UINT8_ARRAY;
   }
 
-  public is(input: unknown, options: ConvertOptions): input is Uint8Array {
-    if (_()._is("buffer", input, options)) {
-      return true;
-    }
-    return input instanceof Uint8Array;
+  public is(input: unknown): input is Uint8Array {
+    return input instanceof Uint8Array || isBuffer(input);
   }
 
   protected async _convert(
@@ -49,7 +46,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
       return sum + chunk.byteLength;
     }, 0);
 
-    const u8 = isNode ? Buffer.alloc(byteLength) : new Uint8Array(byteLength);
+    const u8 = newBuffer(byteLength);
     let pos = 0;
     for (const chunk of chunks) {
       u8.set(chunk, pos);
@@ -95,6 +92,6 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
       return input;
     }
     const { start, end } = await this._getStartEnd(input, options);
-    return input.slice(start, end);
+    return slice(input, start, end);
   }
 }

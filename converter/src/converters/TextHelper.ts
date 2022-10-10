@@ -5,7 +5,7 @@ import type {
 } from "encoding-japanese";
 import "fast-text-encoding";
 import { ConvertOptions } from "./core";
-import { isNode } from "./NodeUtil";
+import { newBufferFrom } from "./NodeUtil";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -42,7 +42,7 @@ export class TextHelper {
     }
     if (bufCharset === "utf16le") {
       const ab = this.textToUtf16leBuffer(text);
-      return isNode ? Buffer.from(ab) : new Uint8Array(ab);
+      return newBufferFrom(ab);
     }
 
     const ab = await this.convert(text, {
@@ -50,7 +50,7 @@ export class TextHelper {
       from: "UNICODE",
       type: "arraybuffer",
     } as ConvertArrayBufferOptions);
-    return isNode ? Buffer.from(ab) : new Uint8Array(ab);
+    return newBufferFrom(ab);
   }
 
   protected async convert(

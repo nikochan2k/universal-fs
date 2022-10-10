@@ -9,7 +9,7 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { isBrowser, isNode } from "./NodeUtil";
+import { isBrowser, newBufferFrom } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 export class Base64Converter extends AbstractConverter<string> {
@@ -101,6 +101,6 @@ export class Base64Converter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const ab = await this._toArrayBuffer(input, options);
-    return isNode ? Buffer.from(ab) : new Uint8Array(ab);
+    return newBufferFrom(ab);
   }
 }

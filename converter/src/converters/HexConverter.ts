@@ -7,7 +7,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isNode } from "./NodeUtil";
+import { newBuffer } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 const BYTE_TO_HEX: string[] = [];
@@ -127,7 +127,7 @@ export class HexConverter extends AbstractConverter<string> {
     const end = startEnd.end as number;
 
     const size = end - start;
-    const u8 = isNode ? Buffer.alloc(size) : new Uint8Array(size);
+    const u8 = newBuffer(size);
     for (; start < end; start++) {
       const ai = input[start * 2] as string;
       const a = MAP_HEX[ai];

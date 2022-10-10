@@ -315,3 +315,19 @@ export async function toFileURL(readable: Readable, extension?: string) {
   const u = _pathToFileURL(joined);
   return u.href;
 }
+
+export function isBuffer(input: unknown): input is Buffer {
+  return hasBuffer && input instanceof Buffer;
+}
+
+export function newBuffer(size: number) {
+  return isNode ? Buffer.alloc(size) : new Uint8Array(size);
+}
+
+export function newBufferFrom(ab: ArrayBufferLike) {
+  return isNode ? Buffer.from(ab) : new Uint8Array(ab);
+}
+
+export function slice(u8: Uint8Array, start: number, end: number | undefined) {
+  return isBuffer(u8) ? u8.subarray(start, end) : u8.slice(start, end);
+}

@@ -12,6 +12,7 @@ import {
   getFileSize,
   isBrowser,
   isNode,
+  newBufferFrom,
   toFileURL,
 } from "./NodeUtil";
 import { dataUrlToBase64 } from "./StringUtil";
@@ -148,7 +149,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const ab = await this._toArrayBuffer(input, options);
-    return isNode ? Buffer.from(ab) : new Uint8Array(ab);
+    return newBufferFrom(ab);
   }
 }
 

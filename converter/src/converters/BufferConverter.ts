@@ -1,4 +1,4 @@
-import { _, AbstractConverter } from "./AbstractConverter";
+import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
   Data,
@@ -6,7 +6,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { EMPTY_BUFFER, hasBuffer } from "./NodeUtil";
+import { EMPTY_BUFFER, isBuffer } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 export class BufferConverter extends AbstractConverter<Buffer> {
@@ -17,7 +17,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
   }
 
   public is(input: unknown): input is Buffer {
-    return hasBuffer && input instanceof Buffer;
+    return isBuffer(input);
   }
 
   protected async _convert(
