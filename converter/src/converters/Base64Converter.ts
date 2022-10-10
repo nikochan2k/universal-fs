@@ -84,7 +84,7 @@ export class Base64Converter extends AbstractConverter<string> {
       return input;
     }
     const u8 = await this.toUint8Array(input, options);
-    return await this.convert(u8, deleteStartLength(options));
+    return await this._convert(u8, deleteStartLength(options));
   }
 
   protected async _toText(
