@@ -1,6 +1,6 @@
 import { ExistsAction, NoParentAction, NotExistAction } from "univ-fs";
 import { AzureFileSystem } from "../AzureFileSystem";
-import config from "./secret.json";
+import * as config from "./secret.json";
 
 export const fs = new AzureFileSystem("univ-fs-test", "test-nodir", config);
 

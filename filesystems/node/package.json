@@ -30,6 +30,7 @@
     "release": "npm-run-all build sanitize npm-version npm-publish"
   },
   "jest": {
+    "verbose": true,
     "moduleFileExtensions": [
       "js"
     ],

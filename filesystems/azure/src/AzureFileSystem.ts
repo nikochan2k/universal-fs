@@ -26,9 +26,9 @@ import { AzureDirectory } from "./AzureDirectory";
 import { AzureFile } from "./AzureFile";
 
 export interface AzureCredential {
-  accessKey: string;
+  accessKey?: string;
   accountName: string;
-  sasToken: string;
+  sasToken?: string;
 }
 
 const SECONDS_OF_DAY = 24 * 60 * 60;
@@ -53,9 +53,9 @@ export class AzureFileSystem extends AbstractFileSystem {
         this.sasToken = "?" + this.sasToken;
       }
       this.serviceClient = new BlobServiceClient(
-        `https://${credential.accountName}.blob.core.windows.net${credential.sasToken}`
+        `https://${credential.accountName}.blob.core.windows.net${this.sasToken}`
       );
-    } else {
+    } else if (credential.accessKey) {
       this.sharedKeyCredential = new StorageSharedKeyCredential(
         credential.accountName,
         credential.accessKey
@@ -64,6 +64,9 @@ export class AzureFileSystem extends AbstractFileSystem {
         `https://${credential.accountName}.blob.core.windows.net`,
         this.sharedKeyCredential
       );
+    } else {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      throw new Error("No credential: " + credential);
     }
     this.containerClient = this.serviceClient.getContainerClient(containerName);
   }

@@ -40,6 +40,7 @@
   },
   "jest": {
     "testTimeout": 10000,
+    "verbose": true,
     "moduleFileExtensions": [
       "js"
     ],
