@@ -37,8 +37,8 @@ export class NodeFile extends AbstractFile {
       if (0 < (options.length as number)) {
         const co: Partial<ConvertOptions> = { ...options };
         delete co.start;
-        const converter = this._getConverter();
-        readable = (await converter.slice(readable, co)) as fs.ReadStream; // eslint-disable-line
+        const conv = await this._getConverter();
+        readable = await conv.slice(readable, co);
       }
 
       return readable;
@@ -59,14 +59,14 @@ export class NodeFile extends AbstractFile {
         start: options.start,
       });
 
-      const converter = this._getConverter();
+      const conv = await this._getConverter();
       if (options.length != null && 0 < options.length) {
         const co = { ...options };
         delete co.start;
-        data = await converter.slice(data, co);
+        data = await conv.slice(data, co);
       }
 
-      await converter.pipe(data, writable);
+      await conv.pipe(data, writable);
     } catch (e) {
       throw this.nfs._error(this.path, e as NodeJS.ErrnoException, true);
     }
