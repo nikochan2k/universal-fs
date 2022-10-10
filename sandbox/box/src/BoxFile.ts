@@ -1,6 +1,6 @@
 import BoxClient from "box-node-sdk/lib/box-client";
 import { Readable } from "stream";
-import { bufferConverter, Data, EMPTY_BUFFER } from "univ-conv";
+import { Data, EMPTY_BUFFER } from "univ-conv";
 import {
   AbstractFile,
   getName,
@@ -35,8 +35,12 @@ export class BoxFile extends AbstractFile {
               return;
             }
             this._getConverter()
-              .convert(readable, "buffer", options)
-              .then((buffer) => resolve(buffer))
+              .then((conv) => {
+                conv
+                  .convert("uint8array", readable, options)
+                  .then((buffer) => resolve(buffer))
+                  .catch((e) => reject(e));
+              })
               .catch((e) => reject(e));
           }
         );
@@ -71,7 +75,8 @@ export class BoxFile extends AbstractFile {
     let buffer: Buffer;
     try {
       client = await bfs._getClient();
-      buffer = await bufferConverter().convert(data, options);
+      const conv = await this._getConverter();
+      buffer = (await conv.convert("uint8array", data, options)) as Buffer;
     } catch (e) {
       throw bfs._error(path, e, true);
     }
