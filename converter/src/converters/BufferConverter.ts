@@ -25,7 +25,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     options: ConvertOptions
   ): Promise<Buffer> {
     if (this.is(input)) {
-      return await (this.toUint8Array(input, options) as Promise<Buffer>);
+      return await (this._toUint8Array(input, options) as Promise<Buffer>);
     }
 
     if (typeof input === "string") {
@@ -76,7 +76,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     input: Buffer,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
-    const u8 = await this.toUint8Array(input, options);
+    const u8 = await this._toUint8Array(input, options);
     return u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
   }
 
@@ -84,7 +84,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     input: Buffer,
     options: ConvertOptions
   ): Promise<string> {
-    const buffer = (await this.toUint8Array(input, options)) as Buffer;
+    const buffer = (await this._toUint8Array(input, options)) as Buffer;
     return buffer.toString("base64");
   }
 
@@ -92,7 +92,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
     input: Buffer,
     options: ConvertOptions
   ): Promise<string> {
-    const buffer = await this.toUint8Array(input, options);
+    const buffer = await this._toUint8Array(input, options);
     const textHelper = await getTextHelper();
     return await textHelper.bufferToText(buffer, options);
   }
@@ -105,7 +105,7 @@ export class BufferConverter extends AbstractConverter<Buffer> {
       return input;
     }
     const { start, end } = await this._getStartEnd(input, options);
-    return input.slice(start, end);
+    return input.subarray(start, end);
   }
 }
 
