@@ -1,36 +1,58 @@
-import {
-  BlockData,
-  DEFAULT_CONVERTER,
-  hasReadable,
-  hasReadableStream,
-} from "univ-conv";
-import { Modification } from "./core";
 import type { Readable } from "stream";
+import { BlockData, getAnyConv, hasReadableStream, isNode } from "univ-conv";
+import { Modification } from "./core";
+
+type createModifiedReadableType = (
+  src: Readable,
+  ...mods: Modification[]
+) => Promise<Readable>;
 
 type createModifiedReadableStreamType = (
   src: ReadableStream<Uint8Array>,
   ...mods: Modification[]
-) => ReadableStream;
+) => Promise<ReadableStream>;
 
-interface ModifiedReadableType extends Readable {
-  // eslint-disable-next-line @typescript-eslint/no-misused-new
-  new (src: Readable, ...mods: Modification[]): ModifiedReadableType;
+let _createModifiedReadable: createModifiedReadableType | undefined;
+let _createModifiedReadableStream: createModifiedReadableStreamType | undefined;
+
+let initialized = false;
+export async function initialize() {
+  if (initialized) {
+    return;
+  }
+  initialized = true;
+
+  if (isNode) {
+    _createModifiedReadable = (await import("./mods-node")).default;
+  }
+  if (hasReadableStream) {
+    _createModifiedReadableStream = (await import("./mods-web")).default;
+  }
 }
 
-export let createModifiedReadableStream: createModifiedReadableStreamType;
-if (hasReadableStream) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  createModifiedReadableStream = require("./mods-web");
-}
+export const createModifiedReadable: createModifiedReadableType = async (
+  src,
+  mods
+) => {
+  await initialize();
+  if (_createModifiedReadable) {
+    return _createModifiedReadable(src, mods);
+  }
+  throw new Error("createModifiedReadable is undefined");
+};
 
-export let ModifiedReadable: ModifiedReadableType;
-if (hasReadable) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  ModifiedReadable = require("./mods-node");
-}
+export const createModifiedReadableStream: createModifiedReadableStreamType =
+  async (src, mods) => {
+    await initialize();
+    if (_createModifiedReadableStream) {
+      return _createModifiedReadableStream(src, mods);
+    }
+    throw new Error("createModifiedReadableStream is undefined");
+  };
 
 export async function modify(src: BlockData, ...mods: Modification[]) {
-  const u8 = await $().convert(src, "uint8array");
+  const conv = await getAnyConv();
+  const u8 = await conv.convert("uint8array", src);
   const size = u8.length;
   for (const mod of mods) {
     const start = mod.start ?? 0;
@@ -46,7 +68,7 @@ export async function modify(src: BlockData, ...mods: Modification[]) {
         length = size - start;
       }
     }
-    const data = await $().toUint8Array(mod.data, { length });
+    const data = await conv.convert("uint8array", mod.data, { length });
     u8.set(data, start);
   }
   return u8;

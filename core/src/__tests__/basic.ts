@@ -1,8 +1,6 @@
-import { DEFAULT_CONVERTER } from "univ-conv";
+import { AnyConv, getAnyConv } from "univ-conv";
 import { File, FileSystem, ExistsAction, NoParentAction } from "../core";
 import { ErrorLike, NotFoundError } from "../errors";
-
-const c = DEFAULT_CONVERTER;
 
 export const testAll = (
   fs: FileSystem,
@@ -11,7 +9,9 @@ export const testAll = (
     teardown?: () => Promise<void>;
   }
 ) => {
+  let c: AnyConv;
   it("setup", async () => {
+    c = await getAnyConv();
     if (options?.setup) {
       await options.setup();
     }
@@ -31,7 +31,7 @@ export const testAll = (
     } catch (e) {
       expect((e as ErrorLike).name).toBe(NotFoundError.name);
     }
-    const buffer = await c.toArrayBuffer("");
+    const buffer = await c.convert("arraybuffer", "");
     await file.write(buffer);
     const stats = await file.stat();
     expect(stats.size).toBe(0);
@@ -45,7 +45,7 @@ export const testAll = (
     } catch (e) {
       expect((e as ErrorLike).name).toBe(NotFoundError.name);
     }
-    const buffer = await c.toArrayBuffer("test");
+    const buffer = await c.convert("arraybuffer", "test");
     await file.write(buffer);
     const stats = await file.stat();
     expect(stats.size).toBe(4);
@@ -55,7 +55,7 @@ export const testAll = (
     const file = fs.getFile("/test.txt");
     const buffer = await file.read("uint8array");
     expect(buffer.byteLength).toBe(4);
-    const text = await c.toText(buffer!);
+    const text = await c.convert("text", buffer);
     expect(text).toBe("test");
   });
 

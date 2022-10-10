@@ -1,12 +1,16 @@
 import { Readable } from "stream";
-import { DEFAULT_CONVERTER } from "univ-conv";
+import { AnyConv, getAnyConv } from "univ-conv";
 import { Modification } from "./core";
 
-export default class ModifiedReadable extends Readable {
+class ModifiedReadable extends Readable {
   private iStart = 0;
   private mods: Modification[];
 
-  constructor(private src: Readable, ...mods: Modification[]) {
+  constructor(
+    private conv: AnyConv,
+    private src: Readable,
+    mods: Modification[]
+  ) {
     super();
     this.mods = mods;
     src.once("readable", () => this.setup());
@@ -39,7 +43,7 @@ export default class ModifiedReadable extends Readable {
             const start = this.iStart - mStart;
             const length = size;
             // eslint-disable-next-line
-            this.push($().slice(mod.data, { start, length }));
+            this.push(this.conv.slice(mod.data, { start, length }));
             return;
           } else if (this.iStart <= mStart && mStart <= iEnd) {
             /*
@@ -84,7 +88,7 @@ export default class ModifiedReadable extends Readable {
               const modLen = mEnd - mStart;
               this.push(
                 // eslint-disable-next-line
-                $().slice(mod.data, {
+                this.conv.slice(mod.data, {
                   start: 0,
                   length: modLen,
                 })
@@ -137,7 +141,7 @@ export default class ModifiedReadable extends Readable {
               length = iEnd - this.iStart;
             }
             // eslint-disable-next-line
-            this.push($().slice(mod.data, { start, length }));
+            this.push(this.conv.slice(mod.data, { start, length }));
             return;
           }
 
@@ -164,3 +168,10 @@ export default class ModifiedReadable extends Readable {
     // noop
   }
 }
+
+async function createModifiedReadable(src: Readable, ...mods: Modification[]) {
+  const conv = await getAnyConv();
+  return new ModifiedReadable(conv, src, mods);
+}
+
+export default createModifiedReadable;

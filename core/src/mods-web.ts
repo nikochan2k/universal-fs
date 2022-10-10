@@ -1,10 +1,11 @@
-import { closeStream, DEFAULT_CONVERTER } from "univ-conv";
+import { closeStream, getAnyConv } from "univ-conv";
 import { Modification } from "./core";
 
-export default function createModifiedReadableStream(
+async function createModifiedReadableStream(
   src: ReadableStream<Uint8Array>,
   ...mods: Modification[]
 ) {
+  const conv = await getAnyConv();
   const reader = src.getReader();
   return new ReadableStream({
     start: async (controller) => {
@@ -41,7 +42,7 @@ export default function createModifiedReadableStream(
                 const length = size;
                 controller.enqueue(
                   // eslint-disable-next-line
-                  $().slice(mod.data, { start, length })
+                  conv.slice(mod.data, { start, length })
                 );
                 return;
               } else if (iStart <= mStart && mStart <= iEnd) {
@@ -87,7 +88,7 @@ export default function createModifiedReadableStream(
                   const modLen = mEnd - mStart;
                   controller.enqueue(
                     // eslint-disable-next-line
-                    $().slice(mod.data, {
+                    conv.slice(mod.data, {
                       start: 0,
                       length: modLen,
                     })
@@ -141,7 +142,7 @@ export default function createModifiedReadableStream(
                 }
                 controller.enqueue(
                   // eslint-disable-next-line
-                  $().slice(mod.data, { start, length })
+                  conv.slice(mod.data, { start, length })
                 );
                 return;
               }
@@ -165,3 +166,5 @@ export default function createModifiedReadableStream(
     },
   });
 }
+
+export default createModifiedReadableStream;

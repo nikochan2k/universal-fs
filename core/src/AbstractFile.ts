@@ -1,5 +1,6 @@
 import { createHash } from "sha256-uint8array";
 import {
+  AnyConv,
   Data,
   DataType,
   EMPTY_UINT8_ARRAY,
@@ -7,7 +8,6 @@ import {
   handleReadable,
   handleReadableStream,
   isBrowser,
-  isNode,
   ReturnData,
 } from "univ-conv";
 import { AbstractEntry } from "./AbstractEntry";
@@ -31,7 +31,11 @@ import {
   NotFoundError,
   PathExistError,
 } from "./errors";
-import { createModifiedReadableStream, ModifiedReadable, modify } from "./mods";
+import {
+  createModifiedReadable,
+  createModifiedReadableStream,
+  modify,
+} from "./mods";
 import { toHex } from "./util";
 
 export abstract class AbstractFile extends AbstractEntry implements File {
@@ -178,26 +182,25 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
 
     const hash = createHash();
-    const conv = await getAnyConv();
-    conv.
+    const conv = await this._getConverter();
     if (conv.is("readable", data)) {
       await handleReadable(data, async (chunk) => {
-        const buffer = await bufferConverter().convert(chunk, {
+        const buffer = await conv.convert("uint8array", chunk, {
           bufferSize: options?.bufferSize,
         });
         hash.update(buffer);
         return true;
       });
-    } else if (readableStreamConverter().is(data)) {
+    } else if (conv.is("readablestream", data)) {
       await handleReadableStream(data, async (chunk) => {
-        const u8 = await uint8ArrayConverter().convert(chunk, {
+        const u8 = await conv.convert("uint8array", chunk, {
           bufferSize: options?.bufferSize,
         });
         hash.update(u8);
         return true;
       });
     } else {
-      const u8 = await uint8ArrayConverter().convert(data);
+      const u8 = await conv.convert("uint8array", data);
       hash.update(u8);
     }
 
@@ -245,8 +248,8 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     if (type == null) {
       return data as ReturnData<T>;
     }
-    const converter = this._getConverter();
-    return await converter.convert(data, type, options);
+    const converter = await this._getConverter();
+    return await converter.convert(type, data, options);
   }
 
   public async write(
@@ -286,23 +289,22 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       }
     }
 
+    const conv = await this._getConverter();
     const start = options.start;
-    const rc = readableConverter();
-    const rsc = readableStreamConverter();
     if (!this.supportAppend() && options.append) {
       options.append = false;
       const head = await this._read({ bufferSize: options.bufferSize });
-      const converter = this._getConverter();
-      if (rc.is(head) || rc.is(data)) {
-        data = await converter.merge([head, data], "readable");
-      } else if (rsc.is(head) || rsc.is(data)) {
-        data = await converter.merge([head, data], "readablestream");
+      if (conv.is("readable", head) || conv.is("readable", data)) {
+        data = await conv.merge("readable", [head, data]);
+      } else if (
+        conv.is("readablestream", head) ||
+        conv.is("readablestream", data)
+      ) {
+        data = await conv.merge("readablestream", [head, data]);
       } else if (isBrowser) {
-        data = await converter.merge([head, data], "blob");
-      } else if (isNode) {
-        data = await converter.merge([head, data], "buffer");
+        data = await conv.merge("blob", [head, data]);
       } else {
-        data = await converter.merge([head, data], "uint8array");
+        data = await conv.merge("uint8array", [head, data]);
       }
     } else if (
       !this.supportRangeWrite() &&
@@ -311,10 +313,14 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       delete options.start;
       delete options.length;
       const src = await this._read({ bufferSize: options.bufferSize });
-      if (rc.is(src)) {
-        data = new ModifiedReadable(src, { data, start, length });
-      } else if (rsc.is(src)) {
-        data = createModifiedReadableStream(src, { data, start, length });
+      if (conv.is("readable", src)) {
+        data = await createModifiedReadable(src, { data, start, length });
+      } else if (conv.is("readablestream", src)) {
+        data = await createModifiedReadableStream(src, {
+          data,
+          start,
+          length,
+        });
       } else {
         data = await modify(src, { data, start, length });
       }
@@ -341,7 +347,8 @@ export abstract class AbstractFile extends AbstractEntry implements File {
       (typeof options?.start === "number" ||
         typeof options?.length === "number")
     ) {
-      data = await $().slice(data, options); // eslint-disable-line
+      const conv = await this._getConverter();
+      data = await conv.slice(data, options);
     }
 
     return data;
@@ -408,9 +415,8 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
   }
 
-  protected _getConverter() {
-    // eslint-disable-next-line
-    return DEFAULT_CONVERTER;
+  protected _getConverter(): Promise<AnyConv> {
+    return getAnyConv();
   }
 
   protected async _read(options: ReadOptions): Promise<Data>;
