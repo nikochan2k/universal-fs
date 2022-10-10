@@ -4,7 +4,7 @@ module.exports = {
     index: "./lib/index.js",
   },
   output: {
-    filename: "univ-fs-s3v2.js",
+    filename: "univ-fs-s3.js",
     path: __dirname + "/dist",
   },
   resolve: {

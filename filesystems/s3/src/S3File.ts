@@ -1,11 +1,5 @@
 import { Readable } from "stream";
-import {
-  blobConverter,
-  Data,
-  hasBuffer,
-  readableConverter,
-  readableStreamConverter,
-} from "univ-conv";
+import { Data, isBrowser } from "univ-conv";
 import { AbstractFile, createMetadata, Stats, WriteOptions } from "univ-fs";
 import { S3FileSystem } from "./S3FileSystem";
 
@@ -48,20 +42,21 @@ export class S3File extends AbstractFile {
   ): Promise<void> {
     const s3fs = this.s3fs;
     const path = this.path;
-    const converter = this._getConverter();
+    const conv = await this._getConverter();
 
     try {
-      let body: Readable | ReadableStream<unknown> | Blob | Uint8Array;
-      if (readableConverter().is(data)) {
-        body = await converter.convert(data, "readable", options);
-      } else if (readableStreamConverter().is(data)) {
-        body = await converter.convert(data, "readablestream", options);
-      } else if (blobConverter().is(data)) {
-        body = await converter.convert(data, "blob", options);
-      } else if (hasBuffer) {
-        body = await converter.toBuffer(data);
+      let body: Readable | Blob | Uint8Array | string;
+      if (
+        conv.is("readable", data) ||
+        conv.is("blob", data) ||
+        conv.is("uint8array", data) ||
+        conv.is("text", data, options)
+      ) {
+        body = data;
+      } else if (isBrowser) {
+        body = await conv.convert("blob", data, options);
       } else {
-        body = await converter.toUint8Array(data);
+        body = await conv.convert("uint8array", data);
       }
 
       let metadata: { [key: string]: string } | undefined;
@@ -71,13 +66,12 @@ export class S3File extends AbstractFile {
 
       const client = await s3fs._getClient();
       const params = s3fs._createParams(path, false);
-      if (readableConverter().is(body) || readableStreamConverter().is(body)) {
-        const readable = converter.toReadable(body);
+      if (conv.is("readable", body)) {
         await client
-          .upload({ ...params, Body: readable, Metadata: metadata })
+          .upload({ ...params, Body: body, Metadata: metadata })
           .promise();
       } else {
-        const length = await converter.getSize(body as Data);
+        const length = await conv.size(body as Data);
         await client
           .putObject({
             ...params,
