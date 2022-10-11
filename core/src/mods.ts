@@ -1,5 +1,10 @@
 import type { Readable } from "stream";
-import { BlockData, getAnyConv, hasReadableStream, isNode } from "univ-conv";
+import {
+  BlockData,
+  getAnyConv,
+  hasReadable,
+  hasReadableStream,
+} from "univ-conv";
 import { Modification } from "./core";
 
 type createModifiedReadableType = (
@@ -22,7 +27,7 @@ export async function initialize() {
   }
   initialized = true;
 
-  if (isNode) {
+  if (hasReadable) {
     _createModifiedReadable = (await import("./mods-node")).default;
   }
   if (hasReadableStream) {

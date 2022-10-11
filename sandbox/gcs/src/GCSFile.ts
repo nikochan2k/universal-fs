@@ -1,4 +1,4 @@
-import { Data, isNode } from "univ-conv";
+import { Data, hasReadable } from "univ-conv";
 import { AbstractFile, Stats, WriteOptions } from "univ-fs";
 import { GCSFileSystem } from "./GCSFileSystem";
 
@@ -23,7 +23,7 @@ export class GCSFile extends AbstractFile {
     const path = this.path;
     try {
       const file = gfs._getEntry(path, false);
-      if (isNode) {
+      if (hasReadable) {
         return file.createReadStream();
       } else {
         const res = await file.download();

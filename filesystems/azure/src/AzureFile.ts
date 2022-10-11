@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { Data, isNode } from "univ-conv";
+import { Data, hasReadableStream } from "univ-conv";
 import {
   AbstractFile,
   createMetadata,
@@ -33,7 +33,7 @@ export class AzureFile extends AbstractFile {
     try {
       const client = afs._getBlockBlobClient(path, false);
       const resp = await client.download(options.start, options.length);
-      if (isNode) {
+      if (hasReadableStream) {
         const rs = resp.readableStreamBody;
         if (!rs) return "";
         return rs as Readable; // TODO
