@@ -321,7 +321,7 @@ export async function toFileURL(readable: Readable, extension?: string) {
         : "." + extension
       : "";
   const joined = _join(_tmpdir(), Date.now().toString() + extension);
-  const writable = _createWriteStream("dest.txt");
+  const writable = _createWriteStream(joined);
   await pipeNodeStream(readable, writable);
   const u = _pathToFileURL(joined);
   return u.href;
