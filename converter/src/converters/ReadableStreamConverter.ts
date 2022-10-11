@@ -153,7 +153,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     input: Data,
     options: ConvertOptions
   ): Promise<ReadableStream<Uint8Array>> {
-    if (typeof input === "string" && options.srcStringType === "url") {
+    if (typeof input === "string" && options.inputStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
         if (_().is("readable", resp.body, options)) {

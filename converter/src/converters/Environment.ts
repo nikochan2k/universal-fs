@@ -2,7 +2,7 @@ import type { createReadStream, createWriteStream, readFile, stat } from "fs";
 import type { tmpdir } from "os";
 import type { join } from "path";
 import type { Readable, Writable } from "stream";
-import type { fileURLToPath, pathToFileURL } from "url";
+import type { fileURLToPath } from "url";
 import { Data } from "./core";
 
 export let hasReadable = false;
@@ -18,7 +18,6 @@ export let hasWritable = false;
 
 let _Writable: typeof Writable | undefined;
 let _fileURLToPath: typeof fileURLToPath | undefined;
-let _pathToFileURL: typeof pathToFileURL | undefined;
 let _stat: typeof stat | undefined;
 let _createReadStream: typeof createReadStream | undefined;
 let _createWriteStream: typeof createWriteStream | undefined;
@@ -299,7 +298,7 @@ export async function fileURLToReadable(fileURL: string) {
   return _createReadStream(filePath);
 }
 
-export async function toFileURL(readable: Readable, extension?: string) {
+export async function writeToFile(readable: Readable, fileURL: string) {
   if (!_join) {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     _join = (await import("path")).join;
@@ -310,21 +309,13 @@ export async function toFileURL(readable: Readable, extension?: string) {
   if (!_createWriteStream) {
     _createWriteStream = (await import("fs")).createWriteStream;
   }
-  if (!_pathToFileURL) {
-    _pathToFileURL = (await import("url")).pathToFileURL;
+  if (!_fileURLToPath) {
+    _fileURLToPath = (await import("url")).fileURLToPath;
   }
 
-  extension =
-    typeof extension !== "undefined"
-      ? extension.startsWith(".")
-        ? extension
-        : "." + extension
-      : "";
-  const joined = _join(_tmpdir(), Date.now().toString() + extension);
-  const writable = _createWriteStream(joined);
+  const path = _fileURLToPath(fileURL);
+  const writable = _createWriteStream(path);
   await pipeNodeStream(readable, writable);
-  const u = _pathToFileURL(joined);
-  return u.href;
 }
 
 export function isBuffer(input: unknown): input is Buffer {

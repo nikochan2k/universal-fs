@@ -27,7 +27,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     if (hasBuffer && typeof input === "string") {
-      const type = options.srcStringType;
+      const type = options.inputStringType;
       let buffer: Buffer | undefined;
       if (type === "base64") {
         buffer = Buffer.from(input, "base64");

@@ -22,14 +22,14 @@ export class BinaryConverter extends AbstractConverter<string> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is string {
-    return typeof input === "string" && options.srcStringType === "binary";
+    return typeof input === "string" && options.inputStringType === "binary";
   }
 
   protected async _convert(
     input: Data,
     options: ConvertOptions
   ): Promise<string> {
-    if (typeof input === "string" && options.srcStringType === "binary") {
+    if (typeof input === "string" && options.inputStringType === "binary") {
       if (hasNoStartLength(options)) {
         return input;
       }

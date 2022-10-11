@@ -153,17 +153,31 @@ export abstract class AbstractConverter<T extends Data>
         `"bufferSize" was modified to ${options.bufferSize}. ("bufferSize" must be divisible by 6.)`
       );
     }
-    if (!options.srcStringType) options.srcStringType = "text";
+    if (!options.inputStringType) options.inputStringType = "text";
     if (!options.bufferToTextCharset) options.bufferToTextCharset = "utf8";
     if (!options.textToBufferCharset) options.textToBufferCharset = "utf8";
-    if (options.dstURLType === "file") {
+    if (options.outputURL) {
+      if (options.outputURL.startsWith("file:")) {
+        options.outputURLType = "file";
+      } else if (
+        /^https?:/.test(options.outputURL) &&
+        options.outputURLType != "http_post" &&
+        options.outputURLType != "http_put"
+      ) {
+        options.outputURLType = "http_post";
+      }
+    }
+    if (options.outputURLType === "file") {
       if (!isNode) {
         throw new Error("File URL is not supported");
       }
-    } else if (options.dstURLType === "blob") {
+    } else if (options.outputURLType === "blob") {
       if (!hasBlob || typeof URL?.createObjectURL !== "function") {
         throw new Error("Blob URL is not supported");
       }
+    }
+    if (!options.outputURLType) {
+      options.outputURLType = "data";
     }
     return options as T;
   }

@@ -20,7 +20,7 @@ export class Base64Converter extends AbstractConverter<string> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is string {
-    return typeof input === "string" && options.srcStringType === "base64";
+    return typeof input === "string" && options.inputStringType === "base64";
   }
 
   protected async _convert(

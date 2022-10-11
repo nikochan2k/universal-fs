@@ -14,7 +14,7 @@ import {
   hasReadableStream,
   isBrowser,
   newBufferFrom,
-  toFileURL,
+  writeToFile,
 } from "./Environment";
 import { dataUrlToBase64 } from "./StringUtil";
 
@@ -37,7 +37,7 @@ export class URLConverter extends AbstractConverter<string> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is string {
-    return typeof input === "string" && options.srcStringType === "url";
+    return typeof input === "string" && options.inputStringType === "url";
   }
 
   protected async _convert(
@@ -45,10 +45,11 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     let url: string;
-    const type = options.dstURLType;
-    if (type === "file" && toFileURL) {
+    const type = options.outputURLType;
+    if (type === "file" && writeToFile && options.outputURL) {
       const readable = await _().convert("readable", input, options);
-      url = await toFileURL(readable);
+      await writeToFile(readable, options.outputURL);
+      url = options.outputURL;
     } else if (type === "blob") {
       const blob = await _().convert("blob", input, options);
       url = URL.createObjectURL(blob);
@@ -76,19 +77,19 @@ export class URLConverter extends AbstractConverter<string> {
       const merged = await _().merge("readable", urls, options);
       return await this._convert(merged, {
         ...options,
-        dstURLType: options.dstURLType || "file",
+        outputURLType: options.outputURLType || "file",
       });
     } else if (hasReadableStream) {
       const merged = await _().merge("readablestream", urls, options);
       return await this._convert(merged, {
         ...options,
-        dstURLType: options.dstURLType || "blob",
+        outputURLType: options.outputURLType || "blob",
       });
     } else {
       const merged = await _().merge("arraybuffer", urls, options);
       return await this._convert(merged, {
         ...options,
-        dstURLType: "data",
+        outputURLType: "data",
       });
     }
   }

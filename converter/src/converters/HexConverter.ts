@@ -50,14 +50,14 @@ export class HexConverter extends AbstractConverter<string> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is string {
-    return typeof input === "string" && options.srcStringType === "hex";
+    return typeof input === "string" && options.inputStringType === "hex";
   }
 
   protected async _convert(
     input: Data,
     options: ConvertOptions
   ): Promise<string> {
-    if (typeof input === "string" && options.srcStringType === "hex") {
+    if (typeof input === "string" && options.inputStringType === "hex") {
       if (hasNoStartLength(options)) {
         return input;
       }

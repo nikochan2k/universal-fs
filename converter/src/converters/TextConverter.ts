@@ -18,7 +18,7 @@ export class TextConverter extends AbstractConverter<string> {
   }
 
   public is(input: unknown, options: ConvertOptions): input is string {
-    return typeof input === "string" && options.srcStringType === "text";
+    return typeof input === "string" && options.inputStringType === "text";
   }
 
   protected async _convert(

@@ -59,7 +59,7 @@ class DefaultAnyConv implements AnyConvInternal {
     }
     throw new Error(
       `No converter: input=${getType(input)}, srcStringType=${
-        options?.srcStringType // eslint-disable-line
+        options?.inputStringType // eslint-disable-line
       }`
     );
   }
