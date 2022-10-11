@@ -27,7 +27,7 @@ import {
   isWritableStream,
   pipeNodeStream,
   pipeWebStream,
-} from "./converters/NodeUtil";
+} from "./converters/Environment";
 import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";

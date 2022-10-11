@@ -17,7 +17,7 @@ import {
   hasTextOnBlob,
   newBuffer,
   newBufferFrom,
-} from "./NodeUtil";
+} from "./Environment";
 import { dataUrlToBase64, getTextHelper } from "./StringUtil";
 
 export class BlobConverter extends AbstractConverter<Blob> {

@@ -12,7 +12,7 @@ import {
   Options,
   ReturnData,
 } from "./core";
-import { hasBlob, isNode } from "./NodeUtil";
+import { hasBlob, isNode } from "./Environment";
 
 export interface AnyConvInternal extends AnyConv {
   _empty<T extends Data>(input: T): T;

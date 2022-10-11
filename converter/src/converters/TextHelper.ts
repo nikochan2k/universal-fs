@@ -5,7 +5,7 @@ import type {
 } from "encoding-japanese";
 import "fast-text-encoding";
 import { ConvertOptions } from "./core";
-import { newBufferFrom } from "./NodeUtil";
+import { newBufferFrom } from "./Environment";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();

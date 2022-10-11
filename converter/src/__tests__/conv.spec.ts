@@ -4,7 +4,7 @@ import {
   hasBlob,
   hasReadable,
   hasReadableStream,
-} from "../converters/NodeUtil";
+} from "../converters/Environment";
 
 let c: AnyConvInternal;
 it("initialize", async () => {

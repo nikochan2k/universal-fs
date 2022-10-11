@@ -7,7 +7,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { newBuffer } from "./NodeUtil";
+import { newBuffer } from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 const BYTE_TO_HEX: string[] = [];

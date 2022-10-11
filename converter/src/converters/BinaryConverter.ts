@@ -11,7 +11,7 @@ import {
   handleFileReader,
   hasBuffer,
   hasReadAsBinaryStringOnBlob,
-} from "./NodeUtil";
+} from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 export class BinaryConverter extends AbstractConverter<string> {

@@ -15,7 +15,7 @@ import {
   hasStreamOnBlob,
   isBrowser,
   isReadableStream,
-} from "./NodeUtil";
+} from "./Environment";
 
 function createReadableStream(u8: Uint8Array) {
   return new ReadableStream<Uint8Array>({

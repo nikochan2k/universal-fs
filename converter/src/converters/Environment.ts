@@ -6,10 +6,12 @@ import type { fileURLToPath, pathToFileURL } from "url";
 import { Data } from "./core";
 
 export let hasReadable = false;
+export let hasWritable = false;
 /* eslint-disable */
 (async () => {
   import("stream").then((stream) => {
-    hasReadable = typeof stream?.Readable === "function";
+    hasReadable = typeof stream.Readable === "function";
+    hasWritable = typeof stream.Writable === "function";
   });
 })();
 /* eslint-enable */

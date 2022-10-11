@@ -15,7 +15,7 @@ import {
   isBrowser,
   newBufferFrom,
   toFileURL,
-} from "./NodeUtil";
+} from "./Environment";
 import { dataUrlToBase64 } from "./StringUtil";
 
 export class URLConverter extends AbstractConverter<string> {

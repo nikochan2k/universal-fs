@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { hasBuffer, newBuffer, newBufferFrom } from "./NodeUtil";
+import { hasBuffer, newBuffer, newBufferFrom } from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 const hasSharedArrayBuffer = typeof SharedArrayBuffer === "function";

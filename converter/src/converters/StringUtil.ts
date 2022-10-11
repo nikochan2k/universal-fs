@@ -1,4 +1,4 @@
-import { isNode } from "./NodeUtil";
+import { isNode } from "./Environment";
 import { TextHelper } from "./TextHelper";
 
 export function dataUrlToBase64(dataUrl: string) {

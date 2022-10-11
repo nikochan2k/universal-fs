@@ -1,6 +1,6 @@
 import { _ } from "./AbstractConverter";
 import { ConvertOptions } from "./core";
-import { isBuffer } from "./NodeUtil";
+import { isBuffer } from "./Environment";
 import { TextHelper } from "./TextHelper";
 
 export class NodeTextHelper extends TextHelper {

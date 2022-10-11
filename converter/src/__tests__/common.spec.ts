@@ -4,7 +4,7 @@ import {
   hasBlob,
   hasReadable,
   hasReadableStream,
-} from "../converters/NodeUtil";
+} from "../converters/Environment";
 
 const head = "大谷翔平";
 const tail = "ホームラン";

@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { hasBuffer, isBuffer, newBuffer, newBufferFrom } from "./NodeUtil";
+import { hasBuffer, isBuffer, newBuffer, newBufferFrom } from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {

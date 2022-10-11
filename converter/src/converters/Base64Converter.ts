@@ -9,7 +9,7 @@ import {
   hasNoStartLength,
   Options,
 } from "./core";
-import { isBrowser, newBufferFrom } from "./NodeUtil";
+import { isBrowser, newBufferFrom } from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 export class Base64Converter extends AbstractConverter<string> {

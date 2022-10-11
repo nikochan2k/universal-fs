@@ -13,7 +13,7 @@ import {
   handleReadable,
   hasReadable,
   isReadable,
-} from "./NodeUtil";
+} from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 export class PartialReadable extends Readable {
