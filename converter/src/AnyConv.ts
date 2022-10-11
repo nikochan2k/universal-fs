@@ -106,7 +106,7 @@ class DefaultAnyConv implements AnyConvInternal {
 
   public async pipe(
     input: Data,
-    output: Writable | WritableStream<Uint8Array>,
+    output: Writable | WritableStream<Uint8Array> | string,
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
@@ -125,6 +125,11 @@ class DefaultAnyConv implements AnyConvInternal {
       } catch (e) {
         closeStream(output, e);
       }
+    } else if (typeof output === "string") {
+      await this._of("url").convert(input, {
+        ...options,
+        outputURL: output,
+      });
     } else {
       throw new Error("Illegal output type: " + getType(output));
     }
