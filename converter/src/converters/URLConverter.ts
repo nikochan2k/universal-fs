@@ -46,16 +46,33 @@ export class URLConverter extends AbstractConverter<string> {
   ): Promise<string> {
     let url: string;
     const type = options.outputURLType;
-    if (type === "file" && writeToFile && options.outputURL) {
-      const readable = await _().convert("readable", input, options);
-      await writeToFile(readable, options.outputURL);
+    if (options.outputURL) {
       url = options.outputURL;
-    } else if (type === "blob") {
-      const blob = await _().convert("blob", input, options);
-      url = URL.createObjectURL(blob);
+      if (type === "file") {
+        const readable = await _().convert("readable", input, options);
+        await writeToFile(readable, url);
+      } else if (type === "http_post" || type === "http_put") {
+        const method = type === "http_post" ? "POST" : "PUT";
+        if (hasReadableStream) {
+          const body = await _().convert("readablestream", input, options);
+          await fetch(url, { method, body });
+        } else if (hasReadable) {
+          const body = await _().convert("readable", input, options);
+          await fetch(url, { method, body: body as any }); // eslint-disable-line
+        } else {
+          throw new Error("ReadableStream or Readable not found: " + url);
+        }
+      } else {
+        throw new Error("Illegal output URL: " + url);
+      }
     } else {
-      const base64 = await _().convert("base64", input, options);
-      url = "data:application/octet-stream;base64," + base64;
+      if (type === "blob") {
+        const blob = await _().convert("blob", input, options);
+        url = URL.createObjectURL(blob);
+      } else {
+        const base64 = await _().convert("base64", input, options);
+        url = "data:application/octet-stream;base64," + base64;
+      }
     }
     return url;
   }

@@ -1,6 +1,4 @@
 import type { createReadStream, createWriteStream, readFile, stat } from "fs";
-import type { tmpdir } from "os";
-import type { join } from "path";
 import type { Readable, Writable } from "stream";
 import type { fileURLToPath } from "url";
 import { Data } from "./core";
@@ -22,8 +20,6 @@ let _stat: typeof stat | undefined;
 let _createReadStream: typeof createReadStream | undefined;
 let _createWriteStream: typeof createWriteStream | undefined;
 let _readFile: typeof readFile | undefined;
-let _tmpdir: typeof tmpdir | undefined;
-let _join: typeof join | undefined;
 
 export let isBrowser = false;
 export let isReactNative = false;
@@ -299,13 +295,6 @@ export async function fileURLToReadable(fileURL: string) {
 }
 
 export async function writeToFile(readable: Readable, fileURL: string) {
-  if (!_join) {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    _join = (await import("path")).join;
-  }
-  if (!_tmpdir) {
-    _tmpdir = (await import("os")).tmpdir;
-  }
   if (!_createWriteStream) {
     _createWriteStream = (await import("fs")).createWriteStream;
   }
