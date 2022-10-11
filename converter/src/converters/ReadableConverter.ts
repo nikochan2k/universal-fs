@@ -11,7 +11,7 @@ import {
   EMPTY_BUFFER,
   fileURLToReadable,
   handleReadable,
-  isNode,
+  hasReadable,
   isReadable,
 } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
@@ -160,7 +160,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     if (typeof input === "string" && options.srcStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
-        if (isNode) {
+        if (hasReadable) {
           input = resp.body as unknown as Readable;
         } else {
           input = resp.body as ReadableStream;

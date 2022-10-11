@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isNode, newBuffer, newBufferFrom } from "./NodeUtil";
+import { hasBuffer, newBuffer, newBufferFrom } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 const hasSharedArrayBuffer = typeof SharedArrayBuffer === "function";
@@ -96,6 +96,6 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const ab = await this._toArrayBuffer(input, options);
-    return isNode ? Buffer.from(ab) : new Uint8Array(ab);
+    return hasBuffer ? Buffer.from(ab) : new Uint8Array(ab);
   }
 }

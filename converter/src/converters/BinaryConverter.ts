@@ -9,8 +9,8 @@ import {
 } from "./core";
 import {
   handleFileReader,
+  hasBuffer,
   hasReadAsBinaryStringOnBlob,
-  isNode,
 } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
@@ -114,7 +114,7 @@ export class BinaryConverter extends AbstractConverter<string> {
       input = input.substring(start, end);
     }
 
-    const u8 = isNode
+    const u8 = hasBuffer
       ? Buffer.from(input, "binary")
       : Uint8Array.from(input.split(""), (e) => e.charCodeAt(0));
     return u8;

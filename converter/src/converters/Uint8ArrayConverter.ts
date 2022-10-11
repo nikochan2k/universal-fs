@@ -8,7 +8,7 @@ import {
   getStartEnd,
   hasNoStartLength,
 } from "./core";
-import { isBuffer, isNode, newBuffer, newBufferFrom } from "./NodeUtil";
+import { hasBuffer, isBuffer, newBuffer, newBufferFrom } from "./NodeUtil";
 import { getTextHelper } from "./StringUtil";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
@@ -26,7 +26,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    if (isNode && typeof input === "string") {
+    if (hasBuffer && typeof input === "string") {
       const type = options.srcStringType;
       let buffer: Buffer | undefined;
       if (type === "base64") {
@@ -63,7 +63,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   }
 
   protected _merge(chunks: Uint8Array[]): Promise<Uint8Array> {
-    if (isNode) {
+    if (hasBuffer) {
       return Promise.resolve(Buffer.concat(chunks));
     }
 

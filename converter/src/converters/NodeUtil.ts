@@ -5,6 +5,15 @@ import type { Readable, Writable } from "stream";
 import type { fileURLToPath, pathToFileURL } from "url";
 import { Data } from "./core";
 
+export let hasReadable = false;
+/* eslint-disable */
+(async () => {
+  import("stream").then((stream) => {
+    hasReadable = typeof stream?.Readable === "function";
+  });
+})();
+/* eslint-enable */
+
 let _Writable: typeof Writable | undefined;
 let _fileURLToPath: typeof fileURLToPath | undefined;
 let _pathToFileURL: typeof pathToFileURL | undefined;

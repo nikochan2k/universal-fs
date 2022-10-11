@@ -1,6 +1,10 @@
 import { getAnyConv } from "../AnyConv";
 import { AnyConvInternal } from "../converters/AbstractConverter";
-import { hasBlob, hasReadableStream, isNode } from "../converters/NodeUtil";
+import {
+  hasBlob,
+  hasReadable,
+  hasReadableStream,
+} from "../converters/NodeUtil";
 
 let c: AnyConvInternal;
 it("initialize", async () => {
@@ -218,7 +222,7 @@ it("binary", async () => {
 });
 
 it("readable", async () => {
-  if (!isNode) {
+  if (!hasReadable) {
     return;
   }
 

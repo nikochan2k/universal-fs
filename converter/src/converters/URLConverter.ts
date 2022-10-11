@@ -10,8 +10,9 @@ import {
 import {
   fileURLToReadable,
   getFileSize,
+  hasReadable,
+  hasReadableStream,
   isBrowser,
-  isNode,
   newBufferFrom,
   toFileURL,
 } from "./NodeUtil";
@@ -71,13 +72,13 @@ export class URLConverter extends AbstractConverter<string> {
   }
 
   protected async _merge(urls: string[], options: Options): Promise<string> {
-    if (isNode) {
+    if (hasReadable) {
       const merged = await _().merge("readable", urls, options);
       return await this._convert(merged, {
         ...options,
         dstURLType: options.dstURLType || "file",
       });
-    } else if (isBrowser) {
+    } else if (hasReadableStream) {
       const merged = await _().merge("readablestream", urls, options);
       return await this._convert(merged, {
         ...options,
