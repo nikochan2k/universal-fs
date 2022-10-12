@@ -3,17 +3,6 @@ import type { Readable, Writable } from "stream";
 import type { fileURLToPath } from "url";
 import { Data } from "./core";
 
-export let hasReadable = false;
-export let hasWritable = false;
-/* eslint-disable */
-(async () => {
-  import("stream").then((stream) => {
-    hasReadable = typeof stream.Readable === "function";
-    hasWritable = typeof stream.Writable === "function";
-  });
-})();
-/* eslint-enable */
-
 let _Writable: typeof Writable | undefined;
 let _fileURLToPath: typeof fileURLToPath | undefined;
 let _stat: typeof stat | undefined;
@@ -34,6 +23,17 @@ if (typeof document !== "undefined") {
 } else {
   isNode = true;
 }
+
+export let hasReadable = false;
+export let hasWritable = false;
+/* eslint-disable */
+(async () => {
+  import("stream").then((stream) => {
+    hasReadable = typeof stream.Readable === "function";
+    hasWritable = typeof stream.Writable === "function";
+  });
+})();
+/* eslint-enable */
 
 export let hasBlob = false;
 export let hasTextOnBlob = false;
