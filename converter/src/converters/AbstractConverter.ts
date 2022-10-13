@@ -12,7 +12,6 @@ import {
   Options,
   ReturnData,
 } from "./core";
-import { hasBlob, isNode } from "./Environment";
 
 export interface AnyConvInternal extends AnyConv {
   _empty<T extends Data>(input: T): T;
@@ -156,39 +155,7 @@ export abstract class AbstractConverter<T extends Data>
     if (!options.inputStringType) options.inputStringType = "text";
     if (!options.bufferToTextCharset) options.bufferToTextCharset = "utf8";
     if (!options.textToBufferCharset) options.textToBufferCharset = "utf8";
-    if (options.outputURL && !options.outputURLType) {
-      if (options.outputURL.startsWith("file:")) {
-        options.outputURLType = "file";
-      } else if (
-        /^https?:/.test(options.outputURL) &&
-        options.outputURLType != "http_post" &&
-        options.outputURLType != "http_put"
-      ) {
-        options.outputURLType = "http_post";
-      }
-    }
-    if (options.outputURLType === "file") {
-      if (!isNode) {
-        throw new Error("File URL is not supported");
-      }
-      if (!options.outputURL?.startsWith("file:")) {
-        throw new Error("Illegal outpu URL: " + (options.outputURL ?? ""));
-      }
-    } else if (options.outputURLType === "blob") {
-      if (!hasBlob || typeof URL?.createObjectURL !== "function") {
-        throw new Error("Blob URL is not supported");
-      }
-    } else if (
-      options.outputURLType === "http_post" ||
-      options.outputURLType === "http_put"
-    ) {
-      if (!/^https?/.test(options.outputURL ?? "")) {
-        throw new Error("Illegal outpu URL: " + (options.outputURL ?? ""));
-      }
-    }
-    if (!options.outputURLType) {
-      options.outputURLType = "data";
-    }
+    if (!options.outputURL) options.outputURL = "data";
     return options as T;
   }
 }

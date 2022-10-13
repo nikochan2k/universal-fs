@@ -1,7 +1,7 @@
 import type { Readable, Writable } from "stream";
 
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
-export type URLType = "file" | "data" | "blob" | "http_post" | "http_put";
+export type URLType = "data" | "blob" | string;
 export type StringType = "text" | "url" | "base64" | "binary" | "hex";
 export type BinaryType = "arraybuffer" | "uint8array" | "blob";
 export type BlockType = StringType | BinaryType;
@@ -16,8 +16,8 @@ export interface Options {
   bufferSize: number;
   bufferToTextCharset: Charset;
   inputStringType: StringType;
-  outputURL?: string;
-  outputURLType?: URLType;
+  outputURL?: URLType;
+  fetchRequestInit?: RequestInit;
   textToBufferCharset: Charset;
 }
 export interface ConvertOptions extends Options {
