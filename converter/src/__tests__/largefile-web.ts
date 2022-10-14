@@ -1,11 +1,11 @@
-import { getAnyConv } from "../AnyConv";
-import { AnyConvInternal } from "../converters/AbstractConverter";
+import { getUnivConv } from "../UnivConv";
+import { UnivConvInternal } from "../converters/AbstractConverter";
 
 const ab = new ArrayBuffer(1000 * 1024);
 
-let c: AnyConvInternal;
+let c: UnivConvInternal;
 it("initialize", async () => {
-  c = (await getAnyConv()) as AnyConvInternal;
+  c = (await getUnivConv()) as UnivConvInternal;
 });
 
 it("readableStream to uint8Array", async () => {

@@ -1,6 +1,6 @@
 import { createHash } from "sha256-uint8array";
 import {
-  AnyConv,
+  UnivConv,
   Data,
   DataType,
   EMPTY_UINT8_ARRAY,
@@ -415,7 +415,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
     }
   }
 
-  protected _getConverter(): Promise<AnyConv> {
+  protected _getConverter(): Promise<UnivConv> {
     return getAnyConv();
   }
 

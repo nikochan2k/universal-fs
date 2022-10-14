@@ -1,14 +1,14 @@
 import { createWriteStream, rmSync, statSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import { getAnyConv } from "../AnyConv";
-import { AnyConvInternal } from "../converters/AbstractConverter";
+import { getUnivConv } from "../UnivConv";
+import { UnivConvInternal } from "../converters/AbstractConverter";
 
 const source = Buffer.alloc(1000 * 1024);
 
-let c: AnyConvInternal;
+let c: UnivConvInternal;
 it("initialize", async () => {
-  c = (await getAnyConv()) as AnyConvInternal;
+  c = (await getUnivConv()) as UnivConvInternal;
 });
 
 it("readable to uint8array", async () => {

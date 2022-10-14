@@ -1,5 +1,5 @@
 import {
-  AnyConv,
+  UnivConv as UnivConv,
   Converter,
   ConvertOptions,
   Data,
@@ -13,7 +13,7 @@ import {
   ReturnData,
 } from "./core";
 
-export interface AnyConvInternal extends AnyConv {
+export interface UnivConvInternal extends UnivConv {
   _empty<T extends Data>(input: T): T;
   _emptyOf<T extends DataType>(type: T): ReturnData<T>;
   _find<T extends Data>(
@@ -24,13 +24,13 @@ export interface AnyConvInternal extends AnyConv {
 }
 
 export function _() {
-  return AbstractConverter._ANY_CONV;
+  return AbstractConverter._UNIV_CONV;
 }
 
 export abstract class AbstractConverter<T extends Data>
   implements Converter<T>
 {
-  public static _ANY_CONV: AnyConvInternal;
+  public static _UNIV_CONV: UnivConvInternal;
 
   public abstract type: DataType;
 

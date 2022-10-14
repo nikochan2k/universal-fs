@@ -1,5 +1,5 @@
-import { getAnyConv } from "../AnyConv";
-import { AnyConvInternal } from "../converters/AbstractConverter";
+import { getUnivConv } from "../UnivConv";
+import { UnivConvInternal } from "../converters/AbstractConverter";
 import {
   hasBlob,
   hasReadable,
@@ -10,9 +10,9 @@ const head = "大谷翔平";
 const tail = "ホームラン";
 const expected = "大谷翔平ホームラン";
 
-let c: AnyConvInternal;
+let c: UnivConvInternal;
 it("initialize", async () => {
-  c = (await getAnyConv()) as AnyConvInternal;
+  c = (await getUnivConv()) as UnivConvInternal;
 });
 
 it("arraybuffer", async () => {

@@ -63,7 +63,7 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   ? string
   : Data;
 
-export interface AnyConv {
+export interface UnivConv {
   convert<T extends DataType>(
     returnType: T,
     input: Data,

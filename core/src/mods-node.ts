@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { AnyConv, getAnyConv } from "univ-conv";
+import { UnivConv, getAnyConv } from "univ-conv";
 import { Modification } from "./core";
 
 class ModifiedReadable extends Readable {
@@ -7,7 +7,7 @@ class ModifiedReadable extends Readable {
   private mods: Modification[];
 
   constructor(
-    private conv: AnyConv,
+    private conv: UnivConv,
     private src: Readable,
     mods: Modification[]
   ) {

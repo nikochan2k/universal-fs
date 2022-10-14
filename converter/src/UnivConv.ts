@@ -1,13 +1,13 @@
 import type { Writable } from "stream";
 import {
   AbstractConverter,
-  AnyConvInternal,
+  UnivConvInternal,
 } from "./converters/AbstractConverter";
 import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
 import { Base64Converter } from "./converters/Base64Converter";
 import { BinaryConverter } from "./converters/BinaryConverter";
 import {
-  AnyConv,
+  UnivConv,
   Converter,
   ConvertOptions,
   Data,
@@ -32,7 +32,7 @@ import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
 
-class DefaultAnyConv implements AnyConvInternal {
+class DefaultAnyConv implements UnivConvInternal {
   constructor(private converters: Map<DataType, Converter<Data>>) {}
 
   public _empty<T extends Data>(input: T): T {
@@ -177,9 +177,9 @@ class DefaultAnyConv implements AnyConvInternal {
   }
 }
 
-export const getAnyConv = async () => {
-  if (AbstractConverter._ANY_CONV) {
-    return AbstractConverter._ANY_CONV;
+export const getUnivConv = async () => {
+  if (AbstractConverter._UNIV_CONV) {
+    return AbstractConverter._UNIV_CONV;
   }
 
   const converters = new Map<DataType, Converter<Data>>();
@@ -214,6 +214,6 @@ export const getAnyConv = async () => {
   }
 
   const anyConv = new DefaultAnyConv(converters);
-  AbstractConverter._ANY_CONV = anyConv;
-  return AbstractConverter._ANY_CONV as AnyConv;
+  AbstractConverter._UNIV_CONV = anyConv;
+  return AbstractConverter._UNIV_CONV as UnivConv;
 };

@@ -1,4 +1,4 @@
-import { AnyConv, getAnyConv } from "univ-conv";
+import { UnivConv, getAnyConv } from "univ-conv";
 import { File, FileSystem, ExistsAction, NoParentAction } from "../core";
 import { ErrorLike, NotFoundError } from "../errors";
 
@@ -9,7 +9,7 @@ export const testAll = (
     teardown?: () => Promise<void>;
   }
 ) => {
-  let c: AnyConv;
+  let c: UnivConv;
   it("setup", async () => {
     c = await getAnyConv();
     if (options?.setup) {
