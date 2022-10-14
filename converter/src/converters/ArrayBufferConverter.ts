@@ -27,16 +27,12 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     );
   }
 
-  protected async _convert(
+  protected async _from(
     input: Data,
     options: ConvertOptions
   ): Promise<ArrayBufferLike> {
     const converter = _()._find(input, options);
     return await converter.toArrayBuffer(input, options);
-  }
-
-  protected _size(input: ArrayBufferLike): Promise<number> {
-    return Promise.resolve(input.byteLength);
   }
 
   protected _getStartEnd(
@@ -61,6 +57,10 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
       pos += chunk.byteLength;
     }
     return Promise.resolve(u8.buffer);
+  }
+
+  protected _size(input: ArrayBufferLike): Promise<number> {
+    return Promise.resolve(input.byteLength);
   }
 
   protected async _toArrayBuffer(

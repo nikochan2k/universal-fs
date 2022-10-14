@@ -40,10 +40,7 @@ export class URLConverter extends AbstractConverter<string> {
     return typeof input === "string" && options.inputStringType === "url";
   }
 
-  protected async _convert(
-    input: Data,
-    options: ConvertOptions
-  ): Promise<string> {
+  protected async _from(input: Data, options: ConvertOptions): Promise<string> {
     let url = options.outputURL ?? "data";
     if (url.startsWith("file:")) {
       const readable = await _().convert("readable", input, options);
@@ -83,13 +80,13 @@ export class URLConverter extends AbstractConverter<string> {
   protected async _merge(urls: string[], options: Options): Promise<string> {
     if (hasReadable) {
       const merged = await _().merge("readable", urls, options);
-      return await this._convert(merged, options);
+      return await this._from(merged, options);
     } else if (hasReadableStream) {
       const merged = await _().merge("readablestream", urls, options);
-      return await this._convert(merged, options);
+      return await this._from(merged, options);
     } else {
       const merged = await _().merge("arraybuffer", urls, options);
-      return await this._convert(merged, options);
+      return await this._from(merged, options);
     }
   }
 
@@ -142,7 +139,7 @@ export class URLConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     const ab = await this._toArrayBuffer(input, options);
-    return _()._of("text").convert(ab, deleteStartLength(options));
+    return _()._of("text").from(ab, deleteStartLength(options));
   }
 
   protected async _toUint8Array(

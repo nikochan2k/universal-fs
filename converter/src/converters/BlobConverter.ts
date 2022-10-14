@@ -31,10 +31,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     return hasBlob && input instanceof Blob;
   }
 
-  protected async _convert(
-    input: Data,
-    options: ConvertOptions
-  ): Promise<Blob> {
+  protected async _from(input: Data, options: ConvertOptions): Promise<Blob> {
     if (this.is(input)) {
       if (hasNoStartLength(options)) {
         return input;
@@ -168,6 +165,6 @@ export class BlobConverter extends AbstractConverter<Blob> {
     }
 
     const base64 = await this._toBase64(input, options);
-    return await u8ac.convert(base64);
+    return await u8ac.from(base64);
   }
 }

@@ -34,7 +34,7 @@ export abstract class AbstractConverter<T extends Data>
 
   public abstract type: DataType;
 
-  public async convert(
+  public async from(
     input: Data,
     options?: Partial<ConvertOptions>
   ): Promise<T> {
@@ -42,7 +42,7 @@ export abstract class AbstractConverter<T extends Data>
       return this.empty();
     }
 
-    const converted = await this._convert(input, this._initOptions(options));
+    const converted = await this._from(input, this._initOptions(options));
     if (typeof converted !== "undefined") {
       return converted;
     }
@@ -115,7 +115,7 @@ export abstract class AbstractConverter<T extends Data>
     options?: Partial<ConvertOptions>
   ): input is T;
 
-  protected abstract _convert(input: Data, options: ConvertOptions): Promise<T>;
+  protected abstract _from(input: Data, options: ConvertOptions): Promise<T>;
   protected abstract _getStartEnd(
     input: T,
     options: ConvertOptions

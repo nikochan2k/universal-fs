@@ -22,7 +22,7 @@ export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
     return input instanceof Uint8Array || isBuffer(input);
   }
 
-  protected async _convert(
+  protected async _from(
     input: Data,
     options: ConvertOptions
   ): Promise<Uint8Array> {

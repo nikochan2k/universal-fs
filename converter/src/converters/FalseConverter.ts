@@ -6,7 +6,7 @@ export class FalseConverter implements Converter<any> {
 
   public constructor(public key: string) {}
 
-  public convert(): any {
+  public from(): any {
     throw new Error("convert method not implemented: " + this.key);
   }
 

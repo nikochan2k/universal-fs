@@ -15,9 +15,9 @@ export type Data = BlockData | StreamData;
 export interface Options {
   bufferSize: number;
   bufferToTextCharset: Charset;
+  fetchRequestInit?: RequestInit;
   inputStringType: StringType;
   outputURL?: URLType;
-  fetchRequestInit?: RequestInit;
   textToBufferCharset: Charset;
 }
 export interface ConvertOptions extends Options {
@@ -28,8 +28,8 @@ export interface ConvertOptions extends Options {
 export interface Converter<T extends Data> {
   type: DataType;
 
-  convert(input: Data, options?: Partial<ConvertOptions>): Promise<T>;
   empty(): T;
+  from(input: Data, options?: Partial<ConvertOptions>): Promise<T>;
   is(input: unknown, options?: Partial<ConvertOptions>): input is T;
   merge(chunks: T[], options?: Partial<Options>): Promise<T>;
   size(input: T, options?: Partial<Options>): Promise<number>;

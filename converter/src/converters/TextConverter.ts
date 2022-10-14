@@ -21,10 +21,7 @@ export class TextConverter extends AbstractConverter<string> {
     return typeof input === "string" && options.inputStringType === "text";
   }
 
-  protected async _convert(
-    input: Data,
-    options: ConvertOptions
-  ): Promise<string> {
+  protected async _from(input: Data, options: ConvertOptions): Promise<string> {
     const converter = _()._find(input, options);
     return await converter.toText(input, options);
   }

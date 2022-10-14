@@ -23,10 +23,7 @@ export class Base64Converter extends AbstractConverter<string> {
     return typeof input === "string" && options.inputStringType === "base64";
   }
 
-  protected async _convert(
-    input: Data,
-    options: ConvertOptions
-  ): Promise<string> {
+  protected async _from(input: Data, options: ConvertOptions): Promise<string> {
     const anyConv = _()._find(input, options);
     return await anyConv.toBase64(input, options);
   }
@@ -46,10 +43,10 @@ export class Base64Converter extends AbstractConverter<string> {
   protected async _merge(chunks: string[], options: Options): Promise<string> {
     if (isBrowser) {
       const blob = await _().merge("blob", chunks, options);
-      return await this.convert(blob);
+      return await this.from(blob);
     } else {
       const u8 = await _().merge("uint8array", chunks, options);
-      return await this.convert(u8);
+      return await this.from(u8);
     }
   }
 
@@ -84,7 +81,7 @@ export class Base64Converter extends AbstractConverter<string> {
       return input;
     }
     const u8 = await this._toUint8Array(input, options);
-    return await this._convert(u8, deleteStartLength(options));
+    return await this._from(u8, deleteStartLength(options));
   }
 
   protected async _toText(

@@ -97,7 +97,7 @@ class ReadableOfReadableStream extends Readable {
         const value = res.value;
         done = res.done;
         if (value) {
-          const u8 = await converter.convert(value as Data);
+          const u8 = await converter.from(value as Data);
           const size = u8.byteLength;
           const iEnd = iStart + size;
           const u8End = (iEnd < this.end ? iEnd : this.end) - iStart;
@@ -153,7 +153,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     return isReadable(input);
   }
 
-  protected async _convert(
+  protected async _from(
     input: Data,
     options: ConvertOptions
   ): Promise<Readable> {
@@ -269,7 +269,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     const converter = _()._of("uint8array");
     const chunks: Uint8Array[] = [];
     await handleReadable(input, async (chunk) => {
-      const buffer = await converter.convert(chunk, { bufferSize });
+      const buffer = await converter.from(chunk, { bufferSize });
       const size = buffer.byteLength;
       let e = index + size;
       if (end != null && end < e) e = end;

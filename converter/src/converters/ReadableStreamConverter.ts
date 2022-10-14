@@ -94,7 +94,7 @@ function createReadableStreamOfReader(
   return new ReadableStream({
     start: async (controller) => {
       await handleReadable(readable, async (value) => {
-        const u8 = await converter.convert(value, { bufferSize });
+        const u8 = await converter.from(value, { bufferSize });
         const size = u8.byteLength;
         const iEnd = iStart + size;
         const u8End = (iEnd < end ? iEnd : end) - iStart;
@@ -149,7 +149,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     return isReadableStream(input);
   }
 
-  protected async _convert(
+  protected async _from(
     input: Data,
     options: ConvertOptions
   ): Promise<ReadableStream<Uint8Array>> {

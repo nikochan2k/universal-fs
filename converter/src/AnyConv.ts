@@ -82,7 +82,7 @@ class DefaultAnyConv implements AnyConvInternal {
     }
 
     const converter = this._of(returnType);
-    return await converter.convert(input, options);
+    return await converter.from(input, options);
   }
 
   is<T extends DataType>(
@@ -110,7 +110,7 @@ class DefaultAnyConv implements AnyConvInternal {
     options?: Partial<ConvertOptions>
   ): Promise<void> {
     if (isWritable(output)) {
-      const readable = await this._of("readable").convert(input, options);
+      const readable = await this._of("readable").from(input, options);
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
@@ -119,14 +119,14 @@ class DefaultAnyConv implements AnyConvInternal {
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<Uint8Array>;
       try {
-        stream = await this._of("readablestream").convert(input, options);
+        stream = await this._of("readablestream").from(input, options);
         await pipeWebStream(stream, output);
         closeStream(output);
       } catch (e) {
         closeStream(output, e);
       }
     } else if (typeof output === "string") {
-      await this._of("url").convert(input, {
+      await this._of("url").from(input, {
         ...options,
         outputURL: output,
       });
@@ -158,7 +158,7 @@ class DefaultAnyConv implements AnyConvInternal {
 
     const converter = this._find(input, options);
     if (converter) {
-      return await converter.convert(input, options);
+      return await converter.from(input, options);
     }
     throw new Error("Illegal output type: " + getType(input));
   }

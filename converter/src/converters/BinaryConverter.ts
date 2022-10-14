@@ -25,10 +25,7 @@ export class BinaryConverter extends AbstractConverter<string> {
     return typeof input === "string" && options.inputStringType === "binary";
   }
 
-  protected async _convert(
-    input: Data,
-    options: ConvertOptions
-  ): Promise<string> {
+  protected async _from(input: Data, options: ConvertOptions): Promise<string> {
     if (typeof input === "string" && options.inputStringType === "binary") {
       if (hasNoStartLength(options)) {
         return input;
