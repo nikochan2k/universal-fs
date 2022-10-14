@@ -24,8 +24,8 @@ export class Base64Converter extends AbstractConverter<string> {
   }
 
   protected async _from(input: Data, options: ConvertOptions): Promise<string> {
-    const anyConv = _()._find(input, options);
-    return await anyConv.toBase64(input, options);
+    const univConv = _()._find(input, options);
+    return await univConv.toBase64(input, options);
   }
 
   protected async _getStartEnd(

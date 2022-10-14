@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { UnivConv, getAnyConv } from "univ-conv";
+import { UnivConv, getUnivConv } from "univ-conv";
 import { Modification } from "./core";
 
 class ModifiedReadable extends Readable {
@@ -170,7 +170,7 @@ class ModifiedReadable extends Readable {
 }
 
 async function createModifiedReadable(src: Readable, ...mods: Modification[]) {
-  const conv = await getAnyConv();
+  const conv = await getUnivConv();
   return new ModifiedReadable(conv, src, mods);
 }
 

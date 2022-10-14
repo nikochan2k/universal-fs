@@ -1,11 +1,11 @@
-import { closeStream, getAnyConv } from "univ-conv";
+import { closeStream, getUnivConv } from "univ-conv";
 import { Modification } from "./core";
 
 async function createModifiedReadableStream(
   src: ReadableStream<Uint8Array>,
   ...mods: Modification[]
 ) {
-  const conv = await getAnyConv();
+  const conv = await getUnivConv();
   const reader = src.getReader();
   return new ReadableStream({
     start: async (controller) => {

@@ -4,7 +4,7 @@ import {
   Data,
   DataType,
   EMPTY_UINT8_ARRAY,
-  getAnyConv,
+  getUnivConv,
   handleReadable,
   handleReadableStream,
   isBrowser,
@@ -416,7 +416,7 @@ export abstract class AbstractFile extends AbstractEntry implements File {
   }
 
   protected _getConverter(): Promise<UnivConv> {
-    return getAnyConv();
+    return getUnivConv();
   }
 
   protected async _read(options: ReadOptions): Promise<Data>;

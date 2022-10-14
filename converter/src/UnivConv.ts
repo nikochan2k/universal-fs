@@ -32,7 +32,7 @@ import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
 
-class DefaultAnyConv implements UnivConvInternal {
+class DefaultUnivConv implements UnivConvInternal {
   constructor(private converters: Map<DataType, Converter<Data>>) {}
 
   public _empty<T extends Data>(input: T): T {
@@ -213,7 +213,7 @@ export const getUnivConv = async () => {
     converters.set("readablestream", new FalseConverter("ReadableStream"));
   }
 
-  const anyConv = new DefaultAnyConv(converters);
-  AbstractConverter._UNIV_CONV = anyConv;
+  const univConv = new DefaultUnivConv(converters);
+  AbstractConverter._UNIV_CONV = univConv;
   return AbstractConverter._UNIV_CONV as UnivConv;
 };

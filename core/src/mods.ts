@@ -1,7 +1,7 @@
 import type { Readable } from "stream";
 import {
   BlockData,
-  getAnyConv,
+  getUnivConv,
   hasReadable,
   hasReadableStream,
 } from "univ-conv";
@@ -56,7 +56,7 @@ export const createModifiedReadableStream: createModifiedReadableStreamType =
   };
 
 export async function modify(src: BlockData, ...mods: Modification[]) {
-  const conv = await getAnyConv();
+  const conv = await getUnivConv();
   const u8 = await conv.convert("uint8array", src);
   const size = u8.length;
   for (const mod of mods) {
