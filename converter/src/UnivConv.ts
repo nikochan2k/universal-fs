@@ -7,7 +7,6 @@ import { ArrayBufferConverter } from "./converters/ArrayBufferConverter";
 import { Base64Converter } from "./converters/Base64Converter";
 import { BinaryConverter } from "./converters/BinaryConverter";
 import {
-  UnivConv,
   Converter,
   ConvertOptions,
   Data,
@@ -16,9 +15,8 @@ import {
   isEmpty,
   Options,
   ReturnData,
+  UnivConv,
 } from "./converters/core";
-import { FalseConverter } from "./converters/FalseConverter";
-import { HexConverter } from "./converters/HexConverter";
 import {
   closeStream,
   hasBlob,
@@ -28,12 +26,17 @@ import {
   pipeNodeStream,
   pipeWebStream,
 } from "./converters/Environment";
+import { FalseConverter } from "./converters/FalseConverter";
+import { HexConverter } from "./converters/HexConverter";
 import { TextConverter } from "./converters/TextConverter";
 import { Uint8ArrayConverter } from "./converters/Uint8ArrayConverter";
 import { URLConverter } from "./converters/URLConverter";
 
 class DefaultUnivConv implements UnivConvInternal {
-  constructor(private converters: Map<DataType, Converter<Data>>) {}
+  private converters: Map<string, Converter<Data>> = new Map<
+    string,
+    Converter<Data>
+  >();
 
   public _empty<T extends Data>(input: T): T {
     if (typeof input === "string") {
@@ -70,6 +73,10 @@ class DefaultUnivConv implements UnivConvInternal {
       return converter as Converter<ReturnData<T>>;
     }
     throw new Error(`No converter: type=${type}`);
+  }
+
+  public addConverter(name: string, converter: Converter<Data>) {
+    this.converters.set(name, converter);
   }
 
   public async convert<T extends DataType>(
@@ -135,6 +142,10 @@ class DefaultUnivConv implements UnivConvInternal {
     }
   }
 
+  public removeConverter(name: string) {
+    this.converters.delete(name);
+  }
+
   public async size(input: Data, options?: Partial<Options>): Promise<number> {
     const converter = this._find(input, options);
     return await converter.size(input, options);
@@ -182,38 +193,41 @@ export const getUnivConv = async () => {
     return AbstractConverter._UNIV_CONV;
   }
 
-  const converters = new Map<DataType, Converter<Data>>();
-  converters.set("base64", new Base64Converter());
-  converters.set("binary", new BinaryConverter());
-  converters.set("hex", new HexConverter());
-  converters.set("url", new URLConverter());
-  converters.set("text", new TextConverter());
-  converters.set("arraybuffer", new ArrayBufferConverter());
-  converters.set("uint8array", new Uint8ArrayConverter());
+  const univConv = new DefaultUnivConv();
+
+  univConv.addConverter("base64", new Base64Converter());
+  univConv.addConverter("binary", new BinaryConverter());
+  univConv.addConverter("hex", new HexConverter());
+  univConv.addConverter("url", new URLConverter());
+  univConv.addConverter("text", new TextConverter());
+  univConv.addConverter("arraybuffer", new ArrayBufferConverter());
+  univConv.addConverter("uint8array", new Uint8ArrayConverter());
   if (hasBlob) {
     const bc = new (await import("./converters/BlobConverter")).BlobConverter();
-    converters.set("blob", bc);
+    univConv.addConverter("blob", bc);
   } else {
-    converters.set("blob", new FalseConverter("Blob"));
+    univConv.addConverter("blob", new FalseConverter("Blob"));
   }
   try {
     const rc = new (
       await import("./converters/ReadableConverter")
     ).ReadableConverter();
-    converters.set("readable", rc);
+    univConv.addConverter("readable", rc);
   } catch {
-    converters.set("readable", new FalseConverter("Readable"));
+    univConv.addConverter("readable", new FalseConverter("Readable"));
   }
   if (hasReadableStream) {
     const rsc = new (
       await import("./converters/ReadableStreamConverter")
     ).ReadableStreamConverter();
-    converters.set("readablestream", rsc);
+    univConv.addConverter("readablestream", rsc);
   } else {
-    converters.set("readablestream", new FalseConverter("ReadableStream"));
+    univConv.addConverter(
+      "readablestream",
+      new FalseConverter("ReadableStream")
+    );
   }
 
-  const univConv = new DefaultUnivConv(converters);
   AbstractConverter._UNIV_CONV = univConv;
   return AbstractConverter._UNIV_CONV as UnivConv;
 };
