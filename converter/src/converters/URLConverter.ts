@@ -13,20 +13,24 @@ import {
   hasReadable,
   hasReadableStream,
   isBrowser,
+  isNode,
   newBufferFrom,
   writeToFile,
 } from "./Environment";
 import { dataUrlToBase64 } from "./StringUtil";
+
+let nodeFetchReady = false;
 
 export class URLConverter extends AbstractConverter<string> {
   public type: DataType = "url";
 
   constructor() {
     super();
-    if (typeof fetch !== "function") {
+    if (isNode && !nodeFetchReady) {
       import("node-fetch")
         .then((module) => {
           globalThis.fetch = module.default as unknown as typeof fetch;
+          nodeFetchReady = true;
         })
         .catch((e) => console.warn(e));
     }
