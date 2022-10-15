@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-s3v3",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "The universal Filesystem API for S3 v3",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -25,9 +25,9 @@
     "test": "npm-run-all compile-commonjs jest",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./commonjs/**/__tests__/",
-    "release-dry-run": "npm-run-all build sanitize npm-publish-dry-run",
-    "release": "npm-run-all build sanitize npm-publish"
+    "sanitize": "rimraf ./lib/**/secret*.json",
+    "release-dry-run": "npm-run-all build npm-publish-dry-run",
+    "release": "npm-run-all build npm-publish"
   },
   "jest": {
     "testTimeout": 10000,
@@ -40,9 +40,9 @@
     ]
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.186.0",
-    "@aws-sdk/lib-storage": "^3.186.0",
-    "@aws-sdk/s3-request-presigner": "^3.186.0",
+    "@aws-sdk/client-s3": "^3.188.0",
+    "@aws-sdk/lib-storage": "^3.188.0",
+    "@aws-sdk/s3-request-presigner": "^3.188.0",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

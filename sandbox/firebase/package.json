@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-firebase",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "The universal Filesystem API for Firebase Storage",
   "main": "commonjs/index.js",
   "browser": "dist/univ-fs-firebase.js",
@@ -34,9 +34,9 @@
     "web-test": "npm-run-all compile-lib webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./lib/**/secret*.json ./lib/**/__tests__/ ./commonjs/**/__tests__/",
-    "release-dry-run": "npm-run-all build sanitize webpack npm-publish-dry-run",
-    "release": "npm-run-all build sanitize webpack npm-publish"
+    "sanitize": "rimraf ./lib/**/secret*.json",
+    "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",
+    "release": "npm-run-all build webpack npm-publish"
   },
   "jest": {
     "testTimeout": 10000,
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.36",
-    "firebase": "^9.11.0",
+    "firebase": "^9.12.1",
     "isomorphic-fetch": "^3.0.0",
     "univ-fs": "file:../../core"
   },

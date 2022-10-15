@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-idb",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "The universal Filesystem for IndexedDB",
   "main": "lib/index.js",
   "browser": "dist/univ-fs-idb.js",
@@ -29,9 +29,8 @@
     "web-test": "npm-run-all compile-lib webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./lib/**/__tests__/",
-    "release-dry-run": "npm-run-all build sanitize webpack npm-publish-dry-run",
-    "release": "npm-run-all build sanitize webpack npm-publish"
+    "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",
+    "release": "npm-run-all build webpack npm-publish"
   },
   "devDependencies": {
     "univ-fs": "file:../../core"

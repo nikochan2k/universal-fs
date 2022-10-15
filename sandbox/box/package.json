@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-box",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "The universal Filesystem API for Box",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -26,7 +26,7 @@
     "test": "npm-run-all compile-commonjs jest",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./commonjs/**/__tests__/",
+    "sanitize": "rimraf ./lib/**/secret*.json",
     "release-dry-run": "npm-run-all build sanitize npm-publish-dry-run",
     "release": "npm-run-all build sanitize npm-publish"
   },

@@ -16,6 +16,9 @@
     "build-essentials": "npm-run-all build-converter build-core"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.188.0",
+    "@aws-sdk/lib-storage": "^3.188.0",
+    "@aws-sdk/s3-request-presigner": "^3.188.0",
     "tslib": "^2.4.0"
   },
   "devDependencies": {

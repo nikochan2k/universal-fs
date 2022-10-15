@@ -1,6 +1,6 @@
 {
   "name": "univ-fs-azure",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "The universal Filesystem API for Azure Blob Storage",
   "main": "commonjs/index.js",
   "browser": "dist/univ-fs-azure.js",
@@ -33,7 +33,7 @@
     "web-test": "npm-run-all compile-lib webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./lib/**/secret*.json ./lib/**/__tests__/ ./commonjs/**/__tests__/",
+    "sanitize": "rimraf ./lib/**/secret*.json",
     "release-dry-run": "npm-run-all build sanitize webpack npm-publish-dry-run",
     "release": "npm-run-all build sanitize webpack npm-publish"
   },
