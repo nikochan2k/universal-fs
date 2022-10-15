@@ -1,6 +1,6 @@
 {
   "name": "univ-fs",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "The universal Filesystem API core",
   "main": "commonjs/index.js",
   "module": "lib/index.js",
@@ -26,9 +26,8 @@
     "test": "npm-run-all compile-commonjs jest",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./lib/**/__tests__/ ./commonjs/**/__tests__/",
-    "release-dry-run": "npm-run-all build sanitize npm-publish-dry-run",
-    "release": "npm-run-all build sanitize npm-publish"
+    "release-dry-run": "npm-run-all build npm-publish-dry-run",
+    "release": "npm-run-all build npm-publish"
   },
   "jest": {
     "verbose": true,
