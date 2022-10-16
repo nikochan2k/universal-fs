@@ -1,6 +1,6 @@
 {
   "name": "univ-fs",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "The universal Filesystem API core",
   "main": "commonjs/index.js",
   "module": "lib/index.js",
