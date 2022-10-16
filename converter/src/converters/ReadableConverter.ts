@@ -6,6 +6,7 @@ import {
   DataType,
   deleteStartLength,
   getStartEnd,
+  hasNoStartLength,
 } from "./core";
 import {
   EMPTY_BUFFER,
@@ -176,6 +177,14 @@ export class ReadableConverter extends AbstractConverter<Readable> {
       return new PartialReadable(input, start, end);
     }
     if (_().is("readablestream", input, options)) {
+      if (typeof Readable.fromWeb === "function") {
+        // eslint-disable-next-line
+        const readable = Readable.fromWeb(input as any);
+        if (hasNoStartLength(options)) {
+          return readable;
+        }
+        return await _().convert("readable", readable, options);
+      }
       const { start, end } = getStartEnd(options);
       return new ReadableOfReadableStream(input, start, end);
     }

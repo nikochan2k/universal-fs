@@ -1,4 +1,4 @@
-import type { Readable } from "stream";
+import { Readable } from "stream";
 import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
@@ -6,6 +6,7 @@ import {
   DataType,
   EMPTY_UINT8_ARRAY,
   getStartEnd,
+  hasNoStartLength,
 } from "./core";
 import {
   closeStream,
@@ -82,10 +83,18 @@ export function createPartialReadableStream(
   });
 }
 
-function createReadableStreamOfReader(
+async function createReadableStreamOfReader(
   readable: NodeJS.ReadableStream,
   options: ConvertOptions
 ) {
+  if (isReadable(readable) && typeof Readable.toWeb === "function") {
+    const rs = Readable.toWeb(readable);
+    if (hasNoStartLength(options)) {
+      return rs;
+    }
+    return await _().convert("readablestream", rs, options);
+  }
+
   const startEnd = getStartEnd(options);
   const start = startEnd.start;
   const end = startEnd.end ?? Number.MAX_SAFE_INTEGER;
@@ -170,7 +179,7 @@ export class ReadableStreamConverter extends AbstractConverter<
     }
 
     if (_().is("readable", input, options)) {
-      return createReadableStreamOfReader(input, options);
+      return await createReadableStreamOfReader(input, options);
     }
 
     if (hasStreamOnBlob) {
