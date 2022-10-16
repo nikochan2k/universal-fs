@@ -1,3 +1,5 @@
+import type { Readable } from "stream";
+
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
 export type URLType = "data" | "blob" | string;
 export type StringType = "text" | "url" | "base64" | "binary" | "hex";
@@ -7,7 +9,7 @@ export type StreamType = "readable" | "readablestream";
 export type DataType = BlockType | StreamType | "unknown";
 
 export type BlockData = string | ArrayBuffer | Uint8Array | Buffer | Blob;
-export type StreamData = NodeJS.ReadableStream | ReadableStream<unknown>;
+export type StreamData = Readable | ReadableStream<unknown>;
 export type Data = BlockData | StreamData;
 
 export interface Options {
@@ -46,7 +48,7 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : T extends "blob"
   ? Blob
   : T extends "readable"
-  ? NodeJS.ReadableStream
+  ? Readable
   : T extends "readablestream"
   ? ReadableStream<unknown>
   : T extends "text"

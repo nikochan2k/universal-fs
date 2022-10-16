@@ -236,8 +236,8 @@ export async function handleReadable(
 
 export function closeStream(
   stream:
-    | NodeJS.ReadableStream
-    | NodeJS.WritableStream
+    | Readable
+    | Writable
     | ReadableStream<unknown>
     | WritableStream<unknown>
     | undefined,

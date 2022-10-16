@@ -1,3 +1,4 @@
+import type { Readable } from "stream";
 import { AbstractConverter, _ } from "./AbstractConverter";
 import {
   ConvertOptions,
@@ -159,7 +160,7 @@ export class ReadableStreamConverter extends AbstractConverter<
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
         if (_().is("readable", resp.body, options)) {
-          input = resp.body as NodeJS.ReadableStream;
+          input = resp.body as Readable;
         } else {
           input = resp.body as ReadableStream<unknown>;
         }
