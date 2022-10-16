@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import { UnivConv, getUnivConv } from "univ-conv";
+import { getUnivConv, UnivConv } from "univ-conv";
 import { Modification } from "./core";
 
 class ModifiedReadable extends Readable {
@@ -8,7 +8,7 @@ class ModifiedReadable extends Readable {
 
   constructor(
     private conv: UnivConv,
-    private src: Readable,
+    private src: NodeJS.ReadableStream,
     mods: Modification[]
   ) {
     super();
@@ -154,6 +154,7 @@ class ModifiedReadable extends Readable {
 
     const src = this.src;
     src.once("error", (e) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.destroy(e);
       src.off("data", onData);
     });
@@ -169,7 +170,10 @@ class ModifiedReadable extends Readable {
   }
 }
 
-async function createModifiedReadable(src: Readable, ...mods: Modification[]) {
+async function createModifiedReadable(
+  src: NodeJS.ReadableStream,
+  ...mods: Modification[]
+) {
   const conv = await getUnivConv();
   return new ModifiedReadable(conv, src, mods);
 }

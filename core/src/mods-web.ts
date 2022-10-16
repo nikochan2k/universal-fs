@@ -2,7 +2,7 @@ import { closeStream, getUnivConv } from "univ-conv";
 import { Modification } from "./core";
 
 async function createModifiedReadableStream(
-  src: ReadableStream<Uint8Array>,
+  src: ReadableStream<unknown>,
   ...mods: Modification[]
 ) {
   const conv = await getUnivConv();

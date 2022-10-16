@@ -1,4 +1,3 @@
-import type { Readable } from "stream";
 import {
   BlockData,
   getUnivConv,
@@ -8,12 +7,12 @@ import {
 import { Modification } from "./core";
 
 type createModifiedReadableType = (
-  src: Readable,
+  src: NodeJS.ReadableStream,
   ...mods: Modification[]
-) => Promise<Readable>;
+) => Promise<NodeJS.ReadableStream>;
 
 type createModifiedReadableStreamType = (
-  src: ReadableStream<Uint8Array>,
+  src: ReadableStream<unknown>,
   ...mods: Modification[]
 ) => Promise<ReadableStream>;
 
