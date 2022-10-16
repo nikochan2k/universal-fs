@@ -97,7 +97,7 @@ export class BlobConverter extends AbstractConverter<Blob> {
     input: Blob,
     options: ConvertOptions
   ): Promise<string> {
-    if (options.bufferToTextCharset === "utf8") {
+    if (options.bufferToTextEncoding === "utf8") {
       if (hasTextOnBlob) {
         return await input.text();
       }

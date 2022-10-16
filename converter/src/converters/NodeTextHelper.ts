@@ -1,26 +1,18 @@
-import type { decode, encode } from "iconv-lite";
+import { decode, encode, encodingExists } from "iconv-lite";
 import { _ } from "./AbstractConverter";
-import { Charset } from "./core";
 import { isBuffer } from "./Environment";
 import { TextHelper } from "./TextHelper";
+
+const encodings = ["latin1", "ascii", "utf8", "ucs2", "ucs-2", "utf16le"];
 
 export class NodeTextHelper extends TextHelper {
   private _decode: typeof decode | undefined | null;
   private _encode: typeof encode | undefined | null;
-
-  public override async _textToBuffer(
-    text: string,
-    bufCharset: Charset
-  ): Promise<Uint8Array | null> {
-    if (bufCharset === "utf8" || bufCharset === "utf16le") {
-      return Buffer.from(text, bufCharset as BufferEncoding);
-    }
-    return await super._textToBuffer(text, bufCharset);
-  }
+  private _encodingExists: typeof encodingExists | undefined | null;
 
   protected override async _bufferToText(
     buf: Uint8Array,
-    bufCharset: Charset
+    encoding: string
   ): Promise<string | null> {
     let buffer: Buffer;
     if (isBuffer(buf)) {
@@ -28,13 +20,31 @@ export class NodeTextHelper extends TextHelper {
     } else {
       buffer = (await _().convert("uint8array", buf)) as Buffer;
     }
-    if (bufCharset === "utf8" || bufCharset === "utf16le") {
-      return buffer.toString(bufCharset as BufferEncoding);
+    if (0 <= encodings.indexOf(encoding.toLowerCase())) {
+      return buffer.toString(encoding as BufferEncoding);
     }
-    return await super._bufferToText(buf, bufCharset);
+    const converted = await this.decode(buffer, encoding);
+    if (converted) return converted;
+    return await super._bufferToText(buf, encoding);
+  }
+
+  protected override async _textToBuffer(
+    text: string,
+    encoding: string
+  ): Promise<Uint8Array | null> {
+    if (0 <= encodings.indexOf(encoding.toLowerCase())) {
+      return Buffer.from(text, encoding as BufferEncoding);
+    }
+    const converted = await this.encode(text, encoding);
+    if (converted) return converted;
+    return await super._textToBuffer(text, encoding);
   }
 
   protected async decode(u8: Uint8Array, encoding: string) {
+    if (!(await this.encodingExists(encoding))) {
+      return null;
+    }
+
     if (typeof this._decode === "undefined") {
       try {
         this._decode = (await import("iconv-lite")).decode;
@@ -57,6 +67,10 @@ export class NodeTextHelper extends TextHelper {
   }
 
   protected async encode(content: string, encoding: string) {
+    if (!(await this.encodingExists(encoding))) {
+      return null;
+    }
+
     if (typeof this._encode === "undefined") {
       try {
         this._encode = (await import("iconv-lite")).encode;
@@ -70,5 +84,21 @@ export class NodeTextHelper extends TextHelper {
     }
 
     return this._encode(content, encoding);
+  }
+
+  protected async encodingExists(encoding: string) {
+    if (typeof this._encodingExists === "undefined") {
+      try {
+        this._encodingExists = (await import("iconv-lite")).encodingExists;
+      } catch {
+        this._encodingExists = null;
+      }
+    }
+
+    if (!this._encodingExists) {
+      return false;
+    }
+
+    return this._encodingExists(encoding);
   }
 }

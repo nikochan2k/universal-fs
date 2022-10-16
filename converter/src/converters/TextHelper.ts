@@ -4,7 +4,7 @@ import type {
   ConvertStringOptions,
 } from "encoding-japanese";
 import "fast-text-encoding";
-import { Charset, ConvertOptions } from "./core";
+import { ConvertOptions } from "./core";
 import { newBufferFrom } from "./Environment";
 
 const textEncoder = new TextEncoder();
@@ -17,10 +17,10 @@ export class TextHelper {
     u8: Uint8Array,
     options: ConvertOptions
   ): Promise<string> {
-    const bufCharset = options.bufferToTextCharset;
-    const converted = await this._bufferToText(u8, bufCharset);
+    const encoding = options.bufferToTextEncoding;
+    const converted = await this._bufferToText(u8, encoding);
     if (converted == null) {
-      throw new Error(`Illegal encoding: ${bufCharset}`);
+      throw new Error(`Illegal encoding: ${encoding}`);
     }
     return converted;
   }
@@ -29,28 +29,28 @@ export class TextHelper {
     text: string,
     options: ConvertOptions
   ): Promise<Uint8Array> {
-    const bufCharset = options.textToBufferCharset;
-    const converted = await this._textToBuffer(text, bufCharset);
+    const encoding = options.textToBufferEncoding;
+    const converted = await this._textToBuffer(text, encoding);
     if (converted == null) {
-      throw new Error(`Illegal encoding: ${bufCharset}`);
+      throw new Error(`Illegal encoding: ${encoding}`);
     }
     return converted;
   }
 
   protected async _bufferToText(
     u8: Uint8Array,
-    bufCharset: Charset
+    encoding: string
   ): Promise<string | null> {
-    if (bufCharset === "utf8") {
+    if (encoding === "utf8") {
       return textDecoder.decode(u8);
     }
-    if (bufCharset === "utf16le") {
+    if (encoding === "utf16le") {
       return String.fromCharCode.apply(null, Array.from(u8));
     }
 
     const converted = await this.convert(u8, {
       to: "UNICODE",
-      from: bufCharset.toUpperCase(),
+      from: encoding.toUpperCase(),
       type: "string",
     } as ConvertStringOptions);
     return converted;
@@ -58,18 +58,18 @@ export class TextHelper {
 
   protected async _textToBuffer(
     text: string,
-    bufCharset: Charset
+    encoding: string
   ): Promise<Uint8Array | null> {
-    if (bufCharset === "utf8") {
+    if (encoding === "utf8") {
       return textEncoder.encode(text);
     }
-    if (bufCharset === "utf16le") {
+    if (encoding === "utf16le") {
       const ab = this.textToUtf16leBuffer(text);
       return newBufferFrom(ab);
     }
 
     const ab = await this.convert(text, {
-      to: bufCharset.toUpperCase(),
+      to: encoding.toUpperCase(),
       from: "UNICODE",
       type: "arraybuffer",
     } as ConvertArrayBufferOptions);

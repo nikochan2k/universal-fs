@@ -153,8 +153,8 @@ export abstract class AbstractConverter<T extends Data>
       );
     }
     if (!options.inputStringType) options.inputStringType = "text";
-    if (!options.bufferToTextCharset) options.bufferToTextCharset = "utf8";
-    if (!options.textToBufferCharset) options.textToBufferCharset = "utf8";
+    if (!options.bufferToTextEncoding) options.bufferToTextEncoding = "utf8";
+    if (!options.textToBufferEncoding) options.textToBufferEncoding = "utf8";
     if (!options.outputURL) options.outputURL = "data";
     return options as T;
   }

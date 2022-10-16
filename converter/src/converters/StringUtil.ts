@@ -1,4 +1,4 @@
-import { isNode } from "./Environment";
+import { hasBuffer } from "./Environment";
 import { TextHelper } from "./TextHelper";
 
 export function dataUrlToBase64(dataUrl: string) {
@@ -12,7 +12,7 @@ export function dataUrlToBase64(dataUrl: string) {
 let textHelper: TextHelper | undefined;
 export async function getTextHelper() {
   if (!textHelper) {
-    if (isNode) {
+    if (hasBuffer) {
       textHelper = new (await import("./NodeTextHelper")).NodeTextHelper();
     } else {
       textHelper = new (await import("./TextHelper")).TextHelper();

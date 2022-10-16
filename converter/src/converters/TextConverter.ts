@@ -68,7 +68,7 @@ export class TextConverter extends AbstractConverter<string> {
     options: ConvertOptions
   ): Promise<string> {
     if (
-      options.bufferToTextCharset === options.textToBufferCharset &&
+      options.bufferToTextEncoding === options.textToBufferEncoding &&
       hasNoStartLength(options)
     ) {
       return input;
