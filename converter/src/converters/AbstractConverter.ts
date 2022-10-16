@@ -1,5 +1,5 @@
 import {
-  UnivConv as UnivConv,
+  UnivConv,
   Converter,
   ConvertOptions,
   Data,

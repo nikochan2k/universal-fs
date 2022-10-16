@@ -21,6 +21,7 @@ import {
   hasBlob,
   hasReadableStream,
   isNodeJSWritableStream,
+  isWritable,
   isWritableStream,
   pipeNodeStream,
   pipeWebStream,
@@ -120,7 +121,7 @@ class DefaultUnivConv implements UnivConvInternal {
       try {
         await pipeNodeStream(readable, output);
       } catch (e) {
-        closeStream(output, e);
+        if (isWritable(output)) closeStream(output, e);
       }
     } else if (isWritableStream(output)) {
       let stream: ReadableStream<unknown>;
