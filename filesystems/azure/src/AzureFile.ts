@@ -1,4 +1,4 @@
-import { Readable } from "stream";
+import type { Readable } from "stream";
 import { Data, EMPTY_BLOB, EMPTY_BUFFER, hasReadable } from "univ-conv";
 import {
   AbstractFile,
@@ -59,7 +59,7 @@ export class AzureFile extends AbstractFile {
       const conv = await this._getConverter();
       const client = afs._getBlockBlobClient(path, false);
       if (conv.is("readable", data)) {
-        await client.uploadStream(data);
+        await client.uploadStream(data as Readable);
       } else if (
         conv.is("uint8array", data) ||
         conv.is("arraybuffer", data) ||
