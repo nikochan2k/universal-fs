@@ -4,7 +4,7 @@ import type {
   ConvertStringOptions,
 } from "encoding-japanese";
 import "fast-text-encoding";
-import { ConvertOptions } from "./core";
+import { Charset, ConvertOptions } from "./core";
 import { newBufferFrom } from "./Environment";
 
 const textEncoder = new TextEncoder();
@@ -18,18 +18,11 @@ export class TextHelper {
     options: ConvertOptions
   ): Promise<string> {
     const bufCharset = options.bufferToTextCharset;
-    if (bufCharset === "utf8") {
-      return textDecoder.decode(u8);
+    const converted = await this._bufferToText(u8, bufCharset);
+    if (converted == null) {
+      throw new Error(`Illegal encoding: ${bufCharset}`);
     }
-    if (bufCharset === "utf16le") {
-      return String.fromCharCode.apply(null, Array.from(u8));
-    }
-
-    return await this.convert(u8, {
-      to: "UNICODE",
-      from: bufCharset.toUpperCase(),
-      type: "string",
-    } as ConvertStringOptions);
+    return converted;
   }
 
   public async textToBuffer(
@@ -37,6 +30,36 @@ export class TextHelper {
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const bufCharset = options.textToBufferCharset;
+    const converted = await this._textToBuffer(text, bufCharset);
+    if (converted == null) {
+      throw new Error(`Illegal encoding: ${bufCharset}`);
+    }
+    return converted;
+  }
+
+  protected async _bufferToText(
+    u8: Uint8Array,
+    bufCharset: Charset
+  ): Promise<string | null> {
+    if (bufCharset === "utf8") {
+      return textDecoder.decode(u8);
+    }
+    if (bufCharset === "utf16le") {
+      return String.fromCharCode.apply(null, Array.from(u8));
+    }
+
+    const converted = await this.convert(u8, {
+      to: "UNICODE",
+      from: bufCharset.toUpperCase(),
+      type: "string",
+    } as ConvertStringOptions);
+    return converted;
+  }
+
+  protected async _textToBuffer(
+    text: string,
+    bufCharset: Charset
+  ): Promise<Uint8Array | null> {
     if (bufCharset === "utf8") {
       return textEncoder.encode(text);
     }
@@ -50,21 +73,24 @@ export class TextHelper {
       from: "UNICODE",
       type: "arraybuffer",
     } as ConvertArrayBufferOptions);
+    if (ab == null) {
+      return null;
+    }
     return newBufferFrom(ab);
   }
 
   protected async convert(
     data: Uint8Array,
     options: ConvertStringOptions
-  ): Promise<string>;
+  ): Promise<string | null>;
   protected async convert(
     data: string,
     options: ConvertArrayBufferOptions
-  ): Promise<ArrayBuffer>;
+  ): Promise<ArrayBuffer | null>;
   protected async convert(
     data: Uint8Array | string,
     options: ConvertStringOptions | ConvertArrayBufferOptions
-  ): Promise<ArrayBuffer | string> {
+  ): Promise<ArrayBuffer | string | null> {
     if (typeof this._convert === "undefined") {
       try {
         this._convert = (await import("encoding-japanese")).convert;
@@ -74,10 +100,7 @@ export class TextHelper {
     }
 
     if (!this._convert) {
-      throw new Error(
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `Illegal encoding: from=${options.from}, to=${options.to}`
-      );
+      return null;
     }
 
     if (typeof data === "string") {
