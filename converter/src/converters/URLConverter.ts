@@ -57,7 +57,7 @@ export class URLConverter extends AbstractConverter<string> {
         const body = await _().convert("readable", input, options);
         await fetch(url, { ...options.fetchRequestInit, body: body as any }); // eslint-disable-line
       } else {
-        throw new Error("ReadableStream or Readable not found: " + url);
+        throw new Error("ReadableStream not found: " + url);
       }
     } else if (url === "blob" && typeof URL?.createObjectURL === "function") {
       const blob = await _().convert("blob", input, options);
