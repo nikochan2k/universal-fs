@@ -1,9 +1,8 @@
 {
   "name": "univ-conv",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "The universal binary and text converter",
   "main": "commonjs/index.js",
-  "browser": "dist/univ-conv.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",

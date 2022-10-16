@@ -3,7 +3,6 @@
   "version": "0.10.2",
   "description": "The universal Filesystem for Web File System API",
   "main": "lib/index.js",
-  "browser": "dist/univ-fs-webfs.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
