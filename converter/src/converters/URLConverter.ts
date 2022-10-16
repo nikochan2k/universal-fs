@@ -126,7 +126,7 @@ export class URLConverter extends AbstractConverter<string> {
       const resp = await fetch(input);
       return await _()
         ._of("readablestream")
-        .toArrayBuffer(resp.body as ReadableStream<Uint8Array>, options);
+        .toArrayBuffer(resp.body as ReadableStream<unknown>, options);
     }
   }
 

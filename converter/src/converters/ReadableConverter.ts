@@ -12,13 +12,14 @@ import {
   fileURLToReadable,
   handleReadable,
   hasReadable,
+  isNodeJSReadableStream,
   isReadable,
 } from "./Environment";
 import { getTextHelper } from "./StringUtil";
 
 export class PartialReadable extends Readable {
   constructor(
-    private src: Readable,
+    private src: NodeJS.ReadableStream,
     private start: number,
     private end = Number.MAX_SAFE_INTEGER
   ) {
@@ -65,6 +66,7 @@ export class PartialReadable extends Readable {
 
     const src = this.src;
     src.once("error", (e) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.destroy(e);
       src.off("data", onData);
     });
@@ -78,7 +80,7 @@ export class PartialReadable extends Readable {
 
 class ReadableOfReadableStream extends Readable {
   constructor(
-    private stream: ReadableStream<Uint8Array>,
+    private stream: ReadableStream<unknown>,
     private start: number,
     private end = Number.MAX_SAFE_INTEGER
   ) {
@@ -137,10 +139,10 @@ class ReadableOfReadableStream extends Readable {
   }
 }
 
-export class ReadableConverter extends AbstractConverter<Readable> {
+export class ReadableConverter extends AbstractConverter<NodeJS.ReadableStream> {
   public type: DataType = "readable";
 
-  public empty(): Readable {
+  public empty(): NodeJS.ReadableStream {
     return new Readable({
       read() {
         this.push(EMPTY_BUFFER);
@@ -149,19 +151,19 @@ export class ReadableConverter extends AbstractConverter<Readable> {
     });
   }
 
-  public is(input: unknown): input is Readable {
-    return isReadable(input);
+  public is(input: unknown): input is NodeJS.ReadableStream {
+    return isNodeJSReadableStream(input);
   }
 
   protected async _from(
     input: Data,
     options: ConvertOptions
-  ): Promise<Readable> {
+  ): Promise<NodeJS.ReadableStream> {
     if (typeof input === "string" && options.inputStringType === "url") {
       if (input.startsWith("http:") || input.startsWith("https:")) {
         const resp = await fetch(input);
         if (hasReadable) {
-          input = resp.body as unknown as Readable;
+          input = resp.body as unknown as NodeJS.ReadableStream;
         } else {
           input = resp.body as ReadableStream;
         }
@@ -186,35 +188,38 @@ export class ReadableConverter extends AbstractConverter<Readable> {
   }
 
   protected _getStartEnd(
-    _input: Readable,
+    _input: NodeJS.ReadableStream,
     options: ConvertOptions
   ): Promise<{ start: number; end: number | undefined }> {
     return Promise.resolve(getStartEnd(options));
   }
 
-  protected _isEmpty(input: Readable): boolean {
+  protected _isEmpty(input: NodeJS.ReadableStream): boolean {
     return !input.readable;
   }
 
-  protected _merge(readables: Readable[]): Promise<Readable> {
+  protected _merge(
+    readables: NodeJS.ReadableStream[]
+  ): Promise<NodeJS.ReadableStream> {
     const end = readables.length;
     if (!readables || end === 0) {
       return Promise.resolve(this.empty());
     }
     if (end === 1) {
-      return Promise.resolve(readables[0] as Readable);
+      return Promise.resolve(readables[0] as NodeJS.ReadableStream);
     }
 
     const pt = new PassThrough();
     const process = (i: number) => {
       if (i < end) {
-        const readable = readables[i] as Readable;
+        const readable = readables[i] as NodeJS.ReadableStream;
         readable.once("error", (e) => {
           readable.unpipe();
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           pt.destroy(e);
           for (let j = i; j < end; j++) {
-            const r = readables[j] as Readable;
-            r.destroy();
+            const r = readables[j];
+            if (isReadable(r)) r.destroy();
           }
         });
         readable.once("end", () => process(++i));
@@ -232,7 +237,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
   }
 
   protected async _toArrayBuffer(
-    input: Readable,
+    input: NodeJS.ReadableStream,
     options: ConvertOptions
   ): Promise<ArrayBuffer> {
     const u8 = await this._toUint8Array(input, options);
@@ -240,7 +245,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
   }
 
   protected async _toBase64(
-    input: Readable,
+    input: NodeJS.ReadableStream,
     options: ConvertOptions
   ): Promise<string> {
     const buffer = await this._toUint8Array(input, options);
@@ -250,7 +255,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
   }
 
   protected async _toText(
-    input: Readable,
+    input: NodeJS.ReadableStream,
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this._toUint8Array(input, options);
@@ -259,7 +264,7 @@ export class ReadableConverter extends AbstractConverter<Readable> {
   }
 
   protected async _toUint8Array(
-    input: Readable,
+    input: NodeJS.ReadableStream,
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const { start, end } = await this._getStartEnd(input, options);

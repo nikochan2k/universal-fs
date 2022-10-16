@@ -1,4 +1,3 @@
-import type { Writable } from "stream";
 import {
   AbstractConverter,
   UnivConvInternal,
@@ -21,7 +20,7 @@ import {
   closeStream,
   hasBlob,
   hasReadableStream,
-  isWritable,
+  isNodeJSWritableStream,
   isWritableStream,
   pipeNodeStream,
   pipeWebStream,
@@ -113,10 +112,10 @@ class DefaultUnivConv implements UnivConvInternal {
 
   public async pipe(
     input: Data,
-    output: Writable | WritableStream<Uint8Array> | string,
+    output: NodeJS.WritableStream | WritableStream<unknown> | string,
     options?: Partial<ConvertOptions>
   ): Promise<void> {
-    if (isWritable(output)) {
+    if (isNodeJSWritableStream(output)) {
       const readable = await this._of("readable").from(input, options);
       try {
         await pipeNodeStream(readable, output);
@@ -124,7 +123,7 @@ class DefaultUnivConv implements UnivConvInternal {
         closeStream(output, e);
       }
     } else if (isWritableStream(output)) {
-      let stream: ReadableStream<Uint8Array>;
+      let stream: ReadableStream<unknown>;
       try {
         stream = await this._of("readablestream").from(input, options);
         await pipeWebStream(stream, output);

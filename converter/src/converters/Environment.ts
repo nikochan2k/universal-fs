@@ -118,13 +118,13 @@ export async function handleReadableStream(
 
 export function isReadableStream(
   stream: unknown
-): stream is ReadableStream<Uint8Array> {
+): stream is ReadableStream<unknown> {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return (
     hasReadableStream &&
     stream != null &&
-    typeof (stream as ReadableStream<Uint8Array>).getReader === "function" &&
-    typeof (stream as ReadableStream<Uint8Array>).cancel === "function"
+    typeof (stream as ReadableStream<unknown>).getReader === "function" &&
+    typeof (stream as ReadableStream<unknown>).cancel === "function"
   );
 }
 
@@ -140,12 +140,21 @@ export function isWritableStream(
   );
 }
 
-export function isReadable(stream: unknown): stream is Readable {
+export function isNodeJSReadableStream(
+  stream: unknown
+): stream is NodeJS.ReadableStream {
   return (
     isNode &&
     stream != null &&
-    typeof (stream as Readable).pipe === "function" &&
-    (stream as Readable).readable
+    typeof (stream as NodeJS.ReadableStream).read === "function" &&
+    (stream as NodeJS.ReadableStream).readable
+  );
+}
+
+export function isReadable(stream: unknown): stream is Readable {
+  return (
+    isNodeJSReadableStream(stream) &&
+    typeof (stream as Readable).destroy === "function"
   );
 }
 
@@ -164,16 +173,28 @@ export async function pipeWebStream(
   }
 }
 
-export function isWritable(stream: unknown): stream is Writable {
+export function isNodeJSWritableStream(
+  stream: unknown
+): stream is NodeJS.WritableStream {
   return (
     isNode &&
     stream != null &&
-    typeof (stream as Writable).pipe === "function" &&
-    (stream as Writable).writable
+    typeof (stream as NodeJS.WritableStream).write === "function" &&
+    (stream as NodeJS.WritableStream).writable
   );
 }
 
-export function pipeNodeStream(readable: Readable, writable: Writable) {
+export function isWritable(stream: unknown): stream is Writable {
+  return (
+    isNodeJSWritableStream(stream) &&
+    typeof (stream as Writable).destroy === "function"
+  );
+}
+
+export function pipeNodeStream(
+  readable: NodeJS.ReadableStream,
+  writable: NodeJS.WritableStream
+) {
   return new Promise<void>((resolve, reject) => {
     readable.once("error", reject);
     writable.once("error", reject);
@@ -183,14 +204,14 @@ export function pipeNodeStream(readable: Readable, writable: Writable) {
 }
 
 export async function handleReadable(
-  readable: Readable,
+  readable: NodeJS.ReadableStream,
   onData: (chunk: Data) => Promise<boolean>
 ): Promise<void> {
   if (!_Writable) {
     _Writable = (await import("stream")).Writable;
   }
 
-  if (readable.destroyed) {
+  if (isReadable(readable) && readable.destroyed) {
     return;
   }
 
@@ -215,9 +236,9 @@ export async function handleReadable(
 
 export function closeStream(
   stream:
-    | Readable
-    | Writable
-    | ReadableStream<Uint8Array>
+    | NodeJS.ReadableStream
+    | NodeJS.WritableStream
+    | ReadableStream<unknown>
     | WritableStream<unknown>
     | undefined,
   reason?: unknown
@@ -294,7 +315,10 @@ export async function fileURLToReadable(fileURL: string) {
   return _createReadStream(filePath);
 }
 
-export async function writeToFile(readable: Readable, fileURL: string) {
+export async function writeToFile(
+  readable: NodeJS.ReadableStream,
+  fileURL: string
+) {
   if (!_createWriteStream) {
     _createWriteStream = (await import("fs")).createWriteStream;
   }

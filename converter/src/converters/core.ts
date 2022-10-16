@@ -1,5 +1,3 @@
-import type { Readable, Writable } from "stream";
-
 export type Charset = "utf8" | "utf16le" | "utf16be" | "jis" | "eucjp" | "sjis";
 export type URLType = "data" | "blob" | string;
 export type StringType = "text" | "url" | "base64" | "binary" | "hex";
@@ -9,7 +7,7 @@ export type StreamType = "readable" | "readablestream";
 export type DataType = BlockType | StreamType | "unknown";
 
 export type BlockData = string | ArrayBuffer | Uint8Array | Buffer | Blob;
-export type StreamData = Readable | ReadableStream<Uint8Array>;
+export type StreamData = NodeJS.ReadableStream | ReadableStream<unknown>;
 export type Data = BlockData | StreamData;
 
 export interface Options {
@@ -48,9 +46,9 @@ export type ReturnData<T extends DataType> = T extends "arraybuffer"
   : T extends "blob"
   ? Blob
   : T extends "readable"
-  ? Readable
+  ? NodeJS.ReadableStream
   : T extends "readablestream"
-  ? ReadableStream<Uint8Array>
+  ? ReadableStream<unknown>
   : T extends "text"
   ? string
   : T extends "base64"
@@ -81,7 +79,7 @@ export interface UnivConv {
   ): Promise<ReturnData<T>>;
   pipe(
     input: Data,
-    output: Writable | WritableStream<Uint8Array>,
+    output: NodeJS.WritableStream | WritableStream<unknown>,
     options?: Partial<ConvertOptions>
   ): Promise<void>;
   size(input: Data, options?: Partial<Options>): Promise<number>;
