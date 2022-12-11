@@ -7,7 +7,9 @@
   "typings": "lib/index.d.ts",
   "files": [
     "commonjs",
-    "lib"
+    "lib",
+    "src",
+    "!**/secret*.json"
   ],
   "keywords": [
     "fs",
@@ -41,7 +43,7 @@
     ]
   },
   "devDependencies": {
-    "box-node-sdk": "^2.6.0",
+    "box-node-sdk": "^2.7.2",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

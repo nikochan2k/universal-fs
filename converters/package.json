@@ -1,7 +1,7 @@
 {
-  "name": "univ-fs-s3",
-  "version": "0.10.2",
-  "description": "The universal Filesystem API for S3 SDK v2",
+  "name": "univ-conv-new",
+  "version": "0.10.3",
+  "description": "The universal binary and text converter",
   "main": "commonjs/index.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -14,12 +14,17 @@
     "!**/secret*.json"
   ],
   "keywords": [
-    "fs",
-    "filesystem",
-    "storage",
-    "isomorphic",
-    "universal",
-    "s3"
+    "converter",
+    "blob",
+    "arraybuffer",
+    "base64",
+    "uint8array",
+    "readable",
+    "readablestream",
+    "utf8",
+    "binary",
+    "hex",
+    "url"
   ],
   "scripts": {
     "clean": "rimraf ./lib ./commonjs ./dist ./tsconfig.tsbuildinfo",
@@ -34,13 +39,10 @@
     "web-test": "npm-run-all compile-lib webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
-    "sanitize": "rimraf ./lib/**/secret*.json",
-    "release-dry-run": "npm-run-all build sanitize webpack npm-publish-dry-run",
-    "release": "npm-run-all build sanitize webpack npm-publish"
+    "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",
+    "release": "npm-run-all build webpack npm-publish"
   },
   "jest": {
-    "testTimeout": 10000,
-    "verbose": true,
     "moduleFileExtensions": [
       "js"
     ],
@@ -49,12 +51,19 @@
     ]
   },
   "devDependencies": {
-    "aws-sdk": "^2.1272.0",
-    "univ-fs": "file:../../core"
+    "@types/encoding-japanese": "^2.0.1",
+    "@types/fast-text-encoding": "^1.0.1",
+    "encoding-japanese": "^2.0.0",
+    "iconv-lite": "^0.6.3"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2.1233.0",
-    "univ-conv": "~0.10.0"
+  "dependencies": {
+    "base64-arraybuffer": "^1.0.2",
+    "fast-text-encoding": "^1.0.6",
+    "node-fetch": "^2.6.7"
+  },
+  "optionalDependencies": {
+    "encoding-japanese": "^2.0.0",
+    "iconv-lite": "^0.6.3"
   },
   "author": "Yoshihiro Seki",
   "license": "MIT",

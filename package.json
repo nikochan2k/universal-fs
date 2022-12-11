@@ -15,30 +15,24 @@
     "build-core": "npm run build -w core",
     "build-essentials": "npm-run-all build-converter build-core"
   },
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.188.0",
-    "@aws-sdk/lib-storage": "^3.188.0",
-    "@aws-sdk/s3-request-presigner": "^3.188.0",
-    "tslib": "^2.4.0"
-  },
   "devDependencies": {
-    "@types/jest": "^29.1.2",
-    "@types/node": "^18.8.3",
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "@typescript-eslint/parser": "^5.39.0",
-    "eslint": "^8.25.0",
+    "@types/jest": "^29.2.4",
+    "@types/node": "^18.11.13",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
-    "expect": "^29.1.2",
-    "jasmine": "^4.4.0",
-    "jest": "^29.1.2",
+    "expect": "^29.3.1",
+    "jasmine": "^4.5.0",
+    "jest": "^29.3.1",
     "karma": "^6.4.1",
     "karma-chrome-launcher": "^3.1.1",
     "karma-jasmine": "^5.1.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.8.4",
-    "webpack": "^5.74.0",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
     "webpack-cli": "^4.10.0"
   },
   "author": "Yoshihiro Seki",
@@ -55,6 +49,7 @@
   "workspaces": [
     "core",
     "converter",
+    "converters",
     "filesystems/*",
     "sandbox/*"
   ]

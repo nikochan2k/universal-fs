@@ -9,7 +9,9 @@
   "files": [
     "commonjs",
     "lib",
-    "dist"
+    "dist",
+    "src",
+    "!**/secret*.json"
   ],
   "keywords": [
     "fs",
@@ -49,7 +51,7 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.36",
-    "firebase": "^9.12.1",
+    "firebase": "^9.15.0",
     "isomorphic-fetch": "^3.0.0",
     "univ-fs": "file:../../core"
   },

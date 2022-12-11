@@ -9,7 +9,9 @@
   "files": [
     "commonjs",
     "lib",
-    "dist"
+    "dist",
+    "src",
+    "!**/secret*.json"
   ],
   "keywords": [
     "fs",
@@ -47,7 +49,7 @@
     ]
   },
   "devDependencies": {
-    "@azure/storage-blob": "^12.11.0",
+    "@azure/storage-blob": "^12.12.0",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

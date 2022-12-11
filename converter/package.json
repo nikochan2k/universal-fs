@@ -9,7 +9,9 @@
   "files": [
     "commonjs",
     "lib",
-    "dist"
+    "dist",
+    "src",
+    "!**/secret*.json"
   ],
   "keywords": [
     "converter",
@@ -57,7 +59,7 @@
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
     "fast-text-encoding": "^1.0.6",
-    "node-fetch": "2.6.7"
+    "node-fetch": "^2.6.7"
   },
   "optionalDependencies": {
     "encoding-japanese": "^2.0.0",
