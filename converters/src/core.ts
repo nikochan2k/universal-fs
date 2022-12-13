@@ -1,9 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Variant = object | number | boolean | bigint | string;
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type ExcludeString = object | number | boolean | bigint;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FunctionType<T> = new (...args: any[]) => T;
+export type VariantOrNull = Variant | null;
 
 export interface Options {
   bufferSize?: number;
@@ -12,14 +12,10 @@ export interface Options {
 }
 
 export interface Converter<ST extends Variant, DT extends Variant> {
-  srcType: string;
-  dstType: string;
-
   convert(src: ST, options?: Partial<Options>): Promise<DT>;
 }
 
 export interface Handler<T extends Variant> {
-  type: string;
   empty(): Promise<T>;
   isEmpty(src: T, options?: Partial<Options>): Promise<boolean>;
   pipe(
