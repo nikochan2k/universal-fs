@@ -7,7 +7,7 @@ import {
   Variant,
 } from "./core";
 
-export interface StringOptions extends Partial<Options> {
+export interface StringOptions extends Options {
   srcType?: string;
 }
 
@@ -31,12 +31,12 @@ export class UnivConv {
   convert<T extends Variant>(
     src: ExcludeString,
     dstType: FunctionType<T>,
-    options?: Partial<Options>
+    options?: Options
   ): Promise<T>;
   convert<T extends Variant>(
     src: ExcludeString,
     dstType: string,
-    options?: Partial<Options>
+    options?: Options
   ): Promise<T>;
   async convert<T extends Variant>(
     src: Variant,
@@ -141,16 +141,13 @@ export class UnivConv {
 
   async isEmpty<T extends Variant>(
     src: T,
-    options?: Partial<Options>
+    options?: Options
   ): Promise<boolean> {
     const handler = await this.getHandler(src);
     return await handler.isEmpty(src, options);
   }
 
-  async merge<T extends Variant>(
-    src: T[],
-    options?: Partial<Options>
-  ): Promise<T> {
+  async merge<T extends Variant>(src: T[], options?: Options): Promise<T> {
     const handler = await this.getHandler(src);
     const merged = await handler.merge(src, options);
     return merged as Promise<T>;
@@ -159,16 +156,13 @@ export class UnivConv {
   async pipe<T extends Variant>(
     src: T,
     dst: NodeJS.WritableStream | WritableStream<unknown>,
-    options?: Partial<Options>
+    options?: Options
   ): Promise<void> {
     const handler = await this.getHandler(src);
     await handler.pipe(src, dst, options);
   }
 
-  async size<T extends Variant>(
-    src: T,
-    options?: Partial<Options>
-  ): Promise<number> {
+  async size<T extends Variant>(src: T, options?: Options): Promise<number> {
     const handler = await this.getHandler(src);
     return await handler.size(src, options);
   }
