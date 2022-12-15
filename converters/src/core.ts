@@ -77,7 +77,7 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
     if (options?.length === 0) {
       return await this.empty();
     }
-    return await this._slice(src, options?.bufferSize);
+    return await this._slice(src, options);
   }
 
   protected abstract _isEmpty(src: T): Promise<boolean>;
@@ -88,5 +88,5 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
     bufferSize?: number
   ): Promise<void>;
   protected abstract _size(src: T, bufferSize?: number): Promise<number>;
-  protected abstract _slice(src: T, bufferSize?: number): Promise<T>;
+  protected abstract _slice(src: T, options?: Options): Promise<T>;
 }
