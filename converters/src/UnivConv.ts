@@ -1,8 +1,10 @@
 import {
   Converter,
+  ConverterLocationFn,
   ExcludeString,
   FunctionType,
   Handler,
+  HandlerLocationFn,
   Options,
   Variant,
 } from "./core";
@@ -12,9 +14,13 @@ export interface StringOptions extends Options {
 }
 
 /* eslint-disable @typescript-eslint/ban-types */
-const converterDirectories = ["./converters/"];
+const converterLocationFunctions: ConverterLocationFn[] = [
+  (srcType, dstType) => `./converters/${srcType}/${dstType}`,
+];
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
-const handlerDirectories = ["./handlers/"];
+const handlerLocationFunctions: HandlerLocationFn[] = [
+  (type) => `./handlers/${type}`,
+];
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};
 
 export class UnivConv {
@@ -51,18 +57,19 @@ export class UnivConv {
       dstTypes = [dstType];
     }
     for (const st of srcTypes) {
+      const srcType = st.toLowerCase();
       for (const dt of dstTypes) {
-        const key = st.toLowerCase() + "_" + dt.toLowerCase();
+        const dstType = dt.toLowerCase();
+        const key = srcType + "_" + dstType;
         let converter = converterMap[key];
         if (typeof converter === "undefined") {
-          for (let dir of converterDirectories) {
-            if (!dir.endsWith("/")) {
-              dir += "/";
-            }
+          for (const fn of converterLocationFunctions) {
+            const location = fn(srcType, dstType);
             try {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              converter = await import(dir + key);
+              converter = await import(location);
               if (converter) {
+                converterMap[key] = converter;
                 break;
               }
             } catch {
@@ -84,7 +91,7 @@ export class UnivConv {
     }
     throw new TypeError(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `No converters: srcTypes=[${srcTypes}], dstTypes=[${dstTypes}]`
+      `No converter: srcTypes=[${srcTypes}], dstTypes=[${dstTypes}]`
     );
   }
 
@@ -108,14 +115,13 @@ export class UnivConv {
       const key = type.toLowerCase();
       let handler = handlerMap[key];
       if (typeof handler === "undefined") {
-        for (let dir of handlerDirectories) {
-          if (!dir.endsWith("/")) {
-            dir += "/";
-          }
+        for (const fn of handlerLocationFunctions) {
+          const location = fn(type);
           try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            handler = await import(dir + key);
+            handler = await import(location);
             if (handler) {
+              handlerMap[key] = handler;
               break;
             }
           } catch {
@@ -135,7 +141,7 @@ export class UnivConv {
     }
     throw new TypeError(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `No handlers: types=[${types}]`
+      `No handler: types=[${types}]`
     );
   }
 

@@ -11,6 +11,9 @@ export interface Options {
   start?: number;
 }
 
+export type ConverterLocationFn = (srcType: string, dstType: string) => string;
+export type HandlerLocationFn = (type: string) => string;
+
 export interface Converter<ST extends Variant, DT extends Variant> {
   convert(src: ST, options?: Options): Promise<DT>;
 }
