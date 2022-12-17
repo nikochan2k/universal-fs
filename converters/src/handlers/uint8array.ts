@@ -1,42 +1,44 @@
 import { AbstractHandler, Options } from "../core";
 
-export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
+export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
-class ArrayBufferHandler extends AbstractHandler<ArrayBuffer> {
-  public empty(): Promise<ArrayBuffer> {
-    return Promise.resolve(EMPTY_ARRAY_BUFFER);
+class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
+  public empty(): Promise<Uint8Array> {
+    return Promise.resolve(EMPTY_UINT8_ARRAY);
   }
 
-  protected _isEmpty(src: ArrayBuffer): Promise<boolean> {
+  protected _isEmpty(src: Uint8Array): Promise<boolean> {
     return Promise.resolve(src.byteLength === 0);
   }
 
-  protected _merge(src: ArrayBuffer[]): Promise<ArrayBuffer> {
+  protected _merge(src: Uint8Array[]): Promise<Uint8Array> {
     const byteLength = src.reduce((sum, chunk) => {
       return sum + chunk.byteLength;
     }, 0);
     const u8 = new Uint8Array(byteLength);
     let pos = 0;
     for (const chunk of src) {
-      u8.set(new Uint8Array(chunk), pos);
+      u8.set(chunk, pos);
       pos += chunk.byteLength;
     }
-    return Promise.resolve(u8.buffer);
+    return Promise.resolve(u8);
   }
 
   protected _pipe(
-    src: ArrayBuffer,
+    src: Uint8Array,
     dst: NodeJS.WritableStream | WritableStream<unknown>,
     bufferSize?: number | undefined
   ): Promise<void> {
     throw new Error("Method not implemented.");
   }
-
-  protected _size(src: ArrayBuffer): Promise<number> {
+  protected _size(src: Uint8Array): Promise<number> {
     return Promise.resolve(src.byteLength);
   }
 
-  protected _slice(src: ArrayBuffer, options?: Options): Promise<ArrayBuffer> {
+  protected _slice(
+    src: Uint8Array,
+    options?: Options | undefined
+  ): Promise<Uint8Array> {
     const start = options?.start ?? 0;
     let end: number | undefined;
     if (options?.length != null) {
@@ -50,4 +52,4 @@ class ArrayBufferHandler extends AbstractHandler<ArrayBuffer> {
   }
 }
 
-export default new ArrayBufferHandler();
+export default new Uint8ArrayHandler();

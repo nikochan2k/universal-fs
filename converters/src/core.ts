@@ -11,6 +11,10 @@ export interface Options {
   start?: number;
 }
 
+export interface StringOptions extends Options {
+  srcType?: string;
+}
+
 export type ConverterLocationFn = (srcType: string, dstType: string) => string;
 export type HandlerLocationFn = (type: string) => string;
 

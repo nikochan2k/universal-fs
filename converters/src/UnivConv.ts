@@ -6,12 +6,9 @@ import {
   Handler,
   HandlerLocationFn,
   Options,
+  StringOptions,
   Variant,
 } from "./core";
-
-export interface StringOptions extends Options {
-  srcType?: string;
-}
 
 /* eslint-disable @typescript-eslint/ban-types */
 const converterLocationFunctions: ConverterLocationFn[] = [
@@ -23,7 +20,7 @@ const handlerLocationFunctions: HandlerLocationFn[] = [
 ];
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};
 
-export class UnivConv {
+class UnivConv {
   convert<T extends Variant>(
     src: string,
     dstType: FunctionType<T>,
@@ -173,7 +170,7 @@ export class UnivConv {
     return await handler.size(src, options);
   }
 
-  async slice<T extends Variant>(src: T, options: Options): Promise<T> {
+  async slice<T extends Variant>(src: T, options?: Options): Promise<T> {
     const handler = await this.getHandler(src);
     const sliced = await handler.slice(src, options);
     return sliced as Promise<T>;
@@ -214,3 +211,18 @@ export class UnivConv {
     return types;
   }
 }
+
+const UNIV_CONV = new UnivConv();
+
+export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
+  implements Converter<ST, DT>
+{
+  async convert(src: ST, options?: Options): Promise<DT> {
+    src = await UNIV_CONV.slice(src, options);
+    return await this._convert(src, options?.bufferSize);
+  }
+
+  protected abstract _convert(src: ST, bufferSize?: number): Promise<DT>;
+}
+
+export default UNIV_CONV;
