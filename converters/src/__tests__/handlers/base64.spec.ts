@@ -22,13 +22,13 @@ it("merge", async () => {
   const chunk2 = "Zm9vYmFy";
   let actual: string;
   actual = await b64h.merge([]);
-  expect(actual.length).toBe(0);
+  expect(actual).toBe("");
   actual = await b64h.merge([chunk0]);
-  expect(actual.length).toBe(0);
+  expect(actual).toBe("");
   actual = await b64h.merge([chunk1]);
-  expect(actual.length).toBe(3);
+  expect(actual).toBe("Zm9v");
   actual = await b64h.merge([chunk1, chunk2]);
-  expect(actual.length).toBe(9);
+  expect(actual).toBe("Zm9vZm9vYmFy");
 });
 
 it("size", async () => {
@@ -45,15 +45,15 @@ it("slice", async () => {
   const notEmpty = "Zm9vYmFy";
   let actual: string;
   actual = await b64h.slice(notEmpty, { length: 0 });
-  expect(actual.length).toBe(0);
+  expect(actual).toBe("");
   actual = await b64h.slice(notEmpty, { length: 1 });
-  expect(actual.length).toBe(1);
+  expect(actual).toBe("Zg==");
   actual = await b64h.slice(notEmpty, { start: 1 });
-  expect(actual.length).toBe(5);
+  expect(actual).toBe("b29iYXI=");
   actual = await b64h.slice(notEmpty, { start: 1, length: 1 });
-  expect(actual.length).toBe(1);
+  expect(actual).toBe("bw==");
   actual = await b64h.slice(notEmpty, { start: 4, length: 3 });
-  expect(actual.length).toBe(2);
+  expect(actual).toBe("YXI=");
   actual = await b64h.slice(notEmpty, { start: 6 });
-  expect(actual.length).toBe(0);
+  expect(actual).toBe("");
 });

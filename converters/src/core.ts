@@ -8,14 +8,11 @@ export type VariantOrNull = Variant | null;
 export interface SliceOptions {
   length?: number;
   start?: number;
+  srcType?: string;
 }
 
 export interface ConvertOptions extends SliceOptions {
   bufferSize?: number;
-}
-
-export interface ConvertStringOptions extends ConvertOptions {
-  srcType?: string;
 }
 
 export type ConverterLocationFn = (srcType: string, dstType: string) => string;
@@ -42,6 +39,9 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
   public async merge(src: T[], bufferSize?: number): Promise<T> {
     if (src == null) {
       throw new TypeError("src is null or undefined");
+    }
+    if (src.length === 0) {
+      return await this.empty();
     }
     for (const chunk of src) {
       this.validateSource(chunk);

@@ -7,7 +7,6 @@ import {
   Handler,
   HandlerLocationFn,
   SliceOptions,
-  ConvertStringOptions,
   Variant,
 } from "./core";
 
@@ -21,16 +20,21 @@ const handlerLocationFunctions: HandlerLocationFn[] = [
 ];
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};
 
+interface MergeOptions {
+  bufferSize?: number;
+  srcType?: string;
+}
+
 class UnivConv {
   convert<T extends Variant>(
     src: string,
     dstType: FunctionType<T>,
-    options?: ConvertStringOptions
+    options?: ConvertOptions
   ): Promise<T>;
   convert<T extends Variant>(
     src: string,
     dstType: string,
-    options?: ConvertStringOptions
+    options?: ConvertOptions
   ): Promise<T>;
   convert<T extends Variant>(
     src: ExcludeString,
@@ -45,9 +49,9 @@ class UnivConv {
   async convert<T extends Variant>(
     src: Variant,
     dstType: string | FunctionType<T>,
-    options?: ConvertStringOptions
+    options?: ConvertOptions
   ): Promise<T> {
-    const srcTypes = this.getSrcTypes(src);
+    const srcTypes = this.getSrcTypes(src, options?.srcType);
     let dstTypes: string[];
     if (typeof dstType === "function") {
       dstTypes = this.getTypes(dstType);
@@ -105,13 +109,23 @@ class UnivConv {
     fn: FunctionType<T>
   ): Promise<Handler<T>>;
   protected async getHandler<T extends Variant>(v: T): Promise<Handler<T>> {
-    let types: string[];
-    if (typeof v === "string") {
-      types = [v];
-    } else if (typeof v === "function") {
-      types = this.getTypes(v);
-    } else {
-      types = this.getTypes(v.constructor);
+    let types: string[] = [];
+    const type = typeof v;
+    switch (type) {
+      case "bigint":
+      case "boolean":
+      case "number":
+        types = [type];
+        break;
+      case "string":
+        types = [v as string];
+        break;
+      case "function":
+        types = this.getTypes(v as Function);
+        break;
+      case "object":
+        types = this.getTypes(v.constructor);
+        break;
     }
     for (const type of types) {
       const key = type.toLowerCase();
@@ -152,36 +166,37 @@ class UnivConv {
     return await handler.isEmpty(src);
   }
 
-  async merge<T extends Variant>(src: T[], bufferSize?: number): Promise<T> {
-    if (src == null || src.length === 0) {
+  async merge<T extends Variant>(src: T[], options?: MergeOptions): Promise<T> {
+    const type = options?.srcType;
+    if (src == null || (type == null && src.length === 0)) {
       throw new TypeError("src is null, undefined or empty");
     }
-    const chunk = src[0] as T;
-    const handler = await this.getHandler(chunk);
-    const merged = await handler.merge(src, bufferSize);
+    const handler = await this.getHandler(type != null ? type : (src[0] as T));
+    const merged = await handler.merge(src, options?.bufferSize);
     return merged as Promise<T>;
   }
 
-  async size<T extends Variant>(src: T): Promise<number> {
-    const handler = await this.getHandler(src);
+  async size<T extends Variant>(src: T, srcType?: string): Promise<number> {
+    const handler = await this.getHandler(srcType != null ? srcType : src);
     return await handler.size(src);
   }
 
   async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
-    const handler = await this.getHandler(src);
-    console.warn(handler);
+    const type = options?.srcType;
+    const handler = await this.getHandler(type != null ? type : src);
     const sliced = await handler.slice(src, options);
     return sliced as Promise<T>;
   }
 
-  protected getSrcTypes(src: Variant): string[] {
+  protected getSrcTypes(src: Variant, srcType?: string): string[] {
     const type = typeof src;
     switch (type) {
       case "bigint":
       case "boolean":
       case "number":
-      case "string":
         return [type];
+      case "string":
+        return [srcType != null ? srcType : type];
       case "object":
         return this.getTypes(src.constructor);
       case "function":

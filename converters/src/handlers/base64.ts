@@ -36,17 +36,11 @@ class BASE64Handler extends AbstractHandler<string> {
     return Promise.resolve(size);
   }
 
-  protected _slice(src: string, options?: SliceOptions): Promise<string> {
-    const start = options?.start ?? 0;
-    let end: number | undefined;
-    if (options?.length != null) {
-      end = start + options.length;
-      if (src.length < end) {
-        end = src.length;
-      }
-    }
-    const sliced = src.slice(start, end);
-    return Promise.resolve(sliced);
+  protected async _slice(src: string, options?: SliceOptions): Promise<string> {
+    const ab = await UNIV_CONV.convert(src, ArrayBuffer, { srcType: "base64" });
+    const sliced = await UNIV_CONV.slice(ab, options);
+    const base64: string = await UNIV_CONV.convert(sliced, "base64");
+    return Promise.resolve(base64);
   }
 
   protected _validateSource(src: string): void {
