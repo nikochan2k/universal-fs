@@ -14,16 +14,6 @@ it("isEmpty", async () => {
   expect(actual).toBe(true);
   actual = await ab.isEmpty(notEmpty);
   expect(actual).toBe(false);
-  actual = await ab.isEmpty(notEmpty, { length: 0 });
-  expect(actual).toBe(true);
-  actual = await ab.isEmpty(notEmpty, { length: 1 });
-  expect(actual).toBe(false);
-  actual = await ab.isEmpty(notEmpty, { start: 1 });
-  expect(actual).toBe(false);
-  actual = await ab.isEmpty(notEmpty, { start: 1, length: 2 });
-  expect(actual).toBe(false);
-  actual = await ab.isEmpty(notEmpty, { start: 2 });
-  expect(actual).toBe(true);
 });
 
 it("merge", async () => {
@@ -39,10 +29,6 @@ it("merge", async () => {
   expect(actual.byteLength).toBe(1);
   actual = await ab.merge([chunk1, chunk2]);
   expect(actual.byteLength).toBe(3);
-});
-
-it("pipe", async () => {
-  // todo
 });
 
 it("size", async () => {

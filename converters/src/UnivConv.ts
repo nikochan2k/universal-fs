@@ -1,11 +1,12 @@
 import {
   Converter,
   ConverterLocationFn,
+  ConvertOptions,
   ExcludeString,
   FunctionType,
   Handler,
   HandlerLocationFn,
-  Options,
+  SliceOptions,
   StringOptions,
   Variant,
 } from "./core";
@@ -34,12 +35,12 @@ class UnivConv {
   convert<T extends Variant>(
     src: ExcludeString,
     dstType: FunctionType<T>,
-    options?: Options
+    options?: SliceOptions
   ): Promise<T>;
   convert<T extends Variant>(
     src: ExcludeString,
     dstType: string,
-    options?: Options
+    options?: SliceOptions
   ): Promise<T>;
   async convert<T extends Variant>(
     src: Variant,
@@ -142,35 +143,23 @@ class UnivConv {
     );
   }
 
-  async isEmpty<T extends Variant>(
-    src: T,
-    options?: Options
-  ): Promise<boolean> {
+  async isEmpty<T extends Variant>(src: T): Promise<boolean> {
     const handler = await this.getHandler(src);
-    return await handler.isEmpty(src, options);
+    return await handler.isEmpty(src);
   }
 
-  async merge<T extends Variant>(src: T[], options?: Options): Promise<T> {
+  async merge<T extends Variant>(src: T[], bufferSize?: number): Promise<T> {
     const handler = await this.getHandler(src);
-    const merged = await handler.merge(src, options);
+    const merged = await handler.merge(src, bufferSize);
     return merged as Promise<T>;
   }
 
-  async pipe<T extends Variant>(
-    src: T,
-    dst: NodeJS.WritableStream | WritableStream<unknown>,
-    options?: Options
-  ): Promise<void> {
+  async size<T extends Variant>(src: T): Promise<number> {
     const handler = await this.getHandler(src);
-    await handler.pipe(src, dst, options);
+    return await handler.size(src);
   }
 
-  async size<T extends Variant>(src: T, options?: Options): Promise<number> {
-    const handler = await this.getHandler(src);
-    return await handler.size(src, options);
-  }
-
-  async slice<T extends Variant>(src: T, options?: Options): Promise<T> {
+  async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
     const handler = await this.getHandler(src);
     const sliced = await handler.slice(src, options);
     return sliced as Promise<T>;
@@ -217,7 +206,7 @@ const UNIV_CONV = new UnivConv();
 export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
   implements Converter<ST, DT>
 {
-  public async convert(src: ST, options?: Options): Promise<DT> {
+  public async convert(src: ST, options?: ConvertOptions): Promise<DT> {
     src = await UNIV_CONV.slice(src, options);
     return await this._convert(src, options?.bufferSize);
   }

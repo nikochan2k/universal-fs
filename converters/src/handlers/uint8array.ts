@@ -1,4 +1,4 @@
-import { AbstractHandler, Options } from "../core";
+import { AbstractHandler, SliceOptions } from "../core";
 
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
@@ -24,20 +24,13 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
     return Promise.resolve(u8);
   }
 
-  protected _pipe(
-    src: Uint8Array,
-    dst: NodeJS.WritableStream | WritableStream<unknown>,
-    bufferSize?: number | undefined
-  ): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
   protected _size(src: Uint8Array): Promise<number> {
-    return Promise.resolve(src.byteLength);
+    return Promise.resolve(src.length);
   }
 
   protected _slice(
     src: Uint8Array,
-    options?: Options | undefined
+    options?: SliceOptions
   ): Promise<Uint8Array> {
     const start = options?.start ?? 0;
     let end: number | undefined;
