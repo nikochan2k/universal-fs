@@ -1,5 +1,6 @@
+import { decode, encode } from "base64-arraybuffer";
 import { AbstractHandler, SliceOptions } from "../core";
-import UNIV_CONV from "../UnivConv";
+import abc from "./arraybuffer";
 
 export const EMPTY_BASE64 = "";
 
@@ -13,15 +14,13 @@ class BASE64Handler extends AbstractHandler<string> {
   }
 
   protected async _merge(src: string[]): Promise<string> {
-    const chunks: Uint8Array[] = [];
+    const chunks: ArrayBuffer[] = [];
     for (const chunk of src) {
-      const u8 = await UNIV_CONV.convert(chunk, Uint8Array, {
-        srcType: "base64",
-      });
-      chunks.push(u8);
+      const ab = decode(chunk);
+      chunks.push(ab);
     }
-    const merged = await UNIV_CONV.merge(chunks);
-    const base64: string = await UNIV_CONV.convert(merged, "base64");
+    const merged = await abc.merge(chunks);
+    const base64 = encode(merged);
     return Promise.resolve(base64);
   }
 
@@ -37,9 +36,9 @@ class BASE64Handler extends AbstractHandler<string> {
   }
 
   protected async _slice(src: string, options?: SliceOptions): Promise<string> {
-    const ab = await UNIV_CONV.convert(src, ArrayBuffer, { srcType: "base64" });
-    const sliced = await UNIV_CONV.slice(ab, options);
-    const base64: string = await UNIV_CONV.convert(sliced, "base64");
+    const ab = decode(src);
+    const sliced = await abc.slice(ab, options);
+    const base64 = encode(sliced);
     return Promise.resolve(base64);
   }
 
