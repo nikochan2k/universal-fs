@@ -3,7 +3,7 @@ import u8h from "../../handlers/uint8array";
 it("empty", async () => {
   const actual = await u8h.empty();
   expect(actual instanceof Uint8Array).toBe(true);
-  expect(actual.byteLength).toBe(0);
+  expect(actual.length).toBe(0);
 });
 
 it("isEmpty", async () => {
@@ -22,13 +22,13 @@ it("merge", async () => {
   const chunk2 = new Uint8Array(2);
   let actual: Uint8Array;
   actual = await u8h.merge([]);
-  expect(actual.byteLength).toBe(0);
+  expect(actual.length).toBe(0);
   actual = await u8h.merge([chunk0]);
-  expect(actual.byteLength).toBe(0);
+  expect(actual.length).toBe(0);
   actual = await u8h.merge([chunk1]);
-  expect(actual.byteLength).toBe(1);
+  expect(actual.length).toBe(1);
   actual = await u8h.merge([chunk1, chunk2]);
-  expect(actual.byteLength).toBe(3);
+  expect(actual.length).toBe(3);
 });
 
 it("size", async () => {
@@ -45,15 +45,15 @@ it("slice", async () => {
   const notEmpty = new Uint8Array(3);
   let actual: Uint8Array;
   actual = await u8h.slice(notEmpty, { length: 0 });
-  expect(actual.byteLength).toBe(0);
+  expect(actual.length).toBe(0);
   actual = await u8h.slice(notEmpty, { length: 1 });
-  expect(actual.byteLength).toBe(1);
+  expect(actual.length).toBe(1);
   actual = await u8h.slice(notEmpty, { start: 1 });
-  expect(actual.byteLength).toBe(2);
+  expect(actual.length).toBe(2);
   actual = await u8h.slice(notEmpty, { start: 1, length: 1 });
-  expect(actual.byteLength).toBe(1);
+  expect(actual.length).toBe(1);
   actual = await u8h.slice(notEmpty, { start: 1, length: 3 });
-  expect(actual.byteLength).toBe(2);
+  expect(actual.length).toBe(2);
   actual = await u8h.slice(notEmpty, { start: 3 });
-  expect(actual.byteLength).toBe(0);
+  expect(actual.length).toBe(0);
 });
