@@ -11,8 +11,9 @@ export interface SliceOptions {
   srcType?: string;
 }
 
-export interface ConvertOptions extends SliceOptions {
+export interface ConvertOptions {
   bufferSize?: number;
+  srcType?: string;
 }
 
 export type ConverterLocationFn = (srcType: string, dstType: string) => string;
