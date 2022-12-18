@@ -14,7 +14,7 @@ export interface ConvertOptions extends SliceOptions {
   bufferSize?: number;
 }
 
-export interface StringOptions extends ConvertOptions {
+export interface ConvertStringOptions extends ConvertOptions {
   srcType?: string;
 }
 

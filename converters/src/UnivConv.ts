@@ -7,7 +7,7 @@ import {
   Handler,
   HandlerLocationFn,
   SliceOptions,
-  StringOptions,
+  ConvertStringOptions,
   Variant,
 } from "./core";
 
@@ -25,27 +25,27 @@ class UnivConv {
   convert<T extends Variant>(
     src: string,
     dstType: FunctionType<T>,
-    options?: StringOptions
+    options?: ConvertStringOptions
   ): Promise<T>;
   convert<T extends Variant>(
     src: string,
     dstType: string,
-    options?: StringOptions
+    options?: ConvertStringOptions
   ): Promise<T>;
   convert<T extends Variant>(
     src: ExcludeString,
     dstType: FunctionType<T>,
-    options?: SliceOptions
+    options?: ConvertOptions
   ): Promise<T>;
   convert<T extends Variant>(
     src: ExcludeString,
     dstType: string,
-    options?: SliceOptions
+    options?: ConvertOptions
   ): Promise<T>;
   async convert<T extends Variant>(
     src: Variant,
     dstType: string | FunctionType<T>,
-    options?: StringOptions
+    options?: ConvertStringOptions
   ): Promise<T> {
     const srcTypes = this.getSrcTypes(src);
     let dstTypes: string[];
