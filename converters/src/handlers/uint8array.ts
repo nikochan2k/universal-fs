@@ -36,8 +36,8 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
     let end: number | undefined;
     if (options?.length != null) {
       end = start + options.length;
-      if (src.byteLength < end) {
-        end = src.byteLength;
+      if (src.length < end) {
+        end = src.length;
       }
     }
     const sliced = src.slice(start, end);

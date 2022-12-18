@@ -100,7 +100,11 @@ class UnivConv {
     return (await handler.empty()) as Promise<T>;
   }
 
-  public async getHandler(v: Variant): Promise<Handler<Variant>> {
+  protected getHandler<T extends Variant>(v: T): Promise<Handler<T>>;
+  protected getHandler<T extends Variant>(
+    fn: FunctionType<T>
+  ): Promise<Handler<T>>;
+  protected async getHandler<T extends Variant>(v: T): Promise<Handler<T>> {
     let types: string[];
     if (typeof v === "string") {
       types = [v];
@@ -134,7 +138,7 @@ class UnivConv {
         continue;
       }
       if (handler) {
-        return handler;
+        return handler as Handler<T>;
       }
     }
     throw new TypeError(
@@ -149,7 +153,11 @@ class UnivConv {
   }
 
   async merge<T extends Variant>(src: T[], bufferSize?: number): Promise<T> {
-    const handler = await this.getHandler(src);
+    if (src == null || src.length === 0) {
+      throw new TypeError("src is null, undefined or empty");
+    }
+    const chunk = src[0] as T;
+    const handler = await this.getHandler(chunk);
     const merged = await handler.merge(src, bufferSize);
     return merged as Promise<T>;
   }
