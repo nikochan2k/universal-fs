@@ -25,3 +25,26 @@ it("isEmpty", async () => {
   actual = await ab.isEmpty(notEmpty, { start: 2 });
   expect(actual).toBe(true);
 });
+
+it("merge", async () => {
+  const chunk0 = new ArrayBuffer(0);
+  const chunk1 = new ArrayBuffer(1);
+  const chunk2 = new ArrayBuffer(2);
+  let actual: ArrayBuffer;
+  actual = await ab.merge([]);
+  expect(actual.byteLength).toBe(0);
+  actual = await ab.merge([chunk0]);
+  expect(actual.byteLength).toBe(0);
+  actual = await ab.merge([chunk1]);
+  expect(actual.byteLength).toBe(1);
+  actual = await ab.merge([chunk1, chunk2]);
+  expect(actual.byteLength).toBe(3);
+});
+
+it("pipe", async () => {
+  // todo
+});
+
+it("size", async () => {
+  // todo
+});
