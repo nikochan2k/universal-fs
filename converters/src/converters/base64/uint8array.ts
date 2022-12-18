@@ -1,10 +1,9 @@
-import { decode } from "base64-arraybuffer";
-import { AbstractConverter } from "../../UnivConv";
+import UNIV_CONV, { AbstractConverter } from "../../UnivConv";
 
 class BASE64_Uint8Array extends AbstractConverter<string, Uint8Array> {
-  protected _convert(src: string): Promise<Uint8Array> {
-    const ab = decode(src);
-    return Promise.resolve(new Uint8Array(ab));
+  protected async _convert(src: string): Promise<Uint8Array> {
+    const ab = await UNIV_CONV.convert(src, ArrayBuffer, { srcType: "base64" });
+    return new Uint8Array(ab);
   }
 }
 
