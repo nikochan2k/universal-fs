@@ -48,6 +48,12 @@ class ArrayBufferHandler extends AbstractHandler<ArrayBuffer> {
     const sliced = src.slice(start, end);
     return Promise.resolve(sliced);
   }
+
+  protected _validateSource(src: ArrayBuffer): void {
+    if (!(src instanceof ArrayBuffer)) {
+      throw new TypeError("src is not ArrayBuffer");
+    }
+  }
 }
 
 export default new ArrayBufferHandler();

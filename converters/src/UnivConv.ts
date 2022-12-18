@@ -217,7 +217,7 @@ const UNIV_CONV = new UnivConv();
 export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
   implements Converter<ST, DT>
 {
-  async convert(src: ST, options?: Options): Promise<DT> {
+  public async convert(src: ST, options?: Options): Promise<DT> {
     src = await UNIV_CONV.slice(src, options);
     return await this._convert(src, options?.bufferSize);
   }

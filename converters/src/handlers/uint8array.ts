@@ -50,6 +50,12 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
     const sliced = src.slice(start, end);
     return Promise.resolve(sliced);
   }
+
+  protected _validateSource(src: Uint8Array): void {
+    if (!(src instanceof Uint8Array)) {
+      throw new TypeError("src is not Uint8Array");
+    }
+  }
 }
 
 export default new Uint8ArrayHandler();
