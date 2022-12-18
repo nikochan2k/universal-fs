@@ -40,3 +40,20 @@ it("size", async () => {
   actual = await ab.size(chunk1);
   expect(actual).toBe(1);
 });
+
+it("slice", async () => {
+  const notEmpty = new ArrayBuffer(3);
+  let actual: ArrayBuffer;
+  actual = await ab.slice(notEmpty, { length: 0 });
+  expect(actual.byteLength).toBe(0);
+  actual = await ab.slice(notEmpty, { length: 1 });
+  expect(actual.byteLength).toBe(1);
+  actual = await ab.slice(notEmpty, { start: 1 });
+  expect(actual.byteLength).toBe(2);
+  actual = await ab.slice(notEmpty, { start: 1, length: 1 });
+  expect(actual.byteLength).toBe(1);
+  actual = await ab.slice(notEmpty, { start: 1, length: 3 });
+  expect(actual.byteLength).toBe(2);
+  actual = await ab.slice(notEmpty, { start: 3 });
+  expect(actual.byteLength).toBe(0);
+});
