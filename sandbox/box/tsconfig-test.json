@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig-test.json",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"],
+  "exclude": ["lib", "commonjs"]
+}

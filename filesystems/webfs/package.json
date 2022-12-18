@@ -21,11 +21,12 @@
   "scripts": {
     "clean": "rimraf ./lib ./dist ./tsconfig.tsbuildinfo",
     "compile-lib": "tsc --module ES2020 --outDir lib",
+    "compile-lib-test": "tsc -p tsconfig-test.json --module ES2020 --outDir lib",
     "build": "npm-run-all clean compile-lib",
     "webpack": "webpack",
     "webpack-test": "webpack --config webpack.config.test.js",
     "karma": "karma start",
-    "web-test": "npm-run-all compile-lib webpack-test karma",
+    "web-test": "npm-run-all compile-lib-test webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
     "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",

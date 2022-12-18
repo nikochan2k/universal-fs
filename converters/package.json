@@ -30,13 +30,15 @@
     "clean": "rimraf ./lib ./commonjs ./dist ./tsconfig.tsbuildinfo",
     "compile-lib": "tsc --module ES2020 --outDir lib",
     "compile-commonjs": "tsc --module CommonJS --outDir commonjs",
+    "compile-lib-test": "tsc -p tsconfig-test.json --module ES2020 --outDir lib",
+    "compile-commonjs-test": "tsc -p tsconfig-test.json --module CommonJS --outDir commonjs",
     "build": "npm-run-all clean compile-lib compile-commonjs",
     "jest": "jest --runInBand",
-    "test": "npm-run-all compile-commonjs jest",
+    "test": "npm-run-all compile-commonjs-test jest",
     "webpack": "webpack",
     "webpack-test": "webpack --config webpack.config.test.js",
     "karma": "karma start",
-    "web-test": "npm-run-all compile-lib webpack-test karma",
+    "web-test": "npm-run-all compile-lib-test webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
     "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",
@@ -58,8 +60,7 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
-    "fast-text-encoding": "^1.0.6",
-    "node-fetch": "^2.6.7"
+    "fast-text-encoding": "^1.0.6"
   },
   "optionalDependencies": {
     "encoding-japanese": "^2.0.0",

@@ -23,11 +23,12 @@
   "scripts": {
     "clean": "rimraf ./lib ./dist ./tsconfig.tsbuildinfo",
     "compile-lib": "tsc --module ES2020 --outDir lib",
+    "compile-lib-test": "tsc -p tsconfig-test.json --module ES2020 --outDir lib",
     "build": "npm-run-all clean compile-lib",
     "webpack": "webpack",
     "webpack-test": "webpack --config webpack.config.test.js",
     "web-open": "opener SpecRunner.html",
-    "web-test": "npm-run-all compile-lib webpack-test web-open",
+    "web-test": "npm-run-all compile-lib-test webpack-test web-open",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
     "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",
