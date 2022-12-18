@@ -32,5 +32,11 @@ it("merge", async () => {
 });
 
 it("size", async () => {
-  // todo
+  const chunk0 = new ArrayBuffer(0);
+  const chunk1 = new ArrayBuffer(1);
+  let actual: number;
+  actual = await ab.size(chunk0);
+  expect(actual).toBe(0);
+  actual = await ab.size(chunk1);
+  expect(actual).toBe(1);
 });

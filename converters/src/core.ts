@@ -46,6 +46,7 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
     for (const chunk of src) {
       this.validateSource(chunk);
     }
+    this.validateValue("bufferSize", bufferSize);
 
     return await this._merge(src, bufferSize);
   }
@@ -57,7 +58,8 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
 
   public async slice(src: T, options?: SliceOptions): Promise<T> {
     this.validateSource(src);
-    this.validateSliceOptions(options);
+    this.validateValue("options.start", options?.start);
+    this.validateValue("options.length", options?.length);
 
     if (options?.length === 0) {
       return await this.empty();
@@ -67,11 +69,6 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
 
   public abstract empty(): Promise<T>;
 
-  protected validateSliceOptions(options?: SliceOptions): void {
-    this.validateValue("options.start", options?.start);
-    this.validateValue("options.length", options?.length);
-  }
-
   protected validateSource(src: T): void {
     if (src == null) {
       throw new TypeError("src is null or undefined");
@@ -80,13 +77,15 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
   }
 
   protected validateValue(name: string, value?: number): void {
-    if (value != null) {
-      if (typeof value !== "number" || isNaN(value)) {
-        throw new TypeError(`${name} is not a number`);
-      }
-      if (value < 0) {
-        throw new TypeError(`${name} is negative value`);
-      }
+    if (value == null) {
+      return;
+    }
+
+    if (typeof value !== "number" || isNaN(value)) {
+      throw new TypeError(`${name} is not a number`);
+    }
+    if (value < 0) {
+      throw new TypeError(`${name} is negative value`);
     }
   }
 
