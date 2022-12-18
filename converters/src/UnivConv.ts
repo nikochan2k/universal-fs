@@ -64,8 +64,8 @@ class UnivConv {
           for (const fn of converterLocationFunctions) {
             const location = fn(srcType, dstType);
             try {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              converter = await import(location);
+              // eslint-disable-next-line
+              converter = (await import(location)).default;
               if (converter) {
                 converterMap[key] = converter;
                 break;
@@ -116,8 +116,8 @@ class UnivConv {
         for (const fn of handlerLocationFunctions) {
           const location = fn(type);
           try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            handler = await import(location);
+            // eslint-disable-next-line
+            handler = (await import(location)).default;
             if (handler) {
               handlerMap[key] = handler;
               break;
@@ -161,6 +161,7 @@ class UnivConv {
 
   async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
     const handler = await this.getHandler(src);
+    console.warn(handler);
     const sliced = await handler.slice(src, options);
     return sliced as Promise<T>;
   }

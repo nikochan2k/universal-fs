@@ -4,7 +4,7 @@ class Uint8Array_ArrayBuffer extends AbstractConverter<
   Uint8Array,
   ArrayBuffer
 > {
-  _convert(src: Uint8Array): Promise<ArrayBuffer> {
+  protected _convert(src: Uint8Array): Promise<ArrayBuffer> {
     return Promise.resolve(
       src.buffer.slice(src.byteOffset, src.byteOffset + src.byteLength)
     );
