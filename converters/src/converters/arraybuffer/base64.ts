@@ -5,6 +5,9 @@ class ArrayBuffer_BASE64 extends AbstractConverter<ArrayBuffer, string> {
   private _encode?: typeof encode;
 
   protected async _convert(src: ArrayBuffer): Promise<string> {
+    if (typeof Buffer === "function") {
+      return Buffer.from(src).toString("base64");
+    }
     if (!this._encode) {
       this._encode = (await import("base64-arraybuffer")).encode;
     }
