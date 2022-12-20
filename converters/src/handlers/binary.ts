@@ -28,7 +28,7 @@ class BinaryHandler extends AbstractHandler<string> {
         end = src.length;
       }
     }
-    return Promise.resolve(src.slice(start, length));
+    return Promise.resolve(src.slice(start, end));
   }
 
   protected _validateSource(src: string): void {
