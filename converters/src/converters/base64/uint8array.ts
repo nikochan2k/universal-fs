@@ -1,13 +1,14 @@
 import { AbstractConverter } from "../../UnivConv";
+import { hasBuffer, newBuffer } from "../../util";
 import b2a from "./arraybuffer";
 
 class BASE64_Uint8Array extends AbstractConverter<string, Uint8Array> {
   protected async _convert(src: string): Promise<Uint8Array> {
-    if (typeof Buffer === "function") {
+    if (hasBuffer) {
       return Buffer.from(src, "base64");
     }
     const ab = await b2a.convert(src);
-    return new Uint8Array(ab);
+    return newBuffer(ab);
   }
 }
 

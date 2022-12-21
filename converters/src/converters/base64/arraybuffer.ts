@@ -1,11 +1,12 @@
 import type { decode } from "base64-arraybuffer";
 import { AbstractConverter } from "../../UnivConv";
+import { hasBuffer } from "../../util";
 
-class BASE64_ArrayBuffer extends AbstractConverter<string, ArrayBuffer> {
+class BASE64_ArrayBuffer extends AbstractConverter<string, ArrayBufferLike> {
   private _decode?: typeof decode;
 
-  protected async _convert(src: string): Promise<ArrayBuffer> {
-    if (typeof Buffer === "function") {
+  protected async _convert(src: string): Promise<ArrayBufferLike> {
+    if (hasBuffer) {
       const buffer = Buffer.from(src, "base64");
       return buffer.buffer.slice(
         buffer.byteOffset,

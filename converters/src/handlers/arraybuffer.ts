@@ -2,16 +2,16 @@ import { AbstractHandler, SliceOptions } from "../core";
 
 export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 
-class ArrayBufferHandler extends AbstractHandler<ArrayBuffer> {
-  public empty(): Promise<ArrayBuffer> {
+class ArrayBufferHandler extends AbstractHandler<ArrayBufferLike> {
+  public empty(): Promise<ArrayBufferLike> {
     return Promise.resolve(EMPTY_ARRAY_BUFFER);
   }
 
-  protected _isEmpty(src: ArrayBuffer): Promise<boolean> {
+  protected _isEmpty(src: ArrayBufferLike): Promise<boolean> {
     return Promise.resolve(src.byteLength === 0);
   }
 
-  protected _merge(src: ArrayBuffer[]): Promise<ArrayBuffer> {
+  protected _merge(src: ArrayBufferLike[]): Promise<ArrayBufferLike> {
     const byteLength = src.reduce((sum, chunk) => {
       return sum + chunk.byteLength;
     }, 0);
@@ -24,14 +24,14 @@ class ArrayBufferHandler extends AbstractHandler<ArrayBuffer> {
     return Promise.resolve(u8.buffer);
   }
 
-  protected _size(src: ArrayBuffer): Promise<number> {
+  protected _size(src: ArrayBufferLike): Promise<number> {
     return Promise.resolve(src.byteLength);
   }
 
   protected _slice(
-    src: ArrayBuffer,
+    src: ArrayBufferLike,
     options?: SliceOptions
-  ): Promise<ArrayBuffer> {
+  ): Promise<ArrayBufferLike> {
     const start = options?.start ?? 0;
     let end: number | undefined;
     if (options?.length != null) {
@@ -44,7 +44,7 @@ class ArrayBufferHandler extends AbstractHandler<ArrayBuffer> {
     return Promise.resolve(sliced);
   }
 
-  protected _validateSource(src: ArrayBuffer): void {
+  protected _validateSource(src: ArrayBufferLike): void {
     if (!(src instanceof ArrayBuffer)) {
       throw new TypeError("src is not ArrayBuffer");
     }

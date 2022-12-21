@@ -1,13 +1,14 @@
 import { AbstractConverter } from "../../UnivConv";
+import { hasBuffer, newBuffer } from "../../util";
 
-class ArrayBuffer_Binary extends AbstractConverter<ArrayBuffer, string> {
-  protected _convert(src: ArrayBuffer): Promise<string> {
-    if (typeof Buffer === "function") {
+class ArrayBuffer_Binary extends AbstractConverter<ArrayBufferLike, string> {
+  protected _convert(src: ArrayBufferLike): Promise<string> {
+    if (hasBuffer) {
       return Promise.resolve(Buffer.from(src).toString("binary"));
     }
-    const u8 = new Uint8Array(src);
+    const buffer = newBuffer(src);
     return Promise.resolve(
-      Array.from(u8, (e) => String.fromCharCode(e)).join("")
+      Array.from(buffer, (e) => String.fromCharCode(e)).join("")
     );
   }
 }
