@@ -5,7 +5,7 @@ class ArrayBuffer_Uint8Array extends AbstractConverter<
   ArrayBufferLike,
   Uint8Array
 > {
-  protected _convert(src: ArrayBufferLike): Promise<Uint8Array> {
+  public _convert(src: ArrayBufferLike): Promise<Uint8Array> {
     return Promise.resolve(newBuffer(src));
   }
 }

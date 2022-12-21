@@ -2,7 +2,7 @@ import { AbstractConverter } from "../../UnivConv";
 import { hasBuffer, newBuffer } from "../../util";
 
 class Uint8Array_Binary extends AbstractConverter<ArrayBufferLike, string> {
-  protected _convert(src: Uint8Array): Promise<string> {
+  public _convert(src: Uint8Array): Promise<string> {
     return Promise.resolve(
       hasBuffer
         ? newBuffer(src).toString("binary")

@@ -21,6 +21,7 @@ export type HandlerLocationFn = (type: string) => string;
 
 export interface Converter<ST extends Variant, DT extends Variant> {
   convert(src: ST, options?: ConvertOptions): Promise<DT>;
+  _convert(src: ST, bufferSize?: number): Promise<DT>;
 }
 
 export interface Handler<T extends Variant> {

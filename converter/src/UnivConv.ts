@@ -174,7 +174,7 @@ class DefaultUnivConv implements UnivConvInternal {
     throw new Error("Illegal output type: " + getType(input));
   }
 
-  protected async _convertAll<T extends DataType>(
+  public async _convertAll<T extends DataType>(
     returnType: T,
     chunks: Data[],
     options?: Partial<ConvertOptions>

@@ -104,6 +104,33 @@ class UnivConv {
     return (await handler.empty()) as Promise<T>;
   }
 
+  async isEmpty<T extends Variant>(src: T): Promise<boolean> {
+    const handler = await this.getHandler(src);
+    return await handler.isEmpty(src);
+  }
+
+  async merge<T extends Variant>(src: T[], options?: MergeOptions): Promise<T> {
+    const type = options?.srcType;
+    if (src == null || (type == null && src.length === 0)) {
+      throw new TypeError("src is null, undefined or empty");
+    }
+    const handler = await this.getHandler(type != null ? type : (src[0] as T));
+    const merged = await handler.merge(src, options?.bufferSize);
+    return merged as Promise<T>;
+  }
+
+  async size<T extends Variant>(src: T, srcType?: string): Promise<number> {
+    const handler = await this.getHandler(srcType != null ? srcType : src);
+    return await handler.size(src);
+  }
+
+  async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
+    const type = options?.srcType;
+    const handler = await this.getHandler(type != null ? type : src);
+    const sliced = await handler.slice(src, options);
+    return sliced as Promise<T>;
+  }
+
   protected getHandler<T extends Variant>(v: T): Promise<Handler<T>>;
   protected getHandler<T extends Variant>(
     fn: FunctionType<T>
@@ -161,33 +188,6 @@ class UnivConv {
     );
   }
 
-  async isEmpty<T extends Variant>(src: T): Promise<boolean> {
-    const handler = await this.getHandler(src);
-    return await handler.isEmpty(src);
-  }
-
-  async merge<T extends Variant>(src: T[], options?: MergeOptions): Promise<T> {
-    const type = options?.srcType;
-    if (src == null || (type == null && src.length === 0)) {
-      throw new TypeError("src is null, undefined or empty");
-    }
-    const handler = await this.getHandler(type != null ? type : (src[0] as T));
-    const merged = await handler.merge(src, options?.bufferSize);
-    return merged as Promise<T>;
-  }
-
-  async size<T extends Variant>(src: T, srcType?: string): Promise<number> {
-    const handler = await this.getHandler(srcType != null ? srcType : src);
-    return await handler.size(src);
-  }
-
-  async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
-    const type = options?.srcType;
-    const handler = await this.getHandler(type != null ? type : src);
-    const sliced = await handler.slice(src, options);
-    return sliced as Promise<T>;
-  }
-
   protected getSrcTypes(src: Variant, srcType?: string): string[] {
     const type = typeof src;
     switch (type) {
@@ -235,7 +235,7 @@ export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
     return await this._convert(src, options?.bufferSize);
   }
 
-  protected abstract _convert(src: ST, bufferSize?: number): Promise<DT>;
+  public abstract _convert(src: ST, bufferSize?: number): Promise<DT>;
 }
 
 export default UNIV_CONV;
