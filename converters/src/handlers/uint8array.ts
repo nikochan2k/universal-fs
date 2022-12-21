@@ -1,4 +1,5 @@
 import { AbstractHandler, SliceOptions } from "../core";
+import { newBuffer } from "../util";
 
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
@@ -15,7 +16,7 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
     const byteLength = src.reduce((sum, chunk) => {
       return sum + chunk.byteLength;
     }, 0);
-    const u8 = new Uint8Array(byteLength);
+    const u8 = newBuffer(byteLength);
     let pos = 0;
     for (const chunk of src) {
       u8.set(chunk, pos);
