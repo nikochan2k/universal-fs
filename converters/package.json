@@ -38,7 +38,7 @@
     "webpack": "webpack",
     "webpack-test": "webpack --config webpack.config.test.js",
     "karma": "karma start",
-    "web-test": "npm-run-all compile-lib-test webpack-test karma",
+    "web-test": "npm-run-all compile-commonjs-test webpack-test karma",
     "npm-publish-dry-run": "npm publish --dry-run",
     "npm-publish": "npm publish",
     "release-dry-run": "npm-run-all build webpack npm-publish-dry-run",
