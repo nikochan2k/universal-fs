@@ -5,7 +5,6 @@
     "lib": ["ES2020", "DOM"],
     "module": "ES2020",
     "moduleResolution": "Node",
-    "declaration": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true
   }
