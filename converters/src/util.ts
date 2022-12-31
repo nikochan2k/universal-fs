@@ -137,8 +137,8 @@ export function isReadable(stream: unknown): stream is Readable {
 
 export function closeStream(
   stream:
-    | Readable
-    | Writable
+    | NodeJS.ReadableStream
+    | NodeJS.WritableStream
     | ReadableStream<unknown>
     | WritableStream<unknown>
     | undefined,
