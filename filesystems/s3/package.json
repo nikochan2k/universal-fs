@@ -29,7 +29,9 @@
     "compile-commonjs-test": "tsc -p tsconfig-test.json --module CommonJS --outDir commonjs",
     "build": "npm-run-all clean compile-lib compile-commonjs",
     "jest": "jest --runInBand",
+    "jest-debug": "jest --config jest.debug-config.json --runInBand",
     "test": "npm-run-all clean compile-commonjs-test jest",
+    "test-debug": "npm-run-all clean compile-commonjs-test jest-debug",
     "webpack": "webpack",
     "webpack-test": "webpack --config webpack.config.test.js",
     "karma": "karma start",
@@ -39,16 +41,6 @@
     "sanitize": "rimraf ./lib/**/secret*.json",
     "release-dry-run": "npm-run-all build sanitize webpack npm-publish-dry-run",
     "release": "npm-run-all build sanitize webpack npm-publish"
-  },
-  "jest": {
-    "testTimeout": 10000,
-    "verbose": true,
-    "moduleFileExtensions": [
-      "js"
-    ],
-    "testMatch": [
-      "<rootDir>/commonjs/__tests__/**/*.spec.js"
-    ]
   },
   "devDependencies": {
     "aws-sdk": "^2.1272.0",

@@ -1,0 +1,7 @@
+{
+  "moduleFileExtensions": ["js"],
+  "testMatch": [
+    "<rootDir>/commonjs/__tests__/**/*.debug-spec.js",
+    "<rootDir>/commonjs/__tests__/**/*.debug-node-spec.js"
+  ]
+}
