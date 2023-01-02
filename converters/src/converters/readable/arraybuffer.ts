@@ -2,7 +2,7 @@ import type { Readable } from "stream";
 import { handleReadable } from "../../supports/NodeStream";
 import { AbstractConverter } from "../../UnivConv";
 
-class Reader_ArrayBuffer extends AbstractConverter<Readable, ArrayBuffer> {
+class Readable_ArrayBuffer extends AbstractConverter<Readable, ArrayBuffer> {
   public async _convert(src: Readable): Promise<ArrayBuffer> {
     const chunks: Buffer[] = [];
     await handleReadable(src, (chunk) => {
@@ -14,4 +14,4 @@ class Reader_ArrayBuffer extends AbstractConverter<Readable, ArrayBuffer> {
   }
 }
 
-export default new Reader_ArrayBuffer();
+export default new Readable_ArrayBuffer();
