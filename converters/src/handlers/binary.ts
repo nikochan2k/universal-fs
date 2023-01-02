@@ -1,17 +1,10 @@
-import { AbstractHandler, SliceOptions } from "../core";
+import { SliceOptions } from "../core";
+import { StringHandler } from "./string";
 
 export const EMPTY_BINARY = "";
 
-class BinaryHandler extends AbstractHandler<string> {
+class BinaryHandler extends StringHandler {
   public name = "Binary";
-
-  public empty(): Promise<string> {
-    return Promise.resolve(EMPTY_BINARY);
-  }
-
-  protected _isEmpty(src: string): Promise<boolean> {
-    return Promise.resolve(src.length === 0);
-  }
 
   protected async _merge(src: string[]): Promise<string> {
     return Promise.resolve(src.join(""));
@@ -31,10 +24,6 @@ class BinaryHandler extends AbstractHandler<string> {
       }
     }
     return Promise.resolve(src.slice(start, end));
-  }
-
-  protected _validateSource(src: string): boolean {
-    return typeof src === "string";
   }
 }
 

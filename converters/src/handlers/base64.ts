@@ -1,19 +1,12 @@
 import { decode, encode } from "base64-arraybuffer";
-import { AbstractHandler, SliceOptions } from "../core";
+import { SliceOptions } from "../core";
 import abc from "./arraybuffer";
+import { StringHandler } from "./string";
 
 export const EMPTY_BASE64 = "";
 
-class BASE64Handler extends AbstractHandler<string> {
+class BASE64Handler extends StringHandler {
   public name = "BASE64";
-
-  public empty(): Promise<string> {
-    return Promise.resolve(EMPTY_BASE64);
-  }
-
-  protected _isEmpty(src: string): Promise<boolean> {
-    return Promise.resolve(src.length === 0);
-  }
 
   protected async _merge(src: string[]): Promise<string> {
     const chunks: ArrayBuffer[] = [];
@@ -42,10 +35,6 @@ class BASE64Handler extends AbstractHandler<string> {
     const sliced = await abc.slice(ab, options);
     const base64 = encode(sliced);
     return Promise.resolve(base64);
-  }
-
-  protected _validateSource(src: string): boolean {
-    return typeof src === "string";
   }
 }
 
