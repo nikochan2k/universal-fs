@@ -1,11 +1,11 @@
 import { Writable, Readable } from "stream";
 
 export function isReadable(stream: unknown): stream is Readable {
-  return stream != null && stream instanceof Readable;
+  return stream != null && stream instanceof Readable && stream.readable;
 }
 
 export function isWritable(stream: unknown): stream is Writable {
-  return stream != null && stream instanceof Writable;
+  return stream != null && stream instanceof Writable && stream.writable;
 }
 
 export function pipe(readable: Readable, writable: Writable) {
