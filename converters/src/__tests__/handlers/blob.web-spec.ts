@@ -3,7 +3,6 @@ import bh from "../../handlers/blob";
 it("empty", async () => {
   const actual = await bh.empty();
   expect(actual instanceof Blob).toBe(true);
-  console.warn(actual);
   expect(actual.size).toBe(0);
 });
 

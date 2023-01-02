@@ -1,17 +1,13 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const entries1 = glob.sync("./commonjs/__tests__/**/*.spec.js");
-const entries2 = glob.sync("./commonjs/__tests__/**/*.web-spec.js");
-const entries = [...entries1, ...entries2];
+const entries = glob.sync("./lib/**/*.js");
 const entryMap = {};
 for (const entry of entries) {
-  let name = entry.substring(21);
-  name = name.replace(/[/\\]/g, "_");
+  let name = entry.substring(6);
   name = name.replace(/\.js$/, "");
   entryMap[name] = entry;
 }
-console.log(entryMap);
 
 module.exports = {
   mode: "development",
@@ -19,6 +15,9 @@ module.exports = {
   output: {
     filename: "[name].js",
     path: __dirname + "/dist",
+    library: {
+      type: "module",
+    },
   },
   resolve: {
     extensions: [".js"],
@@ -29,5 +28,8 @@ module.exports = {
       path: false,
       url: false,
     },
+  },
+  experiments: {
+    outputModule: true,
   },
 };

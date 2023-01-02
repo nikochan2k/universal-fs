@@ -1,11 +1,23 @@
+/* eslint-disable */
+const glob = require("glob");
+
+const entries = glob.sync("./lib/**/*.js");
+const entryMap = {};
+for (const entry of entries) {
+  let name = entry.substring(6);
+  name = name.replace(/\.js$/, "");
+  entryMap[name] = entry;
+}
+
 module.exports = {
   mode: "production",
-  entry: {
-    index: "./lib/index.js",
-  },
+  entry: entryMap,
   output: {
-    filename: "univ-conv.js",
+    filename: "[name].js",
     path: __dirname + "/dist",
+    library: {
+      type: "module",
+    },
   },
   resolve: {
     extensions: [".js"],
@@ -16,5 +28,8 @@ module.exports = {
       path: false,
       url: false,
     },
+  },
+  experiments: {
+    outputModule: true,
   },
 };
