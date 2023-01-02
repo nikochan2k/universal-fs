@@ -1,15 +1,8 @@
-import { Readable } from "stream";
-import { handleReadable } from "../../supports/NodeStream";
-import { AbstractConverter } from "../../UnivConv";
+import { ReadableConverter } from "./ReadableConverter";
 
-class Readable_Binary extends AbstractConverter<Readable, string> {
-  public async _convert(src: Readable): Promise<string> {
-    const chunks: string[] = [];
-    await handleReadable(src, (chunk) => {
-      const binary = chunk.toString("binary");
-      chunks.push(binary);
-    });
-    return chunks.join("");
+class Readable_Binary extends ReadableConverter<string> {
+  protected _convertBuffer(buffer: Buffer): string {
+    return buffer.toString("binary");
   }
 }
 

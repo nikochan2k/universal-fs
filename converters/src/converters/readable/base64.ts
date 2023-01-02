@@ -1,10 +1,7 @@
-import { Readable } from "stream";
-import { AbstractConverter } from "../../UnivConv";
-import r2u from "./uint8array";
+import { ReadableConverter } from "./ReadableConverter";
 
-class Readable_BASE64 extends AbstractConverter<Readable, string> {
-  public async _convert(src: Readable): Promise<string> {
-    const buffer = (await r2u._convert(src)) as Buffer;
+class Readable_BASE64 extends ReadableConverter<string> {
+  protected _convertBuffer(buffer: Buffer): string {
     return buffer.toString("base64");
   }
 }

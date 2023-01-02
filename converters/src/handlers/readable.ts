@@ -6,11 +6,14 @@ const EMPTY_BUFFER = Buffer.alloc(0);
 
 class PartialReadable extends Readable {
   constructor(
-    private src: NodeJS.ReadableStream,
+    private src: Readable,
     private start: number,
     private end = Number.MAX_SAFE_INTEGER
   ) {
     super();
+    if (src.readableEncoding) {
+      throw new Error(`Do not set encoding: ${src.readableEncoding}`);
+    }
     src.once("readable", () => this.setup());
   }
 
@@ -20,8 +23,7 @@ class PartialReadable extends Readable {
 
   private setup() {
     let iStart = 0;
-    const onData = (value: unknown) => {
-      const u8 = value as Uint8Array;
+    const onData = (u8: Uint8Array) => {
       const size = u8.byteLength;
       const iEnd = iStart + size;
       const u8End = (iEnd < this.end ? iEnd : this.end) - iStart;
@@ -49,6 +51,9 @@ class PartialReadable extends Readable {
         this.push(chunk);
       }
       iStart += size;
+      if (u8End < iStart) {
+        src.emit("end");
+      }
     };
 
     const src = this.src;

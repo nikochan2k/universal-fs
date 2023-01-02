@@ -1,12 +1,8 @@
-import type { Readable } from "stream";
-import { handleReadable } from "../../supports/NodeStream";
-import { AbstractConverter } from "../../UnivConv";
+import { ReadableConverter } from "./ReadableConverter";
 
-class Readable_Uint8Array extends AbstractConverter<Readable, Uint8Array> {
-  public async _convert(src: Readable): Promise<Uint8Array> {
-    const chunks: Buffer[] = [];
-    await handleReadable(src, (chunk) => chunks.push(chunk));
-    return Buffer.concat(chunks);
+class Readable_Uint8Array extends ReadableConverter<Uint8Array> {
+  protected _convertBuffer(buffer: Buffer): Uint8Array {
+    return buffer;
   }
 }
 
