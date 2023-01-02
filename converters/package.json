@@ -38,7 +38,7 @@
     "test": "npm-run-all clean compile-commonjs-test jest",
     "test-debug": "npm-run-all clean compile-commonjs-test jest-debug",
     "webpack": "webpack",
-    "webpack-test": "webpack --config webpack.config.test.js",
+    "webpack-test": "webpack --config webpack.test.js",
     "karma": "karma start",
     "karma-debug": "karma start karma.debug.js",
     "web-test": "npm-run-all clean compile-lib-test webpack-test karma",

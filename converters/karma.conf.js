@@ -33,7 +33,18 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     // Here I'm including all of the the Jest tests which are all under the __tests__ directory.
     // You may need to tweak this patter to find your test files/
-    files: [{ pattern: "dist/*.js", watched: false }],
+    files: [
+      {
+        pattern: "dist/__tests__/**/*.spec.js",
+        watched: false,
+        type: "module",
+      },
+      {
+        pattern: "dist/__tests__/**/*.web-spec.js",
+        watched: false,
+        type: "module",
+      },
+    ],
 
     client: { jasmine: { random: false } },
     singleRun: true,
