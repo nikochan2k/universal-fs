@@ -13,14 +13,14 @@ import { getTextHelper } from "./StringUtil";
 
 const hasSharedArrayBuffer = typeof SharedArrayBuffer === "function";
 
-export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
+export class ArrayBufferConverter extends AbstractConverter<ArrayBuffer> {
   public type: DataType = "arraybuffer";
 
-  public empty(): ArrayBufferLike {
+  public empty(): ArrayBuffer {
     return EMPTY_ARRAY_BUFFER;
   }
 
-  public is(input: unknown): input is ArrayBufferLike {
+  public is(input: unknown): input is ArrayBuffer {
     return (
       input instanceof ArrayBuffer ||
       (hasSharedArrayBuffer && input instanceof SharedArrayBuffer)
@@ -30,23 +30,23 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
   protected async _from(
     input: Data,
     options: ConvertOptions
-  ): Promise<ArrayBufferLike> {
+  ): Promise<ArrayBuffer> {
     const converter = _()._find(input, options);
     return await converter.toArrayBuffer(input, options);
   }
 
   protected _getStartEnd(
-    input: ArrayBufferLike,
+    input: ArrayBuffer,
     options: ConvertOptions
   ): Promise<{ start: number; end: number | undefined }> {
     return Promise.resolve(getStartEnd(options, input.byteLength));
   }
 
-  protected _isEmpty(input: ArrayBufferLike): boolean {
+  protected _isEmpty(input: ArrayBuffer): boolean {
     return input.byteLength === 0;
   }
 
-  protected _merge(chunks: ArrayBufferLike[]): Promise<ArrayBufferLike> {
+  protected _merge(chunks: ArrayBuffer[]): Promise<ArrayBuffer> {
     const byteLength = chunks.reduce((sum, chunk) => {
       return sum + chunk.byteLength;
     }, 0);
@@ -59,14 +59,14 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
     return Promise.resolve(u8.buffer);
   }
 
-  protected _size(input: ArrayBufferLike): Promise<number> {
+  protected _size(input: ArrayBuffer): Promise<number> {
     return Promise.resolve(input.byteLength);
   }
 
   protected async _toArrayBuffer(
-    input: ArrayBufferLike,
+    input: ArrayBuffer,
     options: ConvertOptions
-  ): Promise<ArrayBufferLike> {
+  ): Promise<ArrayBuffer> {
     if (hasNoStartLength(options)) {
       return input;
     }
@@ -75,7 +75,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
   }
 
   protected async _toBase64(
-    input: ArrayBufferLike,
+    input: ArrayBuffer,
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this._toUint8Array(input, options);
@@ -83,7 +83,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
   }
 
   protected async _toText(
-    input: ArrayBufferLike,
+    input: ArrayBuffer,
     options: ConvertOptions
   ): Promise<string> {
     const u8 = await this._toUint8Array(input, options);
@@ -92,7 +92,7 @@ export class ArrayBufferConverter extends AbstractConverter<ArrayBufferLike> {
   }
 
   protected async _toUint8Array(
-    input: ArrayBufferLike,
+    input: ArrayBuffer,
     options: ConvertOptions
   ): Promise<Uint8Array> {
     const ab = await this._toArrayBuffer(input, options);

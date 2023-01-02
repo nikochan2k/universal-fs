@@ -1,7 +1,7 @@
 import { AbstractConverter } from "../../UnivConv";
 
-class ArrayBuffer_Blob extends AbstractConverter<ArrayBufferLike, Blob> {
-  public _convert(src: ArrayBufferLike): Promise<Blob> {
+class ArrayBuffer_Blob extends AbstractConverter<ArrayBuffer, Blob> {
+  public _convert(src: ArrayBuffer): Promise<Blob> {
     return Promise.resolve(new Blob([src]));
   }
 }

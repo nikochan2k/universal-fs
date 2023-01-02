@@ -2,10 +2,10 @@ import { AbstractConverter } from "../../UnivConv";
 import { newBuffer } from "../../util";
 
 class ArrayBuffer_Uint8Array extends AbstractConverter<
-  ArrayBufferLike,
+  ArrayBuffer,
   Uint8Array
 > {
-  public _convert(src: ArrayBufferLike): Promise<Uint8Array> {
+  public _convert(src: ArrayBuffer): Promise<Uint8Array> {
     return Promise.resolve(newBuffer(src));
   }
 }

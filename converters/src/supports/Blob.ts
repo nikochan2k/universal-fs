@@ -25,9 +25,9 @@ if (typeof Blob === "function") {
   }
 }
 
-export function handleFileReader<T extends string | ArrayBufferLike>(
+export function handleFileReader<T extends string | ArrayBuffer>(
   trigger: (reader: FileReader) => void,
-  transform: (data: string | ArrayBufferLike | null) => T
+  transform: (data: string | ArrayBuffer | null) => T
 ): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const reader = new FileReader();
