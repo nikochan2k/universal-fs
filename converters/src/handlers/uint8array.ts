@@ -1,5 +1,5 @@
 import { AbstractHandler, SliceOptions } from "../core";
-import { newBuffer } from "../util";
+import support from "./typedarray";
 
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
@@ -11,40 +11,22 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
   }
 
   protected _isEmpty(src: Uint8Array): Promise<boolean> {
-    return Promise.resolve(src.byteLength === 0);
+    return support.isEmpty(src);
   }
 
   protected _merge(src: Uint8Array[]): Promise<Uint8Array> {
-    const byteLength = src.reduce((sum, chunk) => {
-      return sum + chunk.byteLength;
-    }, 0);
-    const u8 = newBuffer(byteLength);
-    let pos = 0;
-    for (const chunk of src) {
-      u8.set(chunk, pos);
-      pos += chunk.byteLength;
-    }
-    return Promise.resolve(u8);
+    return support.merge(src, (length) => new Uint8Array(length));
   }
 
   protected _size(src: Uint8Array): Promise<number> {
-    return Promise.resolve(src.length);
+    return support.size(src);
   }
 
   protected _slice(
     src: Uint8Array,
     options?: SliceOptions
   ): Promise<Uint8Array> {
-    const start = options?.start ?? 0;
-    let end: number | undefined;
-    if (options?.length != null) {
-      end = start + options.length;
-      if (src.length < end) {
-        end = src.length;
-      }
-    }
-    const sliced = src.slice(start, end);
-    return Promise.resolve(sliced);
+    return support.slice(src, options);
   }
 
   protected _validateSource(src: Uint8Array): boolean {
