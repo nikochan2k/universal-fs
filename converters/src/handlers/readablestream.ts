@@ -1,0 +1,138 @@
+import { AbstractHandler, SliceOptions } from "../core";
+import { closeStream, handleReadableStream } from "../supports/WebStream";
+
+const EMPTY_UINT8_ARRAY = new Uint8Array(0);
+
+export function createPartialReadableStream(
+  source: ReadableStream<unknown>,
+  start: number,
+  end = Number.MAX_SAFE_INTEGER
+): ReadableStream<Uint8Array> {
+  const reader = source.getReader();
+  return new ReadableStream({
+    start: async (controller) => {
+      let iStart = 0;
+      let res: ReadableStreamReadResult<Uint8Array>;
+      do {
+        res = (await reader.read()) as ReadableStreamReadResult<Uint8Array>;
+        const u8 = res.value;
+        if (u8) {
+          const length = u8.byteLength;
+          const iEnd = iStart + length;
+          const u8End = (iEnd < end ? iEnd : end) - iStart;
+          let chunk: Uint8Array | undefined;
+          if (iStart <= start && start < iEnd) {
+            /*
+            range :   |-------|
+            buffer: |-------|
+            range :   |-----|
+            buffer: |-------|
+            range :   |--|
+            buffer: |-------|
+            */
+            chunk = u8.subarray(start - iStart, u8End);
+          } else if (start < iStart && iStart < end) {
+            /*
+            range : |-------|
+            buffer:   |-------|
+            range : |-------|
+            buffer:   |-----|
+            */
+            chunk = u8.subarray(0, u8End);
+          }
+          if (chunk) {
+            controller.enqueue(chunk);
+          }
+          iStart += length;
+        }
+      } while (!res.done && iStart < end);
+      controller.close();
+      reader.releaseLock();
+      closeStream(source);
+    },
+    cancel: (e) => {
+      reader.releaseLock();
+      closeStream(source, e);
+    },
+  });
+}
+
+class ReadableStreamHandler extends AbstractHandler<
+  ReadableStream<Uint8Array>
+> {
+  public name = ReadableStream.name;
+
+  public empty(): Promise<ReadableStream<Uint8Array>> {
+    return Promise.resolve(
+      new ReadableStream({
+        start: (converter) => {
+          converter.enqueue(EMPTY_UINT8_ARRAY);
+          converter.close();
+        },
+      })
+    );
+  }
+
+  protected _isEmpty(): Promise<boolean> {
+    throw new Error("Cannot check empty of ReadableStream");
+  }
+
+  protected _merge(
+    src: ReadableStream<Uint8Array>[]
+  ): Promise<ReadableStream<Uint8Array>> {
+    const end = src.length;
+    const process = (
+      controller: ReadableStreamController<unknown>,
+      i: number
+    ) => {
+      if (i < end) {
+        const stream = src[i] as ReadableStream<Uint8Array>;
+        handleReadableStream(stream, (chunk) => {
+          controller.enqueue(chunk);
+          return Promise.resolve(true);
+        })
+          .then(() => process(controller, ++i))
+          .catch((e) => {
+            controller.error(e);
+            for (let j = i; j < end; j++) {
+              const s = src[j] as ReadableStream<Uint8Array>;
+              closeStream(s);
+            }
+          });
+      } else {
+        controller.close();
+      }
+    };
+
+    return Promise.resolve(
+      new ReadableStream({
+        start: (converter) => {
+          process(converter, 0);
+        },
+      })
+    );
+  }
+
+  protected _size(): Promise<number> {
+    throw new Error("Cannot check empty of ReadableStream");
+  }
+
+  protected _slice(
+    src: ReadableStream<Uint8Array>,
+    options?: SliceOptions
+  ): Promise<ReadableStream<Uint8Array>> {
+    const start = options?.start ?? 0;
+    let end: number | undefined;
+    if (options?.length != null) {
+      end = start + options.length;
+    }
+    const rs = createPartialReadableStream(src, start, end);
+    return Promise.resolve(rs);
+  }
+
+  protected _validateSource(src: unknown): src is ReadableStream<Uint8Array> {
+    return src instanceof ReadableStream<Uint8Array>;
+  }
+}
+
+export default new ReadableStreamHandler();

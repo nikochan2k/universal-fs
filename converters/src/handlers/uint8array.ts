@@ -29,7 +29,7 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
     return support.slice(src, options);
   }
 
-  protected _validateSource(src: Uint8Array): boolean {
+  protected _validateSource(src: unknown): src is Uint8Array {
     return src instanceof Uint8Array;
   }
 }

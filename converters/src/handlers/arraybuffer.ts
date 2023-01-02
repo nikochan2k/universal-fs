@@ -9,7 +9,7 @@ class ArrayBufferHandler extends ArrayBufferLikeHandler<ArrayBuffer> {
     return Promise.resolve(EMPTY_ARRAY_BUFFER);
   }
 
-  protected _validateSource(src: ArrayBuffer): boolean {
+  protected _validateSource(src: unknown): src is ArrayBuffer {
     return src instanceof ArrayBuffer;
   }
 

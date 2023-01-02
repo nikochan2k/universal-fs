@@ -34,7 +34,7 @@ export function closeStream(
 }
 
 export async function handleReadableStream(
-  source: ReadableStream,
+  source: ReadableStream<Uint8Array>,
   onData: (chunk: Uint8Array) => Promise<boolean>
 ): Promise<void> {
   const reader = source.getReader();

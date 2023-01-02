@@ -9,7 +9,7 @@ export abstract class StringHandler extends AbstractHandler<string> {
     return Promise.resolve(src.length === 0);
   }
 
-  protected _validateSource(src: string): boolean {
+  protected _validateSource(src: unknown): src is string {
     return typeof src === "string";
   }
 }

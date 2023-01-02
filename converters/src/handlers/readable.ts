@@ -140,7 +140,7 @@ class ReadableHandler extends AbstractHandler<Readable> {
     return Promise.resolve(new PartialReadable(src, start, end));
   }
 
-  protected _validateSource(src: Readable): boolean {
+  protected _validateSource(src: unknown): src is Readable {
     return src instanceof Readable;
   }
 }

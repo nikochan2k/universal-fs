@@ -32,7 +32,7 @@ class BlobHandler extends AbstractHandler<Blob> {
     return Promise.resolve(sliced);
   }
 
-  protected _validateSource(src: Blob): boolean {
+  protected _validateSource(src: unknown): src is Blob {
     return src instanceof Blob;
   }
 }

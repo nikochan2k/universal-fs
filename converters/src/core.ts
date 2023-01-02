@@ -79,7 +79,7 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
     }
   }
 
-  protected validateSource(src: T): boolean {
+  protected validateSource(src: unknown): src is T {
     return src != null && this._validateSource(src);
   }
 
@@ -100,5 +100,5 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
   protected abstract _merge(src: T[], bufferSize?: number): Promise<T>;
   protected abstract _size(src: T): Promise<number>;
   protected abstract _slice(src: T, options?: SliceOptions): Promise<T>;
-  protected abstract _validateSource(src: T): boolean;
+  protected abstract _validateSource(src: unknown): src is T;
 }
