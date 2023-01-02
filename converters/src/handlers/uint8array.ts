@@ -4,6 +4,8 @@ import { newBuffer } from "../util";
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
 class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
+  public name = Uint8Array.name;
+
   public empty(): Promise<Uint8Array> {
     return Promise.resolve(EMPTY_UINT8_ARRAY);
   }
@@ -45,10 +47,8 @@ class Uint8ArrayHandler extends AbstractHandler<Uint8Array> {
     return Promise.resolve(sliced);
   }
 
-  protected _validateSource(src: Uint8Array): void {
-    if (!(src instanceof Uint8Array)) {
-      throw new TypeError("src is not Uint8Array");
-    }
+  protected _validateSource(src: Uint8Array): boolean {
+    return src instanceof Uint8Array;
   }
 }
 

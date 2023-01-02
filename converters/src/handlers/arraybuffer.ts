@@ -4,6 +4,8 @@ import { newBuffer } from "../util";
 export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 
 class ArrayBufferHandler extends AbstractHandler<ArrayBufferLike> {
+  public name = ArrayBuffer.name;
+
   public empty(): Promise<ArrayBufferLike> {
     return Promise.resolve(EMPTY_ARRAY_BUFFER);
   }
@@ -45,10 +47,8 @@ class ArrayBufferHandler extends AbstractHandler<ArrayBufferLike> {
     return Promise.resolve(sliced);
   }
 
-  protected _validateSource(src: ArrayBufferLike): void {
-    if (!(src instanceof ArrayBuffer)) {
-      throw new TypeError("src is not ArrayBuffer");
-    }
+  protected _validateSource(src: ArrayBufferLike): boolean {
+    return src instanceof ArrayBuffer || src instanceof SharedArrayBuffer;
   }
 }
 

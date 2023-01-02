@@ -5,6 +5,8 @@ import abc from "./arraybuffer";
 export const EMPTY_BASE64 = "";
 
 class BASE64Handler extends AbstractHandler<string> {
+  public name = "BASE64";
+
   public empty(): Promise<string> {
     return Promise.resolve(EMPTY_BASE64);
   }
@@ -42,10 +44,8 @@ class BASE64Handler extends AbstractHandler<string> {
     return Promise.resolve(base64);
   }
 
-  protected _validateSource(src: string): void {
-    if (typeof src !== "string") {
-      throw new TypeError("src is not string");
-    }
+  protected _validateSource(src: string): boolean {
+    return typeof src === "string";
   }
 }
 

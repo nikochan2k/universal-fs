@@ -3,6 +3,8 @@ import { AbstractHandler, SliceOptions } from "../core";
 export const EMPTY_BLOB = new Blob([]);
 
 class BlobHandler extends AbstractHandler<Blob> {
+  public name = Blob.name;
+
   public empty(): Promise<Blob> {
     return Promise.resolve(EMPTY_BLOB);
   }
@@ -30,10 +32,8 @@ class BlobHandler extends AbstractHandler<Blob> {
     return Promise.resolve(sliced);
   }
 
-  protected _validateSource(src: Blob): void {
-    if (!(src instanceof Blob)) {
-      throw new TypeError("src is not Blob");
-    }
+  protected _validateSource(src: Blob): boolean {
+    return src instanceof Blob;
   }
 }
 

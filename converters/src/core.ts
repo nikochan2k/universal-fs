@@ -7,8 +7,8 @@ export type VariantOrNull = Variant | null;
 
 export interface SliceOptions {
   length?: number;
-  start?: number;
   srcType?: string;
+  start?: number;
 }
 
 export interface ConvertOptions {
@@ -20,8 +20,8 @@ export type ConverterLocationFn = (srcType: string, dstType: string) => string;
 export type HandlerLocationFn = (type: string) => string;
 
 export interface Converter<ST extends Variant, DT extends Variant> {
-  convert(src: ST, options?: ConvertOptions): Promise<DT>;
   _convert(src: ST, bufferSize?: number): Promise<DT>;
+  convert(src: ST, options?: ConvertOptions): Promise<DT>;
 }
 
 export interface Handler<T extends Variant> {
@@ -33,8 +33,10 @@ export interface Handler<T extends Variant> {
 }
 
 export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
+  public abstract readonly name: string;
+
   public async isEmpty(src: T): Promise<boolean> {
-    this.validateSource(src);
+    this.validate(src);
     return await this._isEmpty(src);
   }
 
@@ -46,22 +48,22 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
       return await this.empty();
     }
     for (const chunk of src) {
-      this.validateSource(chunk);
+      this.validate(chunk);
     }
-    this.validateValue("bufferSize", bufferSize);
+    this.validateOption("bufferSize", bufferSize);
 
     return await this._merge(src, bufferSize);
   }
 
   public async size(src: T): Promise<number> {
-    this.validateSource(src);
+    this.validate(src);
     return await this._size(src);
   }
 
   public async slice(src: T, options?: SliceOptions): Promise<T> {
-    this.validateSource(src);
-    this.validateValue("options.start", options?.start);
-    this.validateValue("options.length", options?.length);
+    this.validate(src);
+    this.validateOption("options.start", options?.start);
+    this.validateOption("options.length", options?.length);
 
     if (options?.length === 0) {
       return await this.empty();
@@ -71,14 +73,17 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
 
   public abstract empty(): Promise<T>;
 
-  protected validateSource(src: T): void {
-    if (src == null) {
-      throw new TypeError("src is null or undefined");
+  protected validate(src: T): void {
+    if (!this.validateSource(src)) {
+      throw new TypeError(`src is not ${this.name}`);
     }
-    this._validateSource(src);
   }
 
-  protected validateValue(name: string, value?: number): void {
+  protected validateSource(src: T): boolean {
+    return src != null && this._validateSource(src);
+  }
+
+  protected validateOption(name: string, value?: number): void {
     if (value == null) {
       return;
     }
@@ -95,5 +100,5 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
   protected abstract _merge(src: T[], bufferSize?: number): Promise<T>;
   protected abstract _size(src: T): Promise<number>;
   protected abstract _slice(src: T, options?: SliceOptions): Promise<T>;
-  protected abstract _validateSource(src: T): void;
+  protected abstract _validateSource(src: T): boolean;
 }

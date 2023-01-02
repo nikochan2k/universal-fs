@@ -66,6 +66,8 @@ class PartialReadable extends Readable {
 }
 
 class ReadableHandler extends AbstractHandler<Readable> {
+  public name = Readable.name;
+
   public empty(): Promise<Readable> {
     return Promise.resolve(
       new Readable({
@@ -93,8 +95,12 @@ class ReadableHandler extends AbstractHandler<Readable> {
     const pt = new PassThrough();
     const process = (i: number) => {
       if (i < end) {
-        const readable = src[i] as Readable;
-        if (!readable.readable) {
+        const readable = src[i];
+        if (
+          !readable ||
+          !(readable instanceof Readable) ||
+          !readable.readable
+        ) {
           process(i + 1);
           return;
         }
@@ -103,7 +109,7 @@ class ReadableHandler extends AbstractHandler<Readable> {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           pt.destroy(e);
           for (let j = i; j < end; j++) {
-            const r = src[j];
+            const r = src[j] as Readable;
             if (isReadable(r)) r.destroy();
           }
         });
@@ -133,10 +139,8 @@ class ReadableHandler extends AbstractHandler<Readable> {
     return Promise.resolve(new PartialReadable(src, start, end));
   }
 
-  protected _validateSource(src: Readable): void {
-    if (!(src instanceof Readable)) {
-      throw new TypeError("src is not Readable");
-    }
+  protected _validateSource(src: Readable): boolean {
+    return src instanceof Readable;
   }
 }
 

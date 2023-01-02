@@ -3,6 +3,8 @@ import { AbstractHandler, SliceOptions } from "../core";
 export const EMPTY_BINARY = "";
 
 class BinaryHandler extends AbstractHandler<string> {
+  public name = "Binary";
+
   public empty(): Promise<string> {
     return Promise.resolve(EMPTY_BINARY);
   }
@@ -31,10 +33,8 @@ class BinaryHandler extends AbstractHandler<string> {
     return Promise.resolve(src.slice(start, end));
   }
 
-  protected _validateSource(src: string): void {
-    if (typeof src !== "string") {
-      throw new TypeError("src is not string");
-    }
+  protected _validateSource(src: string): boolean {
+    return typeof src === "string";
   }
 }
 
