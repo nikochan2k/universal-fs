@@ -19,7 +19,7 @@ export function pipe(readable: Readable, writable: Writable) {
 
 export async function handleReadable(
   readable: Readable,
-  onData: (chunk: Buffer) => Promise<void>
+  onData: (chunk: Buffer) => void
 ): Promise<void> {
   if (isReadable(readable) && readable.destroyed) {
     return;
@@ -28,9 +28,12 @@ export async function handleReadable(
   const writable = new Writable({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     write(chunk: any, _: string, next: (error?: Error | null) => void): void {
-      onData(chunk as Buffer)
-        .then(() => next())
-        .catch((e) => writable.destroy(e as Error));
+      try {
+        onData(chunk as Buffer);
+        next();
+      } catch (e) {
+        next(e as Error);
+      }
     },
   });
   await pipe(readable, writable);

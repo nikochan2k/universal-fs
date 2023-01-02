@@ -8,7 +8,6 @@ class Readable_Binary extends AbstractConverter<Readable, string> {
     await handleReadable(src, (chunk) => {
       const binary = chunk.toString("binary");
       chunks.push(binary);
-      return Promise.resolve();
     });
     return chunks.join("");
   }

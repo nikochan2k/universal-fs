@@ -5,10 +5,7 @@ import { AbstractConverter } from "../../UnivConv";
 class Readable_ArrayBuffer extends AbstractConverter<Readable, ArrayBuffer> {
   public async _convert(src: Readable): Promise<ArrayBuffer> {
     const chunks: Buffer[] = [];
-    await handleReadable(src, (chunk) => {
-      chunks.push(chunk);
-      return Promise.resolve();
-    });
+    await handleReadable(src, (chunk) => chunks.push(chunk));
     const buf = Buffer.concat(chunks);
     return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
   }
