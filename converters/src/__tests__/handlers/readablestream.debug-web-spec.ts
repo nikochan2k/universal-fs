@@ -1,47 +1,49 @@
-import { Readable } from "stream";
-import rh from "../../handlers/readable";
+import rh from "../../handlers/readablestream";
+import uh from "../../handlers/uint8array";
+import { handleReadableStream } from "../../supports/WebStream";
 
-const toBuffer = (readable: Readable) => {
-  return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    readable.on("end", () => resolve(Buffer.concat(chunks)));
-    readable.on("error", (e) => reject(e));
-    readable.on("data", (chunk) => chunks.push(chunk as Buffer));
+const toBuffer = async (rs: ReadableStream<Uint8Array>) => {
+  const chunks: Uint8Array[] = [];
+  await handleReadableStream(rs, async (chunk) => {
+    chunks.push(chunk);
+    return Promise.resolve(true);
   });
+  const u8 = await uh.merge(chunks);
+  return u8;
 };
 
-const createReadable = (size: number) => {
-  return new Readable({
-    read() {
-      this.push(Buffer.alloc(size));
-      this.push(null);
+const createReadableStream = (size: number) => {
+  const u8 = new Uint8Array(size);
+  return new ReadableStream<Uint8Array>({
+    start: (controller) => {
+      controller.enqueue(u8);
     },
   });
 };
 
 it("empty", async () => {
   const actual = await rh.empty();
-  expect(actual instanceof Readable).toBe(true);
+  expect(actual instanceof ReadableStream).toBe(true);
   const buffer = await toBuffer(actual);
   expect(buffer.length).toBe(0);
 });
 
 it("merge", async () => {
-  let actual: Readable;
-  let buffer: Buffer;
+  let actual: ReadableStream<Uint8Array>;
+  let buffer: Uint8Array;
   actual = await rh.merge([]);
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(0);
-  const chunk0 = createReadable(0);
+  const chunk0 = createReadableStream(0);
   actual = await rh.merge([chunk0]);
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(0);
-  let chunk1 = createReadable(1);
+  let chunk1 = createReadableStream(1);
   actual = await rh.merge([chunk1]);
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(1);
-  chunk1 = createReadable(1);
-  const chunk2 = createReadable(2);
+  chunk1 = createReadableStream(1);
+  const chunk2 = createReadableStream(2);
   actual = await rh.merge([chunk1, chunk2]);
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(3);
@@ -52,30 +54,30 @@ it("merge", async () => {
 });
 
 it("slice", async () => {
-  let actual: Readable;
-  let buffer: Buffer;
-  let notEmpty = createReadable(3);
+  let actual: ReadableStream<Uint8Array>;
+  let buffer: Uint8Array;
+  let notEmpty = createReadableStream(3);
   actual = await rh.slice(notEmpty, { length: 0 });
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(0);
-  // notEmpty = createReadable(3);
+  // notEmpty = createReadableStream(3);
   // continuous read
   actual = await rh.slice(notEmpty, { length: 1 });
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(1);
-  notEmpty = createReadable(3);
+  notEmpty = createReadableStream(3);
   actual = await rh.slice(notEmpty, { start: 1 });
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(2);
-  notEmpty = createReadable(3);
+  notEmpty = createReadableStream(3);
   actual = await rh.slice(notEmpty, { start: 1, length: 1 });
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(1);
-  notEmpty = createReadable(3);
+  notEmpty = createReadableStream(3);
   actual = await rh.slice(notEmpty, { start: 1, length: 3 });
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(2);
-  notEmpty = createReadable(3);
+  notEmpty = createReadableStream(3);
   actual = await rh.slice(notEmpty, { start: 3 });
   buffer = await toBuffer(actual);
   expect(buffer.length).toBe(0);
