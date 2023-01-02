@@ -1,5 +1,5 @@
 import { AbstractHandler, SliceOptions } from "../core";
-import support from "./TypedArraySupport";
+import support from "../supports/TypedArray";
 
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 

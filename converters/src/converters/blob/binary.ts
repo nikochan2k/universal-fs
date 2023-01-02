@@ -1,11 +1,11 @@
-import { AbstractConverter } from "../../UnivConv";
+import u2b from "../../converters/uint8array/binary";
 import {
-  DEFAULT_BUFFER_SIZE,
   handleFileReader,
   hasReadAsBinaryStringOnBlob,
-} from "../../util";
+} from "../../supports/Blob";
+import { AbstractConverter } from "../../UnivConv";
+import { DEFAULT_BUFFER_SIZE } from "../../util";
 import b2u from "./uint8array";
-import u2b from "../../converters/uint8array/binary";
 
 class Blob_Binary extends AbstractConverter<Blob, string> {
   public async _convert(src: Blob, bufferSize?: number): Promise<string> {

@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from "stream";
 import { AbstractHandler, SliceOptions } from "../core";
-import { isReadable } from "../util";
+import { isReadable } from "../supports/NodeStream";
 
 const EMPTY_BUFFER = Buffer.alloc(0);
 
@@ -96,11 +96,7 @@ class ReadableHandler extends AbstractHandler<Readable> {
     const process = (i: number) => {
       if (i < end) {
         const readable = src[i];
-        if (
-          !readable ||
-          !(readable instanceof Readable) ||
-          !readable.readable
-        ) {
+        if (!isReadable(readable)) {
           process(i + 1);
           return;
         }
@@ -109,7 +105,7 @@ class ReadableHandler extends AbstractHandler<Readable> {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           pt.destroy(e);
           for (let j = i; j < end; j++) {
-            const r = src[j] as Readable;
+            const r = src[j];
             if (isReadable(r)) r.destroy();
           }
         });

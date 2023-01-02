@@ -1,15 +1,14 @@
 import b2u from "../../converters/base64/uint8array";
 import u8h from "../../handlers/uint8array";
-import { AbstractConverter } from "../../UnivConv";
 import {
-  DEFAULT_BUFFER_SIZE,
   handleFileReader,
-  handleReadableStream,
   hasArrayBufferOnBlob,
   hasReadAsArrayBufferOnBlob,
   hasStreamOnBlob,
-  newBuffer,
-} from "../../util";
+} from "../../supports/Blob";
+import { handleReadableStream } from "../../supports/WebStream";
+import { AbstractConverter } from "../../UnivConv";
+import { DEFAULT_BUFFER_SIZE, newBuffer } from "../../util";
 import b2b from "./base64";
 
 class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
