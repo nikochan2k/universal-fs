@@ -94,6 +94,10 @@ class ReadableHandler extends AbstractHandler<Readable> {
     const process = (i: number) => {
       if (i < end) {
         const readable = src[i] as Readable;
+        if (!readable.readable) {
+          process(i + 1);
+          return;
+        }
         readable.once("error", (e) => {
           readable.unpipe();
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -103,7 +107,7 @@ class ReadableHandler extends AbstractHandler<Readable> {
             if (isReadable(r)) r.destroy();
           }
         });
-        readable.once("end", () => process(++i));
+        readable.once("end", () => process(i + 1));
         readable.pipe(pt, { end: false });
       } else {
         pt.end();
@@ -122,6 +126,9 @@ class ReadableHandler extends AbstractHandler<Readable> {
     let end: number | undefined;
     if (options?.length != null) {
       end = start + options.length;
+    }
+    if (!src.readable) {
+      return this.empty();
     }
     return Promise.resolve(new PartialReadable(src, start, end));
   }
