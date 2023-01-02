@@ -1,8 +1,8 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const entries1 = glob.sync("./commonjs/__tests__/**/*.spec.js");
-const entries2 = glob.sync("./commonjs/__tests__/**/*.web-spec.js");
+const entries1 = glob.sync("./commonjs/__tests__/**/*.debug-spec.js");
+const entries2 = glob.sync("./commonjs/__tests__/**/*.debug-web-spec.js");
 const entries = [...entries1, ...entries2];
 const entryMap = {};
 for (const entry of entries) {

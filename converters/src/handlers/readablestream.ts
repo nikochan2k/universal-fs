@@ -4,25 +4,23 @@ import { closeStream, handleReadableStream } from "../supports/WebStream";
 const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
 export function createPartialReadableStream(
-  source: ReadableStream<unknown>,
+  src: ReadableStream<Uint8Array>,
   start: number,
   end = Number.MAX_SAFE_INTEGER
 ): ReadableStream<Uint8Array> {
-  const reader = source.getReader();
+  const reader = src.getReader();
   return new ReadableStream({
     start: async (controller) => {
       let iStart = 0;
-      let res: ReadableStreamReadResult<Uint8Array>;
-      do {
-        res = (await reader.read()) as ReadableStreamReadResult<Uint8Array>;
+      let res = await reader.read();
+      while (!res.done && iStart < end) {
         const u8 = res.value;
-        if (u8) {
-          const length = u8.byteLength;
-          const iEnd = iStart + length;
-          const u8End = (iEnd < end ? iEnd : end) - iStart;
-          let chunk: Uint8Array | undefined;
-          if (iStart <= start && start < iEnd) {
-            /*
+        const length = u8.byteLength;
+        const iEnd = iStart + length;
+        const u8End = (iEnd < end ? iEnd : end) - iStart;
+        let chunk: Uint8Array | undefined;
+        if (iStart <= start && start < iEnd) {
+          /*
             range :   |-------|
             buffer: |-------|
             range :   |-----|
@@ -30,29 +28,29 @@ export function createPartialReadableStream(
             range :   |--|
             buffer: |-------|
             */
-            chunk = u8.subarray(start - iStart, u8End);
-          } else if (start < iStart && iStart < end) {
-            /*
+          chunk = u8.subarray(start - iStart, u8End);
+        } else if (start < iStart && iStart < end) {
+          /*
             range : |-------|
             buffer:   |-------|
             range : |-------|
             buffer:   |-----|
             */
-            chunk = u8.subarray(0, u8End);
-          }
-          if (chunk) {
-            controller.enqueue(chunk);
-          }
-          iStart += length;
+          chunk = u8.subarray(0, u8End);
         }
-      } while (!res.done && iStart < end);
+        if (chunk) {
+          controller.enqueue(chunk);
+        }
+        iStart += length;
+        res = await reader.read();
+      }
       controller.close();
       reader.releaseLock();
-      closeStream(source);
+      closeStream(src);
     },
     cancel: (e) => {
       reader.releaseLock();
-      closeStream(source, e);
+      closeStream(src, e);
     },
   });
 }

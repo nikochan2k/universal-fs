@@ -17,6 +17,7 @@ const createReadableStream = (size: number) => {
   return new ReadableStream<Uint8Array>({
     start: (controller) => {
       controller.enqueue(u8);
+      controller.close();
     },
   });
 };
