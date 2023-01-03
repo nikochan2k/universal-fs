@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "moduleFileExtensions": ["js"],
+  "transform": {},
+  "testMatch": [
+    "<rootDir>/mjs/__tests__/**/*.debug-spec.js",
+    "<rootDir>/mjs/__tests__/**/*.debug-node-spec.js"
+  ]
+}

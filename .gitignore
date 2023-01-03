@@ -4,6 +4,8 @@ node_modules/
 dist/
 lib/
 commonjs/
+mjs/
+cjs/
 .chrome-karma/
 .DS_Store
 secret*.json

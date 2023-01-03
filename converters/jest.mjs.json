@@ -3,7 +3,7 @@
   "moduleFileExtensions": ["js"],
   "transform": {},
   "testMatch": [
-    "<rootDir>/lib/__tests__/**/*.spec.js",
-    "<rootDir>/lib/__tests__/**/*.node-spec.js"
+    "<rootDir>/mjs/__tests__/**/*.spec.js",
+    "<rootDir>/mjs/__tests__/**/*.node-spec.js"
   ]
 }

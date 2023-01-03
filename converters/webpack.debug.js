@@ -1,9 +1,9 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const testEntries = glob.sync("./lib/__tests__/**/*debug*.js");
-const moduleEntries1 = glob.sync("./lib/converters/**/*.js");
-const moduleEntries2 = glob.sync("./lib/handlers/*.js");
+const testEntries = glob.sync("./mjs/__tests__/**/*debug*.js");
+const moduleEntries1 = glob.sync("./mjs/converters/**/*.js");
+const moduleEntries2 = glob.sync("./mjs/handlers/*.js");
 const moduleEntries = [...moduleEntries1, ...moduleEntries2];
 const moduleEntryMap = {};
 for (const entry of moduleEntries) {

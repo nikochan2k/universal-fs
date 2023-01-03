@@ -1,10 +1,10 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const testEntries1 = glob.sync("./lib/__tests__/converters/**/*.spec.js");
-const testEntries2 = glob.sync("./lib/__tests__/converters/**/*.web-spec.js");
-const testEntries3 = glob.sync("./lib/__tests__/handlers/*.spec.js");
-const testEntries4 = glob.sync("./lib/__tests__/handlers/*.web-spec.js");
+const testEntries1 = glob.sync("./mjs/__tests__/converters/**/*.spec.js");
+const testEntries2 = glob.sync("./mjs/__tests__/converters/**/*.web-spec.js");
+const testEntries3 = glob.sync("./mjs/__tests__/handlers/*.spec.js");
+const testEntries4 = glob.sync("./mjs/__tests__/handlers/*.web-spec.js");
 const testEntries = [
   ...testEntries1,
   ...testEntries2,
@@ -12,8 +12,8 @@ const testEntries = [
   ...testEntries4,
 ];
 
-const moduleEntries1 = glob.sync("./lib/converters/**/*.js");
-const moduleEntries2 = glob.sync("./lib/handlers/*.js");
+const moduleEntries1 = glob.sync("./mjs/converters/**/*.js");
+const moduleEntries2 = glob.sync("./mjs/handlers/*.js");
 const moduleEntries = [...moduleEntries1, ...moduleEntries2];
 const moduleEntryMap = {};
 for (const entry of moduleEntries) {

@@ -1,0 +1,8 @@
+{
+  "verbose": true,
+  "moduleFileExtensions": ["js"],
+  "testMatch": [
+    "<rootDir>/cjs/__tests__/**/*.debug-spec.js",
+    "<rootDir>/cjs/__tests__/**/*.debug-node-spec.js"
+  ]
+}
