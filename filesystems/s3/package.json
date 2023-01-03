@@ -43,7 +43,7 @@
     "release": "npm-run-all build sanitize webpack npm-publish"
   },
   "devDependencies": {
-    "aws-sdk": "^2.1272.0",
+    "aws-sdk": "^2.1286.0",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

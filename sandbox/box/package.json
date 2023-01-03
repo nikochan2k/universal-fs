@@ -36,7 +36,7 @@
     "release": "npm-run-all build sanitize npm-publish"
   },
   "devDependencies": {
-    "box-node-sdk": "^2.7.2",
+    "box-node-sdk": "^2.8.0",
     "univ-fs": "file:../../core"
   },
   "peerDependencies": {

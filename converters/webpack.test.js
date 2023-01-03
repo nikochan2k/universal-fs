@@ -1,5 +1,9 @@
-/* eslint-disable */
-const glob = require("glob");
+import glob from "glob";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const testEntries1 = glob.sync("./mjs/__tests__/converters/**/*.spec.js");
 const testEntries2 = glob.sync("./mjs/__tests__/converters/**/*.web-spec.js");
@@ -22,7 +26,7 @@ for (const entry of moduleEntries) {
   moduleEntryMap[name] = entry;
 }
 
-module.exports = {
+export default {
   mode: "development",
   entry: {
     "index.spec": testEntries,
@@ -36,6 +40,7 @@ module.exports = {
     },
   },
   resolve: {
+    fullySpecified: false,
     extensions: [".js"],
     fallback: {
       stream: false,
