@@ -1,9 +1,17 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const testEntries1 = glob.sync("./lib/__tests__/converters/**/*.js");
-const testEntries2 = glob.sync("./lib/__tests__/handlers/*.js");
-const testEntries = [...testEntries1, ...testEntries2];
+const testEntries1 = glob.sync("./lib/__tests__/converters/**/*.spec.js");
+const testEntries2 = glob.sync("./lib/__tests__/converters/**/*.web-spec.js");
+const testEntries3 = glob.sync("./lib/__tests__/handlers/*.spec.js");
+const testEntries4 = glob.sync("./lib/__tests__/handlers/*.web-spec.js");
+const testEntries = [
+  ...testEntries1,
+  ...testEntries2,
+  ...testEntries3,
+  ...testEntries4,
+];
+
 const moduleEntries1 = glob.sync("./lib/converters/**/*.js");
 const moduleEntries2 = glob.sync("./lib/handlers/*.js");
 const moduleEntries = [...moduleEntries1, ...moduleEntries2];

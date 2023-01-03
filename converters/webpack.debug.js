@@ -1,7 +1,7 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const testEntries = glob.sync("./lib/**/*debug*.js");
+const testEntries = glob.sync("./lib/__tests__/**/*debug*.js");
 const moduleEntries1 = glob.sync("./lib/converters/**/*.js");
 const moduleEntries2 = glob.sync("./lib/handlers/*.js");
 const moduleEntries = [...moduleEntries1, ...moduleEntries2];
