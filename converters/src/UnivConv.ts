@@ -1,23 +1,14 @@
 import {
   Converter,
-  ConverterLocationFn,
   ConvertOptions,
   ExcludeString,
   FunctionType,
   Handler,
-  HandlerLocationFn,
   SliceOptions,
   Variant,
 } from "./core";
 
-/* eslint-disable @typescript-eslint/ban-types */
-const converterLocationFunctions: ConverterLocationFn[] = [
-  (srcType, dstType) => `./converters/${srcType}/${dstType}`,
-];
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
-const handlerLocationFunctions: HandlerLocationFn[] = [
-  (type) => `./handlers/${type}`,
-];
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};
 
 interface MergeOptions {
@@ -65,22 +56,19 @@ class UnivConv {
         const key = srcType + "_" + dstType;
         let converter = converterMap[key];
         if (typeof converter === "undefined") {
-          for (const fn of converterLocationFunctions) {
-            const location = fn(srcType, dstType);
-            try {
-              // eslint-disable-next-line
-              converter = (await import(location)).default;
-              if (converter) {
-                converterMap[key] = converter;
-                break;
-              }
-            } catch (e) {
-              converterMap[key] = null;
-              console.debug("Not found: " + location, e);
+          const location = `./converters/${srcType}/${dstType}`;
+          try {
+            // eslint-disable-next-line
+            converter = (await import(location)).default;
+            if (converter) {
+              converterMap[key] = converter;
             }
+          } catch {
+            // NOOP
           }
           if (!converter) {
             converterMap[key] = null;
+            console.debug("Not found: " + location);
             continue;
           }
         } else if (converter === null) {
@@ -149,7 +137,7 @@ class UnivConv {
         types = [v as string];
         break;
       case "function":
-        types = this.getTypes(v as Function);
+        types = this.getTypes(v as Function); // eslint-disable-line
         break;
       case "object":
         types = this.getTypes(v.constructor);
@@ -159,22 +147,19 @@ class UnivConv {
       const key = type.toLowerCase();
       let handler = handlerMap[key];
       if (typeof handler === "undefined") {
-        for (const fn of handlerLocationFunctions) {
-          const location = fn(key);
-          try {
-            // eslint-disable-next-line
-            handler = (await import(location)).default;
-            if (handler) {
-              handlerMap[key] = handler;
-              break;
-            }
-          } catch (e) {
-            handlerMap[key] = null;
-            console.debug("Not found: " + location, window?.location?.href, e);
+        const location = `./handlers/${key}`;
+        try {
+          // eslint-disable-next-line
+          handler = (await import(location)).default;
+          if (handler) {
+            handlerMap[key] = handler;
           }
+        } catch {
+          // NOOP
         }
         if (!handler) {
           handlerMap[key] = null;
+          console.debug("Not found: " + location);
           continue;
         }
       } else if (handler === null) {
@@ -202,12 +187,13 @@ class UnivConv {
       case "object":
         return this.getTypes(src.constructor);
       case "function":
-        return this.getTypes(src as Function);
+        return this.getTypes(src as Function); // eslint-disable-line
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     throw new TypeError("src is " + src);
   }
 
+  // eslint-disable-next-line
   protected getTypes(fn: Function): string[] {
     const types: string[] = [];
     while (fn) {

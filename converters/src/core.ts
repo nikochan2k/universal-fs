@@ -16,9 +16,6 @@ export interface ConvertOptions {
   srcType?: string;
 }
 
-export type ConverterLocationFn = (srcType: string, dstType: string) => string;
-export type HandlerLocationFn = (type: string) => string;
-
 export interface Converter<ST extends Variant, DT extends Variant> {
   _convert(src: ST, bufferSize?: number): Promise<DT>;
   convert(src: ST, options?: ConvertOptions): Promise<DT>;
