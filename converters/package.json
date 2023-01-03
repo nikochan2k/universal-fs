@@ -2,10 +2,15 @@
   "name": "univ-conv-new",
   "version": "0.10.3",
   "description": "The universal binary and text converter",
+  "type": "module",
   "main": "cjs/index.js",
   "module": "mjs/index.js",
   "types": "mjs/index.d.ts",
-  "type": "module",
+  "browser": "dist/index.js",
+  "exports": {
+    "require": "./cjs/index.js",
+    "import": "./mjs/index.js"
+  },
   "files": [
     "cjs",
     "mjs",
@@ -62,7 +67,7 @@
     "base64-arraybuffer": "^1.0.2",
     "fast-text-encoding": "^1.0.6"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "encoding-japanese": "^2.0.0",
     "iconv-lite": "^0.6.3"
   },
