@@ -6,6 +6,10 @@ class Blob_BASE64 extends AbstractConverter<Blob, string> {
   public async _convert(src: Blob, bufferSize?: number): Promise<string> {
     const length = src.size;
     if (!bufferSize) bufferSize = DEFAULT_BUFFER_SIZE;
+    const mod = bufferSize % 3;
+    if (mod !== 0) {
+      bufferSize -= mod;
+    }
 
     const chunks: string[] = [];
     for (let start = 0; start < length; start += bufferSize) {

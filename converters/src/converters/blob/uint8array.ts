@@ -1,5 +1,5 @@
-import b2u from "../../converters/base64/uint8array";
-import u8h from "../../handlers/uint8array";
+import type b2u from "../../converters/base64/uint8array";
+import type u8h from "../../handlers/uint8array";
 import {
   handleFileReader,
   hasArrayBufferOnBlob,
@@ -9,9 +9,13 @@ import {
 import { handleReadableStream } from "../../supports/WebStream";
 import { AbstractConverter } from "../../UnivConv";
 import { DEFAULT_BUFFER_SIZE, newBuffer } from "../../util";
-import b2b from "./base64";
+import type b2b from "./base64";
 
 class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
+  private b2u?: typeof b2u;
+  private u8h?: typeof u8h;
+  private b2b?: typeof b2b;
+
   public async _convert(src: Blob, bufferSize?: number): Promise<Uint8Array> {
     if (hasArrayBufferOnBlob) {
       const ab = await src.arrayBuffer();
@@ -47,11 +51,20 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
         index += u8.byteLength;
         return Promise.resolve(index < end);
       });
-      return await u8h.merge(chunks, bufferSize);
+      if (!this.u8h) {
+        this.u8h = (await import("../../handlers/uint8array")).default;
+      }
+      return await this.u8h.merge(chunks, bufferSize);
     }
 
-    const base64 = await b2b._convert(src, bufferSize);
-    return await b2u._convert(base64);
+    if (!this.b2b) {
+      this.b2b = (await import("./base64")).default;
+    }
+    const base64 = await this.b2b._convert(src, bufferSize);
+    if (!this.b2u) {
+      this.b2u = (await import("../../converters/base64/uint8array")).default;
+    }
+    return await this.b2u._convert(base64);
   }
 }
 

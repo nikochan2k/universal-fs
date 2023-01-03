@@ -1,9 +1,14 @@
 import { AbstractConverter } from "../../UnivConv";
-import b2u from "./uint8array";
+import type b2u from "./uint8array";
 
 class BASE64_Blob extends AbstractConverter<string, Blob> {
+  private b2u?: typeof b2u;
+
   public async _convert(src: string): Promise<Blob> {
-    const u8 = await b2u._convert(src);
+    if (!this.b2u) {
+      this.b2u = (await import("./uint8array")).default;
+    }
+    const u8 = await this.b2u._convert(src);
     return new Blob([u8]);
   }
 }
