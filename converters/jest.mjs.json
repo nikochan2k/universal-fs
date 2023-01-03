@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "moduleFileExtensions": ["js"],
+  "transform": {},
+  "testMatch": [
+    "<rootDir>/lib/__tests__/**/*.spec.js",
+    "<rootDir>/lib/__tests__/**/*.node-spec.js"
+  ]
+}

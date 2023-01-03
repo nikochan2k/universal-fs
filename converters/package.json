@@ -6,6 +6,7 @@
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
+  "type": "module",
   "files": [
     "commonjs",
     "lib",
@@ -34,8 +35,10 @@
     "compile-commonjs-test": "tsc -p tsconfig-test.json --module CommonJS --outDir commonjs",
     "build": "npm-run-all clean compile-lib compile-commonjs",
     "jest": "jest --runInBand",
+    "jest-mjs": "node --experimental-vm-modules ../node_modules/jest/bin/jest.js --config jest.mjs.json --runInBand",
     "jest-debug": "jest --config jest.debug.json --runInBand",
     "test": "npm-run-all clean compile-commonjs-test jest",
+    "test-mjs": "npm-run-all clean compile-lib-test jest-mjs",
     "test-debug": "npm-run-all clean compile-commonjs-test jest-debug",
     "webpack": "webpack",
     "webpack-test": "webpack --config webpack.test.js",
