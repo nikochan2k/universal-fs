@@ -1,4 +1,4 @@
-import { AbstractHandler } from "../core";
+import { AbstractHandler } from "../../core";
 
 export abstract class StringHandler extends AbstractHandler<string> {
   public empty(): Promise<string> {

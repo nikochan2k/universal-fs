@@ -1,4 +1,4 @@
-import { ReadableConverter } from "./ReadableConverter";
+import { ReadableConverter } from "../../supports/converters/readable/ReadableConverter";
 
 class Readable_Binary extends ReadableConverter<string> {
   protected _convertBuffer(buffer: Buffer): string {

@@ -1,7 +1,7 @@
 import type { Readable } from "stream";
-import { Variant } from "../../core";
-import { handleReadable } from "../../supports/NodeStream";
-import { AbstractConverter } from "../../UnivConv";
+import { Variant } from "../../../core";
+import { handleReadable } from "../../NodeStream";
+import { AbstractConverter } from "../../../UnivConv";
 
 export abstract class ReadableConverter<
   DT extends Variant

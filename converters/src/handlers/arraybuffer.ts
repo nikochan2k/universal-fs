@@ -1,4 +1,4 @@
-import { ArrayBufferLikeHandler } from "./arraybufferlike";
+import { ArrayBufferLikeHandler } from "../supports/handlers/ArrayBufferLikeHandler";
 
 export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 

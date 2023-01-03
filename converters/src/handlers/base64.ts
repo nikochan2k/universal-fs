@@ -1,7 +1,7 @@
 import { decode, encode } from "base64-arraybuffer";
 import { SliceOptions } from "../core";
 import abc from "./arraybuffer";
-import { StringHandler } from "./string";
+import { StringHandler } from "../supports/handlers/StringHandler";
 
 export const EMPTY_BASE64 = "";
 
