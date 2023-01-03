@@ -24,7 +24,7 @@ module.exports = function (config) {
     },
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: "dist",
+    basePath: "mjs",
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -35,7 +35,12 @@ module.exports = function (config) {
     // You may need to tweak this patter to find your test files/
     files: [
       {
-        pattern: "index.spec.js",
+        pattern: "**/*.spec.js",
+        watched: false,
+        type: "module",
+      },
+      {
+        pattern: "**/*.web-spec.js",
         watched: false,
         type: "module",
       },
@@ -48,10 +53,7 @@ module.exports = function (config) {
       },
     ],
 
-    proxies: {
-      "/": "/base",
-    },
     client: { jasmine: { random: false } },
-    singleRun: true,
+    singleRun: false,
   });
 };

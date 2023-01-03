@@ -1,6 +1,6 @@
-/* eslint-disable */
 const glob = require("glob");
 
+const testEntries = glob.sync("./mjs/__tests__/**/*debug*.js");
 const moduleEntries1 = glob.sync("./mjs/converters/**/*.js");
 const moduleEntries2 = glob.sync("./mjs/handlers/*.js");
 const moduleEntries = [...moduleEntries1, ...moduleEntries2];
@@ -12,9 +12,9 @@ for (const entry of moduleEntries) {
 }
 
 module.exports = {
-  mode: "production",
+  mode: "development",
   entry: {
-    index: "./mjs/index.js",
+    "index.spec": testEntries,
     ...moduleEntryMap,
   },
   output: {
