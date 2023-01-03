@@ -35,12 +35,7 @@ module.exports = function (config) {
     // You may need to tweak this patter to find your test files/
     files: [
       {
-        pattern: "__tests__/**/*.spec.js",
-        watched: false,
-        type: "module",
-      },
-      {
-        pattern: "__tests__/**/*.web-spec.js",
+        pattern: "index.spec.js",
         watched: false,
         type: "module",
       },

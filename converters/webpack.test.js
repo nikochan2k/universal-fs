@@ -1,17 +1,25 @@
 /* eslint-disable */
 const glob = require("glob");
 
-const entries = glob.sync("./lib/**/*.js");
-const entryMap = {};
-for (const entry of entries) {
+const testEntries1 = glob.sync("./lib/__tests__/converters/**/*.js");
+const testEntries2 = glob.sync("./lib/__tests__/handlers/*.js");
+const testEntries = [...testEntries1, ...testEntries2];
+const moduleEntries1 = glob.sync("./lib/converters/**/*.js");
+const moduleEntries2 = glob.sync("./lib/handlers/*.js");
+const moduleEntries = [...moduleEntries1, ...moduleEntries2];
+const moduleEntryMap = {};
+for (const entry of moduleEntries) {
   let name = entry.substring(6);
   name = name.replace(/\.js$/, "");
-  entryMap[name] = entry;
+  moduleEntryMap[name] = entry;
 }
 
 module.exports = {
   mode: "development",
-  entry: entryMap,
+  entry: {
+    "index.spec": testEntries,
+    ...moduleEntryMap,
+  },
   output: {
     filename: "[name].js",
     path: __dirname + "/dist",
