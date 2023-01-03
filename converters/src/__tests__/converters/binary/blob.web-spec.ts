@@ -1,4 +1,4 @@
-import b2b from "../../../converters/binary/blob";
+import b2b from "../../../converters/binary/blob.js";
 
 it("convert", async () => {
   const src = "abc";

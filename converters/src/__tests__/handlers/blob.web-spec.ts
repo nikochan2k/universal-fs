@@ -1,4 +1,4 @@
-import bh from "../../handlers/blob";
+import bh from "../../handlers/blob.js";
 
 it("empty", async () => {
   const actual = await bh.empty();

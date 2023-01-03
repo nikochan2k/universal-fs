@@ -1,4 +1,4 @@
-import { ReadableConverter } from "../../supports/converters/readable/ReadableConverter";
+import { ReadableConverter } from "../../supports/converters/readable/ReadableConverter.js";
 
 class Readable_ArrayBuffer extends ReadableConverter<ArrayBuffer> {
   protected _convertBuffer(buf: Buffer): ArrayBuffer {

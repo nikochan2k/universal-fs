@@ -1,5 +1,5 @@
 import { closeStream, getUnivConv } from "univ-conv";
-import { Modification } from "./core";
+import { Modification } from "./core.js";
 
 async function createModifiedReadableStream(
   src: ReadableStream<unknown>,

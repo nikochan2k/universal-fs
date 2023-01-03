@@ -1,7 +1,7 @@
 import type { createReadStream, createWriteStream, readFile, stat } from "fs";
 import type { Readable, Writable } from "stream";
 import type { fileURLToPath } from "url";
-import { Data } from "./core";
+import { Data } from "./core.js";
 
 let _Writable: typeof Writable | undefined;
 let _fileURLToPath: typeof fileURLToPath | undefined;

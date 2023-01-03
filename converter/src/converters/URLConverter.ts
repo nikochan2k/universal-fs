@@ -6,7 +6,7 @@ import {
   deleteStartLength,
   getStartEnd,
   Options,
-} from "./core";
+} from "./core.js";
 import {
   fileURLToReadable,
   getFileSize,
@@ -17,7 +17,7 @@ import {
   newBufferFrom,
   writeToFile,
 } from "./Environment";
-import { dataUrlToBase64 } from "./StringUtil";
+import { dataUrlToBase64 } from "./StringUtil.js";
 
 let nodeFetchReady = false;
 

@@ -1,6 +1,6 @@
 import type { decode } from "base64-arraybuffer";
-import { AbstractConverter } from "../../UnivConv";
-import { hasBuffer } from "../../util";
+import { AbstractConverter } from "../../UnivConv.js";
+import { hasBuffer } from "../../util.js";
 
 class BASE64_ArrayBuffer extends AbstractConverter<string, ArrayBuffer> {
   private _decode?: typeof decode;

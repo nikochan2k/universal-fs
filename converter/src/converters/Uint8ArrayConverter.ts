@@ -7,9 +7,9 @@ import {
   EMPTY_UINT8_ARRAY,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import { hasBuffer, isBuffer, newBuffer, newBufferFrom } from "./Environment";
-import { getTextHelper } from "./StringUtil";
+import { getTextHelper } from "./StringUtil.js";
 
 export class Uint8ArrayConverter extends AbstractConverter<Uint8Array> {
   public type: DataType = "uint8array";

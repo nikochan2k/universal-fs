@@ -1,4 +1,4 @@
-import u2b from "../../../converters/uint8array/base64";
+import u2b from "../../../converters/uint8array/base64.js";
 
 it("convert", async () => {
   const u8 = new Uint8Array([97, 98, 99]);

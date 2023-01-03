@@ -1,4 +1,4 @@
-import { AbstractConverter } from "../../UnivConv";
+import { AbstractConverter } from "../../UnivConv.js";
 
 class ArrayBuffer_Blob extends AbstractConverter<ArrayBuffer, Blob> {
   public _convert(src: ArrayBuffer): Promise<Blob> {

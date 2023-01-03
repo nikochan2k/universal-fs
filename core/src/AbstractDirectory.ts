@@ -14,7 +14,7 @@ import {
   MkcolOptions,
   NoParentAction,
   Stats,
-} from "./core";
+} from "./core.js";
 import {
   FileSystemError,
   InvalidModificationError,
@@ -22,7 +22,7 @@ import {
   NotFoundError,
   PathExistError,
 } from "./errors";
-import { getName, joinPaths, normalizePath } from "./util";
+import { getName, joinPaths, normalizePath } from "./util.js";
 
 export abstract class AbstractDirectory
   extends AbstractEntry

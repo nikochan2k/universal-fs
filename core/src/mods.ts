@@ -5,7 +5,7 @@ import {
   hasReadable,
   hasReadableStream,
 } from "univ-conv";
-import { Modification } from "./core";
+import { Modification } from "./core.js";
 
 type createModifiedReadableType = (
   src: NodeJS.ReadableStream,

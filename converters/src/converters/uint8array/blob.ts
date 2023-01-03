@@ -1,4 +1,4 @@
-import { AbstractConverter } from "../../UnivConv";
+import { AbstractConverter } from "../../UnivConv.js";
 
 class Uint8Array_Blob extends AbstractConverter<Uint8Array, Blob> {
   public _convert(src: Uint8Array): Promise<Blob> {

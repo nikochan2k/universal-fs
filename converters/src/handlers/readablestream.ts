@@ -1,5 +1,5 @@
-import { AbstractHandler, SliceOptions } from "../core";
-import { closeStream, handleReadableStream } from "../supports/WebStream";
+import { AbstractHandler, SliceOptions } from "../core.js";
+import { closeStream, handleReadableStream } from "../supports/WebStream.js";
 
 const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 

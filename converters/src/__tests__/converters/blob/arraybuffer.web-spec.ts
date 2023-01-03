@@ -1,4 +1,4 @@
-import b2a from "../../../converters/blob/arraybuffer";
+import b2a from "../../../converters/blob/arraybuffer.js";
 
 it("convert", async () => {
   const u8 = new Uint8Array([97, 98, 99]);

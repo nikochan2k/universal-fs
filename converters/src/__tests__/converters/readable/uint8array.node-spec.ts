@@ -1,5 +1,5 @@
-import r2u from "../../../converters/readable/uint8array";
-import { createReadable } from "../../supports/Reader";
+import r2u from "../../../converters/readable/uint8array.js";
+import { createReadable } from "../../supports/Reader.js";
 
 it("convert", async () => {
   const data = [97, 98, 99];

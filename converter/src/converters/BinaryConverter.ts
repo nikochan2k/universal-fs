@@ -6,13 +6,13 @@ import {
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import {
   handleFileReader,
   hasBuffer,
   hasReadAsBinaryStringOnBlob,
 } from "./Environment";
-import { getTextHelper } from "./StringUtil";
+import { getTextHelper } from "./StringUtil.js";
 
 export class BinaryConverter extends AbstractConverter<string> {
   public type: DataType = "binary";

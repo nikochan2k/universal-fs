@@ -1,6 +1,6 @@
-import { AbstractConverter } from "../../UnivConv";
-import type b2a from "./arraybuffer";
-import type a2b from "../arraybuffer/base64";
+import { AbstractConverter } from "../../UnivConv.js";
+import type b2a from "./arraybuffer.js";
+import type a2b from "../arraybuffer/base64.js";
 
 class Binary_BASE64 extends AbstractConverter<string, string> {
   private b2a?: typeof b2a;
@@ -11,10 +11,10 @@ class Binary_BASE64 extends AbstractConverter<string, string> {
       return btoa(src);
     }
     if (!this.b2a) {
-      this.b2a = (await import("./arraybuffer")).default;
+      this.b2a = (await import("./arraybuffer.js")).default;
     }
     if (!this.a2b) {
-      this.a2b = (await import("../arraybuffer/base64")).default;
+      this.a2b = (await import("../arraybuffer/base64.js")).default;
     }
     const ab = await this.b2a._convert(src);
     const base64 = await this.a2b._convert(ab);

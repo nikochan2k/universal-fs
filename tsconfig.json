@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM"],
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
     "incremental": true,
-    "module": "ES2020",
-    "moduleResolution": "Node",
+    "module": "ESNext",
+    "moduleResolution": "Node16",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

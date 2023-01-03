@@ -1,4 +1,4 @@
-import { DEFAULT_STATS_KEYS, Stats } from "./core";
+import { DEFAULT_STATS_KEYS, Stats } from "./core.js";
 import { createError, SyntaxError } from "./errors";
 
 // eslint-disable-next-line no-control-regex

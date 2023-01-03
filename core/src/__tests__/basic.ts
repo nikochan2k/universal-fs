@@ -1,5 +1,5 @@
 import { UnivConv, getUnivConv } from "univ-conv";
-import { File, FileSystem, ExistsAction, NoParentAction } from "../core";
+import { File, FileSystem, ExistsAction, NoParentAction } from "../core.js";
 import { ErrorLike, NotFoundError } from "../errors";
 
 export const testAll = (

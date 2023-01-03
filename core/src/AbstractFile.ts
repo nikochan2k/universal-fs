@@ -23,7 +23,7 @@ import {
   ReadOptions,
   Stats,
   WriteOptions,
-} from "./core";
+} from "./core.js";
 import {
   FileSystemError,
   InvalidModificationError,
@@ -36,7 +36,7 @@ import {
   createModifiedReadableStream,
   modify,
 } from "./mods";
-import { toHex } from "./util";
+import { toHex } from "./util.js";
 
 export abstract class AbstractFile extends AbstractEntry implements File {
   constructor(fs: AbstractFileSystem, path: string) {

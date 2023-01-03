@@ -1,5 +1,5 @@
-import r2b from "../../../converters/readable/binary";
-import { createReadable } from "../../supports/Reader";
+import r2b from "../../../converters/readable/binary.js";
+import { createReadable } from "../../supports/Reader.js";
 
 it("convert", async () => {
   const src = createReadable([97, 98, 99]);

@@ -1,4 +1,4 @@
-import u2b from "../../../converters/uint8array/blob";
+import u2b from "../../../converters/uint8array/blob.js";
 
 it("convert", async () => {
   const src = new Uint8Array([97, 98, 99]);

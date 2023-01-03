@@ -1,5 +1,5 @@
-import { SliceOptions } from "../core";
-import { StringHandler } from "../supports/handlers/StringHandler";
+import { SliceOptions } from "../core.js";
+import { StringHandler } from "../supports/handlers/StringHandler.js";
 
 export const EMPTY_BINARY = "";
 

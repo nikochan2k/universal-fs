@@ -7,7 +7,7 @@ import {
   deleteStartLength,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import {
   EMPTY_BUFFER,
   fileURLToReadable,
@@ -16,7 +16,7 @@ import {
   isNodeJSReadableStream,
   isReadable,
 } from "./Environment";
-import { getTextHelper } from "./StringUtil";
+import { getTextHelper } from "./StringUtil.js";
 
 export class PartialReadable extends Readable {
   constructor(

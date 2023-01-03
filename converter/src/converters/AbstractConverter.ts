@@ -11,7 +11,7 @@ import {
   isEmpty,
   Options,
   ReturnData,
-} from "./core";
+} from "./core.js";
 
 export interface UnivConvInternal extends UnivConv {
   _empty<T extends Data>(input: T): T;

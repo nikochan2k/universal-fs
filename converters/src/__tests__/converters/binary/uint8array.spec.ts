@@ -1,4 +1,4 @@
-import b2u from "../../../converters/binary/uint8array";
+import b2u from "../../../converters/binary/uint8array.js";
 
 it("convert", async () => {
   const src = "abc";

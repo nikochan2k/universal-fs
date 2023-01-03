@@ -1,4 +1,4 @@
-import a2u from "../../../converters/arraybuffer/uint8array";
+import a2u from "../../../converters/arraybuffer/uint8array.js";
 
 it("convert", async () => {
   const u8 = new Uint8Array([97, 98, 99]);

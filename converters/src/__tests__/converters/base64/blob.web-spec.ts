@@ -1,4 +1,4 @@
-import b2b from "../../../converters/base64/blob";
+import b2b from "../../../converters/base64/blob.js";
 
 it("convert", async () => {
   const src = "YWJj";

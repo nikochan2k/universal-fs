@@ -1,4 +1,4 @@
-import b2b from "../../../converters/blob/binary";
+import b2b from "../../../converters/blob/binary.js";
 
 it("convert", async () => {
   const u8 = new Uint8Array([97, 98, 99]);

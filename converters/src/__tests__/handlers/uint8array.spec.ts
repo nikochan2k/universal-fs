@@ -1,4 +1,4 @@
-import u8h from "../../handlers/uint8array";
+import u8h from "../../handlers/uint8array.js";
 
 it("empty", async () => {
   const actual = await u8h.empty();

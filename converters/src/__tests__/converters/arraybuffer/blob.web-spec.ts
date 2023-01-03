@@ -1,4 +1,4 @@
-import a2b from "../../../converters/arraybuffer/blob";
+import a2b from "../../../converters/arraybuffer/blob.js";
 
 it("convert", async () => {
   const u8 = new Uint8Array([97, 98, 99]);

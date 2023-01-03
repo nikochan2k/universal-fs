@@ -1,4 +1,4 @@
-import b2a from "../../../converters/binary/arraybuffer";
+import b2a from "../../../converters/binary/arraybuffer.js";
 
 it("convert", async () => {
   const src = "abc";

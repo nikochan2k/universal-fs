@@ -1,4 +1,4 @@
-import b2b from "../../../converters/binary/base64";
+import b2b from "../../../converters/binary/base64.js";
 
 it("convert", async () => {
   const src = "abc";

@@ -1,4 +1,4 @@
-import { SliceOptions } from "../core";
+import { SliceOptions } from "../core.js";
 
 class TypedArraySupport {
   public isEmpty(src: NodeJS.TypedArray) {

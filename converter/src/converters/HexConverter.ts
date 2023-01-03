@@ -6,9 +6,9 @@ import {
   deleteStartLength,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import { newBuffer } from "./Environment";
-import { getTextHelper } from "./StringUtil";
+import { getTextHelper } from "./StringUtil.js";
 
 const BYTE_TO_HEX: string[] = [];
 for (let n = 0; n <= 0xff; ++n) {

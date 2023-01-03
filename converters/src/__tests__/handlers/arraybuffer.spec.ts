@@ -1,4 +1,4 @@
-import abh from "../../handlers/arraybuffer";
+import abh from "../../handlers/arraybuffer.js";
 
 it("empty", async () => {
   const actual = await abh.empty();

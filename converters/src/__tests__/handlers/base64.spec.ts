@@ -1,4 +1,4 @@
-import b64h from "../../handlers/base64";
+import b64h from "../../handlers/base64.js";
 
 it("empty", async () => {
   const actual = await b64h.empty();

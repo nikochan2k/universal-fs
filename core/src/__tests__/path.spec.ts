@@ -1,4 +1,4 @@
-import { getName, getParentPath, normalizePath } from "../util";
+import { getName, getParentPath, normalizePath } from "../util.js";
 
 it("util/path.ts#getParentPath", () => {
   let parentPath = getParentPath("/hoge/fuga");

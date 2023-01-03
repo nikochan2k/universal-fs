@@ -5,7 +5,7 @@ import {
   DataType,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import {
   EMPTY_BLOB,
   handleFileReader,
@@ -18,7 +18,7 @@ import {
   newBuffer,
   newBufferFrom,
 } from "./Environment";
-import { dataUrlToBase64, getTextHelper } from "./StringUtil";
+import { dataUrlToBase64, getTextHelper } from "./StringUtil.js";
 
 export class BlobConverter extends AbstractConverter<Blob> {
   public type: DataType = "blob";

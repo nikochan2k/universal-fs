@@ -1,11 +1,11 @@
-import type u2b from "../../converters/uint8array/binary";
+import type u2b from "../../converters/uint8array/binary.js";
 import {
   handleFileReader,
   hasReadAsBinaryStringOnBlob,
-} from "../../supports/Blob";
-import { AbstractConverter } from "../../UnivConv";
-import { DEFAULT_BUFFER_SIZE } from "../../util";
-import type b2u from "./uint8array";
+} from "../../supports/Blob.js";
+import { AbstractConverter } from "../../UnivConv.js";
+import { DEFAULT_BUFFER_SIZE } from "../../util.js";
+import type b2u from "./uint8array.js";
 
 class Blob_Binary extends AbstractConverter<Blob, string> {
   private u2b?: typeof u2b;
@@ -30,10 +30,12 @@ class Blob_Binary extends AbstractConverter<Blob, string> {
     }
 
     if (!this.u2b) {
-      this.u2b = (await import("../../converters/uint8array/binary")).default;
+      this.u2b = (
+        await import("../../converters/uint8array/binary.js")
+      ).default;
     }
     if (!this.b2u) {
-      this.b2u = (await import("./uint8array")).default;
+      this.b2u = (await import("./uint8array.js")).default;
     }
     const u8 = await this.b2u._convert(src);
     const binary = await this.u2b._convert(u8);

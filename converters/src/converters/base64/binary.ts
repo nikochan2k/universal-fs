@@ -1,6 +1,6 @@
-import { AbstractConverter } from "../../UnivConv";
-import type u2b from "../uint8array/binary";
-import type b2u from "./uint8array";
+import { AbstractConverter } from "../../UnivConv.js";
+import type u2b from "../uint8array/binary.js";
+import type b2u from "./uint8array.js";
 
 class BASE64_Binary extends AbstractConverter<string, string> {
   private u2b?: typeof u2b;
@@ -11,10 +11,10 @@ class BASE64_Binary extends AbstractConverter<string, string> {
       return atob(src);
     }
     if (!this.u2b) {
-      this.u2b = (await import("../uint8array/binary")).default;
+      this.u2b = (await import("../uint8array/binary.js")).default;
     }
     if (!this.b2u) {
-      this.b2u = (await import("./uint8array")).default;
+      this.b2u = (await import("./uint8array.js")).default;
     }
     const u8 = await this.b2u._convert(src);
     const binary = await this.u2b._convert(u8);

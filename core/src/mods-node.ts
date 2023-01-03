@@ -1,6 +1,6 @@
 import { Readable } from "stream";
 import { getUnivConv, UnivConv } from "univ-conv";
-import { Modification } from "./core";
+import { Modification } from "./core.js";
 
 class ModifiedReadable extends Readable {
   private iStart = 0;

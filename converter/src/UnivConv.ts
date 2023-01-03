@@ -15,7 +15,7 @@ import {
   Options,
   ReturnData,
   UnivConv,
-} from "./converters/core";
+} from "./converters/core.js";
 import {
   closeStream,
   hasBlob,

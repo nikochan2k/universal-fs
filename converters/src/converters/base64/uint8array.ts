@@ -1,6 +1,6 @@
-import { AbstractConverter } from "../../UnivConv";
-import { hasBuffer, newBuffer } from "../../util";
-import type b2a from "./arraybuffer";
+import { AbstractConverter } from "../../UnivConv.js";
+import { hasBuffer, newBuffer } from "../../util.js";
+import type b2a from "./arraybuffer.js";
 
 class BASE64_Uint8Array extends AbstractConverter<string, Uint8Array> {
   private b2a?: typeof b2a;
@@ -10,7 +10,7 @@ class BASE64_Uint8Array extends AbstractConverter<string, Uint8Array> {
       return Buffer.from(src, "base64");
     }
     if (!this.b2a) {
-      this.b2a = (await import("./arraybuffer")).default;
+      this.b2a = (await import("./arraybuffer.js")).default;
     }
     const ab = await this.b2a._convert(src);
     return newBuffer(ab);

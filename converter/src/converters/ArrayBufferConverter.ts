@@ -7,9 +7,9 @@ import {
   EMPTY_ARRAY_BUFFER,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import { hasBuffer, newBuffer, newBufferFrom } from "./Environment";
-import { getTextHelper } from "./StringUtil";
+import { getTextHelper } from "./StringUtil.js";
 
 const hasSharedArrayBuffer = typeof SharedArrayBuffer === "function";
 

@@ -1,5 +1,5 @@
-import { AbstractConverter } from "../../UnivConv";
-import { newBuffer } from "../../util";
+import { AbstractConverter } from "../../UnivConv.js";
+import { newBuffer } from "../../util.js";
 
 class ArrayBuffer_Uint8Array extends AbstractConverter<
   ArrayBuffer,

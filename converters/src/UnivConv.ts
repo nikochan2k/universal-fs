@@ -6,7 +6,7 @@ import {
   Handler,
   SliceOptions,
   Variant,
-} from "./core";
+} from "./core.js";
 
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};

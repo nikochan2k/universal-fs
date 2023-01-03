@@ -8,9 +8,9 @@ import {
   getStartEnd,
   hasNoStartLength,
   Options,
-} from "./core";
+} from "./core.js";
 import { isBrowser, newBufferFrom } from "./Environment";
-import { getTextHelper } from "./StringUtil";
+import { getTextHelper } from "./StringUtil.js";
 
 export class Base64Converter extends AbstractConverter<string> {
   public type: DataType = "base64";

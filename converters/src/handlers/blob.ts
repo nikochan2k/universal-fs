@@ -1,4 +1,4 @@
-import { AbstractHandler, SliceOptions } from "../core";
+import { AbstractHandler, SliceOptions } from "../core.js";
 
 export const EMPTY_BLOB = new Blob([]);
 

@@ -23,7 +23,7 @@ import {
   Stats,
   URLOptions,
   WriteOptions,
-} from "./core";
+} from "./core.js";
 import {
   createError,
   ErrorParams,
@@ -35,7 +35,7 @@ import {
   SyntaxError,
   TypeMismatchError,
 } from "./errors";
-import { INVALID_CHARS, normalizePath } from "./util";
+import { INVALID_CHARS, normalizePath } from "./util.js";
 
 interface CopyInfo {
   from: Entry;

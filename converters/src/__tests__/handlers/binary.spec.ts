@@ -1,4 +1,4 @@
-import bh from "../../handlers/binary";
+import bh from "../../handlers/binary.js";
 
 it("empty", async () => {
   const actual = await bh.empty();

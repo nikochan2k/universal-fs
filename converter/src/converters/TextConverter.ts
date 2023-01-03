@@ -7,8 +7,8 @@ import {
   getStartEnd,
   hasNoStartLength,
   Options,
-} from "./core";
-import { getTextHelper } from "./StringUtil";
+} from "./core.js";
+import { getTextHelper } from "./StringUtil.js";
 
 export class TextConverter extends AbstractConverter<string> {
   public type: DataType = "text";

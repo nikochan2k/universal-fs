@@ -7,7 +7,7 @@ import {
   EMPTY_UINT8_ARRAY,
   getStartEnd,
   hasNoStartLength,
-} from "./core";
+} from "./core.js";
 import {
   closeStream,
   fileURLToReadable,

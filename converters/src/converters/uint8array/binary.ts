@@ -1,5 +1,5 @@
-import { AbstractConverter } from "../../UnivConv";
-import { hasBuffer, newBuffer } from "../../util";
+import { AbstractConverter } from "../../UnivConv.js";
+import { hasBuffer, newBuffer } from "../../util.js";
 
 class Uint8Array_Binary extends AbstractConverter<ArrayBuffer, string> {
   public _convert(src: Uint8Array): Promise<string> {

@@ -1,4 +1,4 @@
-import { FileSystem } from "../core";
+import { FileSystem } from "../core.js";
 import { ErrorLike, NotFoundError, TypeMismatchError } from "../errors";
 
 export const testAll = (

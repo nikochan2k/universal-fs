@@ -10,7 +10,7 @@ import {
   PatchOptions,
   Stats,
   URLOptions,
-} from "./core";
+} from "./core.js";
 import {
   createError,
   ErrorLike,
@@ -21,7 +21,7 @@ import {
   NotReadableError,
   TypeMismatchError,
 } from "./errors";
-import { getParentPath } from "./util";
+import { getParentPath } from "./util.js";
 
 export abstract class AbstractEntry implements Entry {
   public stats: Stats | undefined | null;

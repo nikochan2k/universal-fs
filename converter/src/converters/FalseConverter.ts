@@ -1,4 +1,4 @@
-import { Converter, DataType } from "./core";
+import { Converter, DataType } from "./core.js";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class FalseConverter implements Converter<any> {

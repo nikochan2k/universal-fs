@@ -1,6 +1,6 @@
-import { handleFileReader } from "../../supports/Blob";
-import { AbstractConverter } from "../../UnivConv";
-import { dataUrlToBase64, DEFAULT_BUFFER_SIZE } from "../../util";
+import { handleFileReader } from "../../supports/Blob.js";
+import { AbstractConverter } from "../../UnivConv.js";
+import { dataUrlToBase64, DEFAULT_BUFFER_SIZE } from "../../util.js";
 
 class Blob_BASE64 extends AbstractConverter<Blob, string> {
   public async _convert(src: Blob, bufferSize?: number): Promise<string> {

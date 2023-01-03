@@ -1,4 +1,4 @@
-import b2a from "../../../converters/base64/arraybuffer";
+import b2a from "../../../converters/base64/arraybuffer.js";
 
 it("convert", async () => {
   const src = "YWJj";

@@ -1,6 +1,6 @@
-import rh from "../../handlers/readablestream";
-import uh from "../../handlers/uint8array";
-import { handleReadableStream } from "../../supports/WebStream";
+import rh from "../../handlers/readablestream.js";
+import uh from "../../handlers/uint8array.js";
+import { handleReadableStream } from "../../supports/WebStream.js";
 
 const toBuffer = async (rs: ReadableStream<Uint8Array>) => {
   const chunks: Uint8Array[] = [];

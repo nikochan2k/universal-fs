@@ -1,4 +1,4 @@
-import u2b from "../../../converters/uint8array/binary";
+import u2b from "../../../converters/uint8array/binary.js";
 
 it("convert", async () => {
   const u8 = new Uint8Array([97, 98, 99]);

@@ -1,5 +1,5 @@
-import { AbstractHandler, SliceOptions } from "../core";
-import support from "../supports/TypedArray";
+import { AbstractHandler, SliceOptions } from "../core.js";
+import support from "../supports/TypedArray.js";
 
 export const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 

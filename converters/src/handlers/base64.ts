@@ -1,7 +1,7 @@
 import { decode, encode } from "base64-arraybuffer";
-import { SliceOptions } from "../core";
-import { StringHandler } from "../supports/handlers/StringHandler";
-import type ah from "./arraybuffer";
+import { SliceOptions } from "../core.js";
+import { StringHandler } from "../supports/handlers/StringHandler.js";
+import type ah from "./arraybuffer.js";
 
 export const EMPTY_BASE64 = "";
 
@@ -16,7 +16,7 @@ class BASE64Handler extends StringHandler {
       chunks.push(ab);
     }
     if (!this.ah) {
-      this.ah = (await import("./arraybuffer")).default;
+      this.ah = (await import("./arraybuffer.js")).default;
     }
     const merged = await this.ah.merge(chunks);
     const base64 = encode(merged);
@@ -37,7 +37,7 @@ class BASE64Handler extends StringHandler {
   protected async _slice(src: string, options?: SliceOptions): Promise<string> {
     const ab = decode(src);
     if (!this.ah) {
-      this.ah = (await import("./arraybuffer")).default;
+      this.ah = (await import("./arraybuffer.js")).default;
     }
     const sliced = await this.ah.slice(ab, options);
     const base64 = encode(sliced);
