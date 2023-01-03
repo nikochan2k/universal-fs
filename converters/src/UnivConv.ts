@@ -56,7 +56,7 @@ class UnivConv {
         const key = srcType + "_" + dstType;
         let converter = converterMap[key];
         if (typeof converter === "undefined") {
-          const location = `./converters/${srcType}/${dstType}`;
+          const location = `./converters/${srcType}/${dstType}.js`;
           try {
             // eslint-disable-next-line
             converter = (await import(location)).default;
@@ -147,7 +147,7 @@ class UnivConv {
       const key = type.toLowerCase();
       let handler = handlerMap[key];
       if (typeof handler === "undefined") {
-        const location = `./handlers/${key}`;
+        const location = `./handlers/${key}.js`;
         try {
           // eslint-disable-next-line
           handler = (await import(location)).default;

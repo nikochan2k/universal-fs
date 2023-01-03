@@ -35,6 +35,12 @@ module.exports = function (config) {
     // You may need to tweak this patter to find your test files/
     files: [
       {
+        pattern:
+          "../../node_modules/base64-arraybuffer/dist/base64-arraybuffer.umd.js",
+        watched: false,
+        type: "module",
+      },
+      {
         pattern: "**/*.spec.js",
         watched: false,
         type: "module",
