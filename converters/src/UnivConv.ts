@@ -74,8 +74,9 @@ class UnivConv {
                 converterMap[key] = converter;
                 break;
               }
-            } catch {
-              // NOOP
+            } catch (e) {
+              converterMap[key] = null;
+              console.debug("Not found: " + location, e);
             }
           }
           if (!converter) {
@@ -159,7 +160,7 @@ class UnivConv {
       let handler = handlerMap[key];
       if (typeof handler === "undefined") {
         for (const fn of handlerLocationFunctions) {
-          const location = fn(type);
+          const location = fn(key);
           try {
             // eslint-disable-next-line
             handler = (await import(location)).default;
@@ -167,8 +168,9 @@ class UnivConv {
               handlerMap[key] = handler;
               break;
             }
-          } catch {
-            // NOOP
+          } catch (e) {
+            handlerMap[key] = null;
+            console.debug("Not found: " + location, window?.location?.href, e);
           }
         }
         if (!handler) {
