@@ -1,13 +1,20 @@
 const path = require("path");
-const chromeDataDir = path.resolve(__dirname, ".chrome-karma");
 
+const chromeDataDir = path.resolve(__dirname, ".chrome-karma");
 const rimraf = require("rimraf");
 rimraf.sync(chromeDataDir);
 
+const parentDir = path.dirname(__dirname);
+const karmaAbsoluteDir = path.join("/absolute", parentDir, "node_modules");
+
 module.exports = function (config) {
   config.set({
-    frameworks: ["jasmine"],
-    plugins: ["karma-chrome-launcher", "karma-jasmine"],
+    frameworks: ["esm", "jasmine"],
+    plugins: [
+      require.resolve("@open-wc/karma-esm"),
+      "karma-chrome-launcher",
+      "karma-jasmine",
+    ],
     browsers: ["chrome_without_security"],
     customLaunchers: {
       chrome_without_security: {
@@ -22,14 +29,15 @@ module.exports = function (config) {
         chromeDataDir,
       },
     },
-
     basePath: "mjs",
-
     files: [
       {
         pattern:
-          "../../node_modules/base64-arraybuffer/dist/base64-arraybuffer.umd.js",
+          "../../node_modules/base64-arraybuffer/dist/base64-arraybuffer.es5.js",
         watched: false,
+        included: false,
+        served: true,
+        type: "module",
       },
       {
         pattern: "**/*.?(web-)spec.js",
@@ -44,7 +52,12 @@ module.exports = function (config) {
         type: "module",
       },
     ],
-
+    esm: {
+      nodeResolve: true,
+    },
+    proxies: {
+      "/node_modules": karmaAbsoluteDir,
+    },
     client: { jasmine: { random: false } },
     singleRun: false,
   });
