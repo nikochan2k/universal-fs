@@ -6,8 +6,8 @@ rimraf.sync(chromeDataDir);
 
 module.exports = function (config) {
   config.set({
+    frameworks: ["jasmine"],
     plugins: ["karma-chrome-launcher", "karma-jasmine"],
-
     browsers: ["chrome_without_security"],
     customLaunchers: {
       chrome_without_security: {
@@ -23,30 +23,16 @@ module.exports = function (config) {
       },
     },
 
-    // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: "mjs",
 
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ["jasmine"],
-
-    // list of files / patterns to load in the browser
-    // Here I'm including all of the the Jest tests which are all under the __tests__ directory.
-    // You may need to tweak this patter to find your test files/
     files: [
       {
         pattern:
           "../../node_modules/base64-arraybuffer/dist/base64-arraybuffer.umd.js",
         watched: false,
-        type: "module",
       },
       {
-        pattern: "**/*.spec.js",
-        watched: false,
-        type: "module",
-      },
-      {
-        pattern: "**/*.web-spec.js",
+        pattern: "**/*.?(web-)spec.js",
         watched: false,
         type: "module",
       },
