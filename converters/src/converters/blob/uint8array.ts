@@ -24,12 +24,12 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
 
     if (!bufferSize) bufferSize = DEFAULT_BUFFER_SIZE;
 
-    const length = src.size;
+    const size = src.size;
     if (hasReadAsArrayBufferOnBlob) {
       const u8 = newBuffer(src.size);
-      for (let start = 0; start < length; start += bufferSize) {
+      for (let start = 0; start < size; start += bufferSize) {
         let end = start + bufferSize;
-        if (length < end) end = length;
+        if (size < end) end = size;
         const blobChunk = src.slice(start, end);
         const chunk = await handleFileReader(
           (reader) => reader.readAsArrayBuffer(blobChunk),
@@ -45,11 +45,10 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
       const readable = src.stream();
       const chunks: Uint8Array[] = [];
       let index = 0;
-      const end = src.size;
       await handleReadableStream(readable, (u8) => {
         chunks.push(u8);
         index += u8.byteLength;
-        return Promise.resolve(index < end);
+        return Promise.resolve(index < size);
       });
       if (!this.u8h) {
         this.u8h = (await import("../../handlers/uint8array.js")).default;

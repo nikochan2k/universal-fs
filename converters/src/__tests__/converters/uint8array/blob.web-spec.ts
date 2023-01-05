@@ -6,7 +6,7 @@ it("convert", async () => {
   expect(actual.size).toEqual(3);
   const ab = await actual.arrayBuffer();
   const actualU8 = new Uint8Array(ab);
-  for (let i = 0; i < src.length; i++) {
+  for (let i = 0; i < actualU8.length; i++) {
     expect(actualU8.at(i)).toBe(src.at(i));
   }
 });

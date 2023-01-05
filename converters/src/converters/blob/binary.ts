@@ -13,12 +13,12 @@ class Blob_Binary extends AbstractConverter<Blob, string> {
 
   public async _convert(src: Blob, bufferSize?: number): Promise<string> {
     if (hasReadAsBinaryStringOnBlob) {
-      const length = src.length;
+      const size = src.size;
       bufferSize = bufferSize ?? DEFAULT_BUFFER_SIZE;
       const chunks: string[] = [];
-      for (let start = 0; start < length; start += bufferSize) {
+      for (let start = 0; start < size; start += bufferSize) {
         let end = start + bufferSize;
-        if (end < length) end = length;
+        if (end < size) end = size;
         const blob = src.slice(start, end);
         const binary = await handleFileReader(
           (reader) => reader.readAsBinaryString(blob),
