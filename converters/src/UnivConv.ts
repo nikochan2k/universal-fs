@@ -7,6 +7,7 @@ import {
   SliceOptions,
   Variant,
 } from "./core.js";
+import { DEFAULT_BUFFER_SIZE } from "./util.js";
 
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};
@@ -220,10 +221,10 @@ export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
 {
   public async convert(src: ST, options?: ConvertOptions): Promise<DT> {
     src = await UNIV_CONV.slice(src, options);
-    return await this._convert(src, options?.bufferSize);
+    return await this._convert(src, options?.bufferSize ?? DEFAULT_BUFFER_SIZE);
   }
 
-  public abstract _convert(src: ST, bufferSize?: number): Promise<DT>;
+  public abstract _convert(src: ST, bufferSize: number): Promise<DT>;
 }
 
 export default UNIV_CONV;

@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { DEFAULT_BUFFER_SIZE } from "./util.js";
+
 export type Variant = object | number | boolean | bigint | string;
 export type ExcludeString = object | number | boolean | bigint;
 export type FunctionType<T> = new (...args: any[]) => T;
@@ -37,7 +37,7 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
     return await this._isEmpty(src);
   }
 
-  public async merge(src: T[], bufferSize?: number): Promise<T> {
+  public async merge(src: T[], bufferSize = DEFAULT_BUFFER_SIZE): Promise<T> {
     if (src == null) {
       throw new TypeError("src is null or undefined");
     }
@@ -94,7 +94,7 @@ export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
   }
 
   protected abstract _isEmpty(src: T): Promise<boolean>;
-  protected abstract _merge(src: T[], bufferSize?: number): Promise<T>;
+  protected abstract _merge(src: T[], bufferSize: number): Promise<T>;
   protected abstract _size(src: T): Promise<number>;
   protected abstract _slice(src: T, options?: SliceOptions): Promise<T>;
   protected abstract _validateSource(src: unknown): src is T;

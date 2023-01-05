@@ -11,7 +11,7 @@ class Blob_Binary extends AbstractConverter<Blob, string> {
   private u2b?: typeof u2b;
   private b2u?: typeof b2u;
 
-  public async _convert(src: Blob, bufferSize?: number): Promise<string> {
+  public async _convert(src: Blob, bufferSize: number): Promise<string> {
     if (hasReadAsBinaryStringOnBlob) {
       const size = src.size;
       bufferSize = bufferSize ?? DEFAULT_BUFFER_SIZE;
@@ -37,7 +37,7 @@ class Blob_Binary extends AbstractConverter<Blob, string> {
     if (!this.b2u) {
       this.b2u = (await import("./uint8array.js")).default;
     }
-    const u8 = await this.b2u._convert(src);
+    const u8 = await this.b2u._convert(src, bufferSize);
     const binary = await this.u2b._convert(u8);
     return binary;
   }

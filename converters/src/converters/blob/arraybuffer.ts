@@ -4,7 +4,7 @@ import type b2u from "./uint8array.js";
 class Blob_ArrayBuffer extends AbstractConverter<Blob, ArrayBuffer> {
   private b2u?: typeof b2u;
 
-  public async _convert(src: Blob, bufferSize?: number): Promise<ArrayBuffer> {
+  public async _convert(src: Blob, bufferSize: number): Promise<ArrayBuffer> {
     if (!this.b2u) {
       this.b2u = (await import("./uint8array.js")).default;
     }

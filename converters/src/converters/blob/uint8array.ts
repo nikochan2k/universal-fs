@@ -8,7 +8,7 @@ import {
 } from "../../supports/Blob.js";
 import { handleReadableStream } from "../../supports/WebStream.js";
 import { AbstractConverter } from "../../UnivConv.js";
-import { DEFAULT_BUFFER_SIZE, newBuffer } from "../../util.js";
+import { newBuffer } from "../../util.js";
 import type b2b from "./base64.js";
 
 class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
@@ -16,13 +16,11 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
   private u8h?: typeof u8h;
   private b2b?: typeof b2b;
 
-  public async _convert(src: Blob, bufferSize?: number): Promise<Uint8Array> {
+  public async _convert(src: Blob, bufferSize: number): Promise<Uint8Array> {
     if (hasArrayBufferOnBlob) {
       const ab = await src.arrayBuffer();
       return newBuffer(ab);
     }
-
-    if (!bufferSize) bufferSize = DEFAULT_BUFFER_SIZE;
 
     const size = src.size;
     if (hasReadAsArrayBufferOnBlob) {
