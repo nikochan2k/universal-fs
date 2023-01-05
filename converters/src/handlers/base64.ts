@@ -1,4 +1,4 @@
-import { decode, encode } from "base64-arraybuffer";
+import type { decode, encode } from "base64-arraybuffer";
 import { SliceOptions } from "../core.js";
 import { StringHandler } from "../supports/handlers/StringHandler.js";
 import type ah from "./arraybuffer.js";
@@ -7,19 +7,32 @@ export const EMPTY_BASE64 = "";
 
 class BASE64Handler extends StringHandler {
   private ah?: typeof ah;
+  private decode?: typeof decode;
+  private encode?: typeof encode;
   public name = "BASE64";
 
+  private async importModule() {
+    if (!this.decode || !this.encode) {
+      const module = await import("base64-arraybuffer");
+      this.decode = module.decode;
+      this.encode = module.encode;
+    }
+  }
+
   protected async _merge(src: string[]): Promise<string> {
+    await this.importModule();
     const chunks: ArrayBuffer[] = [];
     for (const chunk of src) {
-      const ab = decode(chunk);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const ab = this.decode!(chunk);
       chunks.push(ab);
     }
     if (!this.ah) {
       this.ah = (await import("./arraybuffer.js")).default;
     }
     const merged = await this.ah.merge(chunks);
-    const base64 = encode(merged);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const base64 = this.encode!(merged);
     return Promise.resolve(base64);
   }
 
@@ -35,12 +48,15 @@ class BASE64Handler extends StringHandler {
   }
 
   protected async _slice(src: string, options?: SliceOptions): Promise<string> {
-    const ab = decode(src);
+    await this.importModule();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const ab = this.decode!(src);
     if (!this.ah) {
       this.ah = (await import("./arraybuffer.js")).default;
     }
     const sliced = await this.ah.slice(ab, options);
-    const base64 = encode(sliced);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const base64 = this.encode!(sliced);
     return Promise.resolve(base64);
   }
 }
