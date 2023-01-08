@@ -1,4 +1,3 @@
-import type { Readable } from "stream";
 import {
   Converter,
   ConvertOptions,
@@ -9,13 +8,11 @@ import {
   Variant,
   Writer,
 } from "./core.js";
-import { isWritable } from "./supports/Environment.js";
-import { pipeNodeStream } from "./supports/NodeStream.js";
-import { isWritableStream, pipeWebStream } from "./supports/WebStream.js";
-import { DEFAULT_BUFFER_SIZE, getType } from "./util.js";
+import { DEFAULT_BUFFER_SIZE } from "./util.js";
 
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
 const manipulatorMap: { [key: string]: Manipulator<Variant> | null } = {};
+const writerMap: { [key: string]: Writer<object> | null } = {};
 
 interface MergeOptions {
   bufferSize?: number;
@@ -89,12 +86,12 @@ class UnivConv {
   empty<T>(type: string): Promise<T>;
   empty<T>(obj: ExcludeString): Promise<T>;
   async empty<T>(v: Variant): Promise<T> {
-    const manipulator = await this.getmanipulator(v);
+    const manipulator = await this.getManipulator(v);
     return (await manipulator.empty()) as Promise<T>;
   }
 
   async isEmpty<T extends Variant>(src: T): Promise<boolean> {
-    const manipulator = await this.getmanipulator(src);
+    const manipulator = await this.getManipulator(src);
     return await manipulator.isEmpty(src);
   }
 
@@ -103,7 +100,7 @@ class UnivConv {
     if (src == null || (type == null && src.length === 0)) {
       throw new TypeError("src is null, undefined or empty");
     }
-    const manipulator = await this.getmanipulator(
+    const manipulator = await this.getManipulator(
       type != null ? type : (src[0] as T)
     );
     const merged = await manipulator.merge(src, options?.bufferSize);
@@ -111,7 +108,7 @@ class UnivConv {
   }
 
   async size<T extends Variant>(src: T, srcType?: string): Promise<number> {
-    const manipulator = await this.getmanipulator(
+    const manipulator = await this.getManipulator(
       srcType != null ? srcType : src
     );
     return await manipulator.size(src);
@@ -119,32 +116,25 @@ class UnivConv {
 
   async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
     const type = options?.srcType;
-    const manipulator = await this.getmanipulator(type != null ? type : src);
+    const manipulator = await this.getManipulator(type != null ? type : src);
     const sliced = await manipulator.slice(src, options);
     return sliced as Promise<T>;
   }
 
-  async pipe<T extends Variant>(src: T, dst: Writer, options?: ConvertOptions) {
-    if (isWritableStream(dst)) {
-      const rs: ReadableStream<Uint8Array> = await this.convert(
-        src,
-        "readablestream",
-        options
-      );
-      await pipeWebStream(rs, dst);
-    } else if (isWritable(dst)) {
-      const readable: Readable = await this.convert(src, "readable", options);
-      await pipeNodeStream(readable, dst);
-    } else {
-      throw TypeError("Illegal dst type: " + getType(dst));
-    }
+  async writer<T extends object>(
+    src: Variant,
+    dst: T,
+    options?: ConvertOptions
+  ) {
+    const writer = await this.getWriter(dst);
+    await writer.write(src, dst, options);
   }
 
-  protected getmanipulator<T extends Variant>(v: T): Promise<Manipulator<T>>;
-  protected getmanipulator<T extends Variant>(
+  protected getManipulator<T extends Variant>(v: T): Promise<Manipulator<T>>;
+  protected getManipulator<T extends Variant>(
     fn: FunctionType<T>
   ): Promise<Manipulator<T>>;
-  protected async getmanipulator<T extends Variant>(
+  protected async getManipulator<T extends Variant>(
     v: T
   ): Promise<Manipulator<T>> {
     let types: string[] = [];
@@ -234,6 +224,40 @@ class UnivConv {
       }
     }
     return types;
+  }
+
+  protected async getWriter<T extends object>(v: T): Promise<Writer<T>> {
+    const types = this.getTypes(v.constructor);
+    for (const type of types) {
+      const key = type.toLowerCase();
+      let writer = writerMap[key];
+      if (typeof writer === "undefined") {
+        const location = `./writers/${key}.js`;
+        try {
+          // eslint-disable-next-line
+          writer = (await import(location)).default;
+          if (writer) {
+            writerMap[key] = writer;
+          }
+        } catch {
+          // NOOP
+        }
+        if (!writer) {
+          writerMap[key] = null;
+          console.debug("Not found: " + location);
+          continue;
+        }
+      } else if (writer === null) {
+        continue;
+      }
+      if (writer) {
+        return writer as Writer<T>;
+      }
+    }
+    throw new TypeError(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `No writer: types=[${types}]`
+    );
   }
 }
 

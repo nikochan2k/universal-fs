@@ -2,7 +2,7 @@ import type { Writable } from "stream";
 import { DEFAULT_BUFFER_SIZE } from "./util.js";
 
 export type Variant = object | number | boolean | bigint | string;
-export type Writer = Writable | WritableStream;
+export type WritableLike = Writable | WritableStream;
 export type ExcludeString = object | number | boolean | bigint;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FunctionType<T> = new (...args: any[]) => T;
@@ -101,4 +101,8 @@ export abstract class AbstractManipulator<T extends Variant>
   protected abstract _size(src: T): Promise<number>;
   protected abstract _slice(src: T, options?: SliceOptions): Promise<T>;
   protected abstract _validateSource(src: unknown): src is T;
+}
+
+export interface Writer<DT extends object> {
+  write(src: Variant, dst: DT, options?: ConvertOptions): Promise<void>;
 }
