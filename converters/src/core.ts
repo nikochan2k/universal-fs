@@ -16,11 +16,13 @@ export interface SliceOptions {
 export interface ConvertOptions {
   bufferSize?: number;
   srcType?: string;
-  dstType: string | FunctionType<Variant>;
+  srcTextEncoding?: string;
+  dstType?: string | FunctionType<Variant>;
+  dstTextEncoding?: string;
 }
 
 export interface Converter<ST extends Variant, DT extends Variant> {
-  convert(src: ST, options: ConvertOptions): Promise<DT>;
+  convert(src: ST, options?: ConvertOptions): Promise<DT>;
 }
 
 export interface Manipulator<T extends Variant> {

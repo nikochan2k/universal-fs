@@ -15,7 +15,8 @@ class ReadableStream_Any implements Converter<ReadableStream<Uint8Array>, any> {
       return Promise.resolve();
     });
     const buffer = support.merge(buffers, (length) => new Uint8Array(length));
-    return await UNIV_CONV.convert(buffer, options.dstType);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return await UNIV_CONV.convert(buffer, options.dstType!);
   }
 }
 

@@ -23,7 +23,7 @@ class UnivConv {
   async convert<T extends Variant>(
     src: Variant,
     dstType: string | FunctionType<T>,
-    options?: Partial<ConvertOptions>
+    options?: ConvertOptions
   ): Promise<T> {
     const opts = { ...options, dstType };
     const srcTypes = this.getSrcTypes(src, opts?.srcType);
@@ -36,9 +36,9 @@ class UnivConv {
 
     // Check the same type
     for (const st of srcTypes) {
-      const srcType = st.toLowerCase();
+      const srcType = this.createKey(st);
       for (const dt of dstTypes) {
-        const dstType = dt.toLowerCase();
+        const dstType = this.createKey(dt);
         if (srcType === dstType) {
           return src as T;
         }
@@ -48,9 +48,9 @@ class UnivConv {
     srcTypes.push("any");
     dstTypes.push("any");
     for (const st of srcTypes) {
-      const srcTypeKey = st.toLowerCase();
+      const srcTypeKey = this.createKey(st);
       for (const dt of dstTypes) {
-        const dstTypeKey = dt.toLowerCase();
+        const dstTypeKey = this.createKey(dt);
         const key = srcTypeKey + "_" + dstTypeKey;
         let converter = converterMap[key];
         if (typeof converter === "undefined") {
@@ -122,7 +122,7 @@ class UnivConv {
     return sliced as Promise<T>;
   }
 
-  async writer<T extends object>(
+  async write<T extends object>(
     src: Variant,
     dst: T,
     options?: ConvertOptions
@@ -131,11 +131,17 @@ class UnivConv {
     await writer.write(src, dst, options);
   }
 
-  protected getManipulator<T extends Variant>(v: T): Promise<Manipulator<T>>;
-  protected getManipulator<T extends Variant>(
+  private createKey(type: string) {
+    type = type.toLowerCase();
+    type = type.replace(/[a-z0-9]/, "");
+    return type;
+  }
+
+  private getManipulator<T extends Variant>(v: T): Promise<Manipulator<T>>;
+  private getManipulator<T extends Variant>(
     fn: FunctionType<T>
   ): Promise<Manipulator<T>>;
-  protected async getManipulator<T extends Variant>(
+  private async getManipulator<T extends Variant>(
     v: T
   ): Promise<Manipulator<T>> {
     let types: string[] = [];
@@ -158,7 +164,7 @@ class UnivConv {
     }
 
     for (const type of types) {
-      const key = type.toLowerCase();
+      const key = this.createKey(type);
       let manipulator = manipulatorMap[key];
       if (typeof manipulator === "undefined") {
         const location = `./manipulators/${key}.js`;
@@ -189,7 +195,7 @@ class UnivConv {
     );
   }
 
-  protected getSrcTypes(src: Variant, srcType?: string): string[] {
+  private getSrcTypes(src: Variant, srcType?: string): string[] {
     const type = typeof src;
     switch (type) {
       case "bigint":
@@ -208,7 +214,7 @@ class UnivConv {
   }
 
   // eslint-disable-next-line
-  protected getTypes(fn: Function): string[] {
+  private getTypes(fn: Function): string[] {
     const types: string[] = [];
     while (fn) {
       const type = fn.name;
@@ -227,10 +233,10 @@ class UnivConv {
     return types;
   }
 
-  protected async getWriter<T extends object>(v: T): Promise<Writer<T>> {
+  private async getWriter<T extends object>(v: T): Promise<Writer<T>> {
     const types = this.getTypes(v.constructor);
     for (const type of types) {
-      const key = type.toLowerCase();
+      const key = this.createKey(type);
       let writer = writerMap[key];
       if (typeof writer === "undefined") {
         const location = `./writers/${key}.js`;
@@ -267,8 +273,8 @@ const UNIV_CONV = new UnivConv();
 export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
   implements Converter<ST, DT>
 {
-  public async convert(src: ST, options: ConvertOptions): Promise<DT> {
-    return await this._convert(src, options.bufferSize ?? DEFAULT_BUFFER_SIZE);
+  public async convert(src: ST, options?: ConvertOptions): Promise<DT> {
+    return await this._convert(src, options?.bufferSize ?? DEFAULT_BUFFER_SIZE);
   }
 
   public abstract _convert(src: ST, bufferSize: number): Promise<DT>;

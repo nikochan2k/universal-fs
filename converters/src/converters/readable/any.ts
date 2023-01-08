@@ -11,7 +11,8 @@ class Readable_Any implements Converter<Readable, any> {
       buffers.push(chunk);
     });
     const buffer = Buffer.concat(buffers);
-    return await UNIV_CONV.convert(buffer, options.dstType);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return await UNIV_CONV.convert(buffer, options.dstType!);
   }
 }
 
