@@ -1,11 +1,11 @@
 import type { decode, encode } from "base64-arraybuffer";
 import { SliceOptions } from "../core.js";
-import { StringHandler } from "../supports/handlers/StringHandler.js";
+import { StringManipulator } from "../supports/manipulators/StringManipulator.js";
 import type ah from "./arraybuffer.js";
 
 export const EMPTY_BASE64 = "";
 
-class BASE64Handler extends StringHandler {
+class BASE64Manipulator extends StringManipulator {
   private ah?: typeof ah;
   private decode?: typeof decode;
   private encode?: typeof encode;
@@ -61,4 +61,4 @@ class BASE64Handler extends StringHandler {
   }
 }
 
-export default new BASE64Handler();
+export default new BASE64Manipulator();

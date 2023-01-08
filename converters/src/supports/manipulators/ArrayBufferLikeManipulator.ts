@@ -1,9 +1,9 @@
-import { AbstractHandler, SliceOptions } from "../../core.js";
+import { AbstractManipulator, SliceOptions } from "../../core.js";
 import { newBuffer } from "../Environment.js";
 
-export abstract class ArrayBufferLikeHandler<
+export abstract class ArrayBufferLikeManipulator<
   T extends ArrayBufferLike
-> extends AbstractHandler<ArrayBufferLike> {
+> extends AbstractManipulator<ArrayBufferLike> {
   protected _isEmpty(src: T): Promise<boolean> {
     return Promise.resolve(src.byteLength === 0);
   }

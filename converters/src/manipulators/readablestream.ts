@@ -1,4 +1,4 @@
-import { AbstractHandler, SliceOptions } from "../core.js";
+import { AbstractManipulator, SliceOptions } from "../core.js";
 import {
   closeReadableStream,
   handleReadableStream,
@@ -58,7 +58,7 @@ export function createPartialReadableStream(
   });
 }
 
-class ReadableStreamHandler extends AbstractHandler<
+class ReadableStreamManipulator extends AbstractManipulator<
   ReadableStream<Uint8Array>
 > {
   public name = ReadableStream.name;
@@ -136,4 +136,4 @@ class ReadableStreamHandler extends AbstractHandler<
   }
 }
 
-export default new ReadableStreamHandler();
+export default new ReadableStreamManipulator();

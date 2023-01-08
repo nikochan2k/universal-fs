@@ -1,5 +1,5 @@
 import type b2u from "../../converters/base64/uint8array.js";
-import type u8h from "../../handlers/uint8array.js";
+import type u8h from "../../manipulators/uint8array.js";
 import {
   handleFileReader,
   hasArrayBufferOnBlob,
@@ -47,7 +47,7 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
         return Promise.resolve();
       });
       if (!this.u8h) {
-        this.u8h = (await import("../../handlers/uint8array.js")).default;
+        this.u8h = (await import("../../manipulators/uint8array.js")).default;
       }
       return await this.u8h.merge(chunks, bufferSize);
     }

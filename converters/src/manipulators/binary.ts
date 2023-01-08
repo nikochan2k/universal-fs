@@ -1,9 +1,9 @@
 import { SliceOptions } from "../core.js";
-import { StringHandler } from "../supports/handlers/StringHandler.js";
+import { StringManipulator } from "../supports/manipulators/StringManipulator.js";
 
 export const EMPTY_BINARY = "";
 
-class BinaryHandler extends StringHandler {
+class BinaryManipulator extends StringManipulator {
   public name = "Binary";
 
   protected async _merge(src: string[]): Promise<string> {
@@ -27,4 +27,4 @@ class BinaryHandler extends StringHandler {
   }
 }
 
-export default new BinaryHandler();
+export default new BinaryManipulator();

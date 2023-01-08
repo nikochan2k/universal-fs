@@ -1,6 +1,6 @@
-import { AbstractHandler } from "../../core.js";
+import { AbstractManipulator } from "../../core.js";
 
-export abstract class StringHandler extends AbstractHandler<string> {
+export abstract class StringManipulator extends AbstractManipulator<string> {
   public empty(): Promise<string> {
     return Promise.resolve("");
   }

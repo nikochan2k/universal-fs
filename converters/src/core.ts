@@ -22,7 +22,7 @@ export interface Converter<ST extends Variant, DT extends Variant> {
   convert(src: ST, options?: ConvertOptions): Promise<DT>;
 }
 
-export interface Handler<T extends Variant> {
+export interface Manipulator<T extends Variant> {
   empty(): Promise<T>;
   isEmpty(src: T): Promise<boolean>;
   merge(src: T[], bufferSize?: number): Promise<T>;
@@ -30,7 +30,9 @@ export interface Handler<T extends Variant> {
   slice(src: T, options?: SliceOptions): Promise<T>;
 }
 
-export abstract class AbstractHandler<T extends Variant> implements Handler<T> {
+export abstract class AbstractManipulator<T extends Variant>
+  implements Manipulator<T>
+{
   public abstract readonly name: string;
 
   public async isEmpty(src: T): Promise<boolean> {

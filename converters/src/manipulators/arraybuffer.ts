@@ -1,8 +1,8 @@
-import { ArrayBufferLikeHandler } from "../supports/handlers/ArrayBufferLikeHandler.js";
+import { ArrayBufferLikeManipulator } from "../supports/manipulators/ArrayBufferLikeManipulator.js";
 
 export const EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 
-class ArrayBufferHandler extends ArrayBufferLikeHandler<ArrayBuffer> {
+class ArrayBufferManipulator extends ArrayBufferLikeManipulator<ArrayBuffer> {
   public name = ArrayBuffer.name;
 
   public empty(): Promise<ArrayBuffer> {
@@ -18,4 +18,4 @@ class ArrayBufferHandler extends ArrayBufferLikeHandler<ArrayBuffer> {
   }
 }
 
-export default new ArrayBufferHandler();
+export default new ArrayBufferManipulator();

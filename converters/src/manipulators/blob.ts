@@ -1,8 +1,8 @@
-import { AbstractHandler, SliceOptions } from "../core.js";
+import { AbstractManipulator, SliceOptions } from "../core.js";
 
 export const EMPTY_BLOB = new Blob([]);
 
-class BlobHandler extends AbstractHandler<Blob> {
+class BlobManipulator extends AbstractManipulator<Blob> {
   public name = Blob.name;
 
   public empty(): Promise<Blob> {
@@ -37,4 +37,4 @@ class BlobHandler extends AbstractHandler<Blob> {
   }
 }
 
-export default new BlobHandler();
+export default new BlobManipulator();

@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import rh from "../../handlers/readable.js";
+import rh from "../../manipulators/readable.js";
 
 const toBuffer = (readable: Readable) => {
   return new Promise<Buffer>((resolve, reject) => {

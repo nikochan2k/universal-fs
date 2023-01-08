@@ -4,7 +4,7 @@ import {
   ConvertOptions,
   ExcludeString,
   FunctionType,
-  Handler,
+  Manipulator,
   SliceOptions,
   Variant,
   Writer,
@@ -15,7 +15,7 @@ import { isWritableStream, pipeWebStream } from "./supports/WebStream.js";
 import { DEFAULT_BUFFER_SIZE, getType } from "./util.js";
 
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
-const handlerMap: { [key: string]: Handler<Variant> | null } = {};
+const manipulatorMap: { [key: string]: Manipulator<Variant> | null } = {};
 
 interface MergeOptions {
   bufferSize?: number;
@@ -89,13 +89,13 @@ class UnivConv {
   empty<T>(type: string): Promise<T>;
   empty<T>(obj: ExcludeString): Promise<T>;
   async empty<T>(v: Variant): Promise<T> {
-    const handler = await this.getHandler(v);
-    return (await handler.empty()) as Promise<T>;
+    const manipulator = await this.getmanipulator(v);
+    return (await manipulator.empty()) as Promise<T>;
   }
 
   async isEmpty<T extends Variant>(src: T): Promise<boolean> {
-    const handler = await this.getHandler(src);
-    return await handler.isEmpty(src);
+    const manipulator = await this.getmanipulator(src);
+    return await manipulator.isEmpty(src);
   }
 
   async merge<T extends Variant>(src: T[], options?: MergeOptions): Promise<T> {
@@ -103,20 +103,24 @@ class UnivConv {
     if (src == null || (type == null && src.length === 0)) {
       throw new TypeError("src is null, undefined or empty");
     }
-    const handler = await this.getHandler(type != null ? type : (src[0] as T));
-    const merged = await handler.merge(src, options?.bufferSize);
+    const manipulator = await this.getmanipulator(
+      type != null ? type : (src[0] as T)
+    );
+    const merged = await manipulator.merge(src, options?.bufferSize);
     return merged as Promise<T>;
   }
 
   async size<T extends Variant>(src: T, srcType?: string): Promise<number> {
-    const handler = await this.getHandler(srcType != null ? srcType : src);
-    return await handler.size(src);
+    const manipulator = await this.getmanipulator(
+      srcType != null ? srcType : src
+    );
+    return await manipulator.size(src);
   }
 
   async slice<T extends Variant>(src: T, options?: SliceOptions): Promise<T> {
     const type = options?.srcType;
-    const handler = await this.getHandler(type != null ? type : src);
-    const sliced = await handler.slice(src, options);
+    const manipulator = await this.getmanipulator(type != null ? type : src);
+    const sliced = await manipulator.slice(src, options);
     return sliced as Promise<T>;
   }
 
@@ -136,11 +140,13 @@ class UnivConv {
     }
   }
 
-  protected getHandler<T extends Variant>(v: T): Promise<Handler<T>>;
-  protected getHandler<T extends Variant>(
+  protected getmanipulator<T extends Variant>(v: T): Promise<Manipulator<T>>;
+  protected getmanipulator<T extends Variant>(
     fn: FunctionType<T>
-  ): Promise<Handler<T>>;
-  protected async getHandler<T extends Variant>(v: T): Promise<Handler<T>> {
+  ): Promise<Manipulator<T>>;
+  protected async getmanipulator<T extends Variant>(
+    v: T
+  ): Promise<Manipulator<T>> {
     let types: string[] = [];
     const type = typeof v;
     switch (type) {
@@ -162,33 +168,33 @@ class UnivConv {
 
     for (const type of types) {
       const key = type.toLowerCase();
-      let handler = handlerMap[key];
-      if (typeof handler === "undefined") {
-        const location = `./handlers/${key}.js`;
+      let manipulator = manipulatorMap[key];
+      if (typeof manipulator === "undefined") {
+        const location = `./manipulators/${key}.js`;
         try {
           // eslint-disable-next-line
-          handler = (await import(location)).default;
-          if (handler) {
-            handlerMap[key] = handler;
+          manipulator = (await import(location)).default;
+          if (manipulator) {
+            manipulatorMap[key] = manipulator;
           }
         } catch {
           // NOOP
         }
-        if (!handler) {
-          handlerMap[key] = null;
+        if (!manipulator) {
+          manipulatorMap[key] = null;
           console.debug("Not found: " + location);
           continue;
         }
-      } else if (handler === null) {
+      } else if (manipulator === null) {
         continue;
       }
-      if (handler) {
-        return handler as Handler<T>;
+      if (manipulator) {
+        return manipulator as Manipulator<T>;
       }
     }
     throw new TypeError(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `No handler: types=[${types}]`
+      `No manipulator: types=[${types}]`
     );
   }
 
