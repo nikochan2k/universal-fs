@@ -13,10 +13,10 @@ class Binary_BASE64 extends AbstractConverter<string, string> {
     if (!this.b2a) {
       this.b2a = (await import("./arraybuffer.js")).default;
     }
+    const ab = await this.b2a._convert(src);
     if (!this.a2b) {
       this.a2b = (await import("../arraybuffer/base64.js")).default;
     }
-    const ab = await this.b2a._convert(src);
     const base64 = await this.a2b._convert(ab);
     return base64;
   }

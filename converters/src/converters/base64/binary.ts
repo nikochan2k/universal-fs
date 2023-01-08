@@ -10,13 +10,13 @@ class BASE64_Binary extends AbstractConverter<string, string> {
     if (typeof atob === "function") {
       return atob(src);
     }
-    if (!this.u2b) {
-      this.u2b = (await import("../uint8array/binary.js")).default;
-    }
     if (!this.b2u) {
       this.b2u = (await import("./uint8array.js")).default;
     }
     const u8 = await this.b2u._convert(src);
+    if (!this.u2b) {
+      this.u2b = (await import("../uint8array/binary.js")).default;
+    }
     const binary = await this.u2b._convert(u8);
     return binary;
   }
