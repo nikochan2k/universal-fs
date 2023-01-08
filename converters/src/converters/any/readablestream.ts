@@ -6,7 +6,7 @@ import u2r from "../uint8array/readablestream.js";
 class Any_ReadableStream implements Converter<any, ReadableStream<Uint8Array>> {
   public async convert(
     src: any,
-    options?: ConvertOptions | undefined
+    options: ConvertOptions
   ): Promise<ReadableStream<Uint8Array>> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const u8 = await UNIV_CONV.convert(src, Uint8Array, options);

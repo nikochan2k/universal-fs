@@ -23,9 +23,10 @@ class UnivConv {
   async convert<T extends Variant>(
     src: Variant,
     dstType: string | FunctionType<T>,
-    options?: ConvertOptions
+    options?: Partial<ConvertOptions>
   ): Promise<T> {
-    const srcTypes = this.getSrcTypes(src, options?.srcType);
+    const opts = { ...options, dstType };
+    const srcTypes = this.getSrcTypes(src, opts?.srcType);
     let dstTypes: string[];
     if (typeof dstType === "function") {
       dstTypes = this.getTypes(dstType);
@@ -47,13 +48,13 @@ class UnivConv {
     srcTypes.push("any");
     dstTypes.push("any");
     for (const st of srcTypes) {
-      const srcType = st.toLowerCase();
+      const srcTypeKey = st.toLowerCase();
       for (const dt of dstTypes) {
-        const dstType = dt.toLowerCase();
-        const key = srcType + "_" + dstType;
+        const dstTypeKey = dt.toLowerCase();
+        const key = srcTypeKey + "_" + dstTypeKey;
         let converter = converterMap[key];
         if (typeof converter === "undefined") {
-          const location = `./converters/${srcType}/${dstType}.js`;
+          const location = `./converters/${srcTypeKey}/${dstTypeKey}.js`;
           try {
             // eslint-disable-next-line
             converter = (await import(location)).default;
@@ -73,7 +74,7 @@ class UnivConv {
         }
         if (converter) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return (await converter.convert(src, options)) as Promise<T>;
+          return (await converter.convert(src, opts)) as Promise<T>;
         }
       }
     }
@@ -266,9 +267,8 @@ const UNIV_CONV = new UnivConv();
 export abstract class AbstractConverter<ST extends Variant, DT extends Variant>
   implements Converter<ST, DT>
 {
-  public async convert(src: ST, options?: ConvertOptions): Promise<DT> {
-    src = await UNIV_CONV.slice(src, options);
-    return await this._convert(src, options?.bufferSize ?? DEFAULT_BUFFER_SIZE);
+  public async convert(src: ST, options: ConvertOptions): Promise<DT> {
+    return await this._convert(src, options.bufferSize ?? DEFAULT_BUFFER_SIZE);
   }
 
   public abstract _convert(src: ST, bufferSize: number): Promise<DT>;
