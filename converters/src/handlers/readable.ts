@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from "stream";
 import { AbstractHandler, SliceOptions } from "../core.js";
-import { isReadable } from "../supports/NodeStream.js";
+import { isReadable } from "../supports/Environment.js";
 
 const EMPTY_BUFFER = Buffer.alloc(0);
 

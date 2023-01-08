@@ -1,5 +1,5 @@
+import { hasBuffer, newBuffer } from "../../supports/Environment.js";
 import { AbstractConverter } from "../../UnivConv.js";
-import { hasBuffer, newBuffer } from "../../util.js";
 import type b2a from "./arraybuffer.js";
 
 class BASE64_Uint8Array extends AbstractConverter<string, Uint8Array> {

@@ -1,5 +1,6 @@
 import { Readable } from "stream";
-import { handleReadable, isReadable } from "./NodeStream.js";
+import { isReadable } from "./Environment.js";
+import { handleReadable } from "./NodeStream.js";
 
 export function createReadableStreamOfReadable(
   readable: Readable

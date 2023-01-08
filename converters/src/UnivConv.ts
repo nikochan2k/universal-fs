@@ -9,7 +9,8 @@ import {
   Variant,
   Writer,
 } from "./core.js";
-import { isWritable, pipeNodeStream } from "./supports/NodeStream.js";
+import { isWritable } from "./supports/Environment.js";
+import { pipeNodeStream } from "./supports/NodeStream.js";
 import { isWritableStream, pipeWebStream } from "./supports/WebStream.js";
 import { DEFAULT_BUFFER_SIZE, getType } from "./util.js";
 

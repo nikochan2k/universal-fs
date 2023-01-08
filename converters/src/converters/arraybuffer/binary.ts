@@ -1,5 +1,5 @@
+import { hasBuffer, newBuffer } from "../../supports/Environment.js";
 import { AbstractConverter } from "../../UnivConv.js";
-import { hasBuffer, newBuffer } from "../../util.js";
 
 class ArrayBuffer_Binary extends AbstractConverter<ArrayBuffer, string> {
   public _convert(src: ArrayBuffer): Promise<string> {

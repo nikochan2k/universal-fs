@@ -1,5 +1,5 @@
 import { AbstractHandler, SliceOptions } from "../../core.js";
-import { newBuffer } from "../../util.js";
+import { newBuffer } from "../Environment.js";
 
 export abstract class ArrayBufferLikeHandler<
   T extends ArrayBufferLike

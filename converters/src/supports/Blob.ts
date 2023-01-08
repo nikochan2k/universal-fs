@@ -1,4 +1,4 @@
-import { isReactNative } from "../util.js";
+import { isReactNative } from "./Environment.js";
 
 export let hasBlob = false;
 export let hasTextOnBlob = false;

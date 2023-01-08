@@ -6,9 +6,9 @@ import {
   hasReadAsArrayBufferOnBlob,
   hasStreamOnBlob,
 } from "../../supports/Blob.js";
+import { newBuffer } from "../../supports/Environment.js";
 import { handleReadableStream } from "../../supports/WebStream.js";
 import { AbstractConverter } from "../../UnivConv.js";
-import { newBuffer } from "../../util.js";
 import type b2b from "./base64.js";
 
 class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
