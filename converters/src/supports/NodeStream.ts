@@ -1,5 +1,4 @@
 import { Readable, Writable } from "stream";
-import { isReadable } from "./Environment.js";
 
 export function pipeNodeStream(
   readable: NodeJS.ReadableStream,
@@ -17,7 +16,7 @@ export async function handleReadable(
   readable: Readable,
   onData: (chunk: Buffer) => void
 ): Promise<void> {
-  if (isReadable(readable) && readable.destroyed) {
+  if (!readable.readable) {
     return;
   }
 

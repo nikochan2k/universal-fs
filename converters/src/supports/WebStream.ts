@@ -1,23 +1,3 @@
-export function isReadableStream(
-  stream: unknown
-): stream is ReadableStream<Uint8Array> {
-  return (
-    typeof ReadableStream === "function" &&
-    typeof stream === "object" &&
-    stream instanceof WritableStream
-  );
-}
-
-export function isWritableStream(
-  stream: unknown
-): stream is WritableStream<Uint8Array> {
-  return (
-    typeof WritableStream === "function" &&
-    typeof stream === "object" &&
-    stream instanceof WritableStream
-  );
-}
-
 export async function handleReadableStream(
   stream: ReadableStream<Uint8Array>,
   onData: (chunk: Uint8Array) => Promise<void>
