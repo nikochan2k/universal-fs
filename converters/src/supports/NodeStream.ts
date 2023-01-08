@@ -36,7 +36,10 @@ export function isWritable(stream: unknown): stream is Writable {
   );
 }
 
-export function pipe(readable: Readable, writable: Writable) {
+export function pipeNodeStream(
+  readable: NodeJS.ReadableStream,
+  writable: NodeJS.WritableStream
+) {
   return new Promise<void>((resolve, reject) => {
     readable.once("error", reject);
     writable.once("error", reject);
@@ -70,7 +73,7 @@ export async function handleReadable(
       }
     },
   });
-  await pipe(readable, writable);
+  await pipeNodeStream(readable, writable);
 }
 
 export function closeStream(stream?: Readable | Writable, reason?: unknown) {

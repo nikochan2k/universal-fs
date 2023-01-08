@@ -1,4 +1,4 @@
-import type { Readable, Writable } from "stream";
+import type { Readable } from "stream";
 import {
   Converter,
   ConvertOptions,
@@ -9,14 +9,8 @@ import {
   Variant,
   Writer,
 } from "./core.js";
-import { isReadable, isWritable } from "./supports/NodeStream.js";
-import { ReadableOfReadableStream } from "./supports/ReadableOfReadableStream.js";
-import { createReadableStreamOfReadable } from "./supports/ReadableStreamOfReadable.js";
-import {
-  handleReadableStream,
-  isReadableStream,
-  isWritableStream,
-} from "./supports/WebStream.js";
+import { isWritable, pipeNodeStream } from "./supports/NodeStream.js";
+import { isWritableStream, pipeWebStream } from "./supports/WebStream.js";
 import { DEFAULT_BUFFER_SIZE, getType } from "./util.js";
 
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
@@ -111,15 +105,17 @@ class UnivConv {
     return sliced as Promise<T>;
   }
 
-  async writeAll<T extends Variant>(
-    src: T,
-    dst: Writer,
-    options?: ConvertOptions
-  ) {
+  async pipe<T extends Variant>(src: T, dst: Writer, options?: ConvertOptions) {
     if (isWritableStream(dst)) {
-      await this.writeAllToWritableStream(src, dst, options);
+      const rs: ReadableStream<Uint8Array> = await this.convert(
+        src,
+        "readablestream",
+        options
+      );
+      await pipeWebStream(rs, dst);
     } else if (isWritable(dst)) {
-      await this.writeAllToWritable(src, dst, options);
+      const readable: Readable = await this.convert(src, "readable", options);
+      await pipeNodeStream(readable, dst);
     } else {
       throw TypeError("Illegal dst type: " + getType(dst));
     }
@@ -216,66 +212,6 @@ class UnivConv {
       }
     }
     return types;
-  }
-
-  protected pipeNodeStream(
-    readable: NodeJS.ReadableStream,
-    writable: NodeJS.WritableStream
-  ) {
-    return new Promise<void>((resolve, reject) => {
-      readable.once("error", reject);
-      writable.once("error", reject);
-      writable.once("finish", resolve);
-      readable.pipe(writable);
-    });
-  }
-
-  protected async pipeWebStream(
-    readable: ReadableStream<Uint8Array>,
-    writable: WritableStream<Uint8Array>
-  ) {
-    if (typeof readable.pipeTo === "function") {
-      await readable.pipeTo(writable);
-    } else {
-      const writer = writable.getWriter();
-      await handleReadableStream(readable, async (chunk) => {
-        await writer.write(chunk);
-      });
-    }
-  }
-
-  protected async writeAllToWritable<T extends Variant>(
-    src: T,
-    dst: Writable,
-    options?: ConvertOptions
-  ) {
-    let readable: Readable;
-    if (isReadableStream(src)) {
-      readable = new ReadableOfReadableStream(src);
-    } else if (isReadable(src)) {
-      readable = src;
-    } else {
-      const u8 = await this.convert(src, Uint8Array, options);
-      readable = await this.convert(u8, "reader", options);
-    }
-    await this.pipeNodeStream(readable, dst);
-  }
-
-  protected async writeAllToWritableStream<T extends Variant>(
-    src: T,
-    dst: WritableStream<Uint8Array>,
-    options?: ConvertOptions
-  ) {
-    let rs: ReadableStream<Uint8Array>;
-    if (isReadableStream(src)) {
-      rs = src;
-    } else if (isReadable(src)) {
-      rs = createReadableStreamOfReadable(src);
-    } else {
-      const u8 = await this.convert(src, Uint8Array, options);
-      rs = await this.convert(u8, "readablestream", options);
-    }
-    await this.pipeWebStream(rs, dst);
   }
 }
 

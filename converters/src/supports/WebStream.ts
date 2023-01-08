@@ -18,22 +18,6 @@ export function isWritableStream(
   );
 }
 
-export function closeReadableStream(stream: ReadableStream, reason?: unknown) {
-  if (reason) {
-    stream.cancel(reason).catch((e) => console.debug(e));
-  } else {
-    stream.cancel().catch((e) => console.debug(e));
-  }
-}
-
-export function closeWritableStream(stream: WritableStream, reason?: unknown) {
-  if (reason) {
-    stream.abort(reason).catch((e) => console.debug(e));
-  } else {
-    stream.close().catch((e) => console.debug(e));
-  }
-}
-
 export async function handleReadableStream(
   stream: ReadableStream<Uint8Array>,
   onData: (chunk: Uint8Array) => Promise<void>
@@ -50,5 +34,35 @@ export async function handleReadableStream(
   } catch (e) {
     reader.releaseLock();
     closeReadableStream(stream, e);
+  }
+}
+
+export async function pipeWebStream(
+  readable: ReadableStream<Uint8Array>,
+  writable: WritableStream<Uint8Array>
+) {
+  if (typeof readable.pipeTo === "function") {
+    await readable.pipeTo(writable);
+  } else {
+    const writer = writable.getWriter();
+    await handleReadableStream(readable, async (chunk) => {
+      await writer.write(chunk);
+    });
+  }
+}
+
+export function closeReadableStream(stream: ReadableStream, reason?: unknown) {
+  if (reason) {
+    stream.cancel(reason).catch((e) => console.debug(e));
+  } else {
+    stream.cancel().catch((e) => console.debug(e));
+  }
+}
+
+export function closeWritableStream(stream: WritableStream, reason?: unknown) {
+  if (reason) {
+    stream.abort(reason).catch((e) => console.debug(e));
+  } else {
+    stream.close().catch((e) => console.debug(e));
   }
 }
