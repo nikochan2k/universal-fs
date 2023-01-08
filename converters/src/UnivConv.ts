@@ -206,8 +206,9 @@ class UnivConv {
       types.push(type);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parent = Object.getPrototypeOf(fn);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (parent && parent !== Object && parent.name) {
+      // eslint-disable-next-line
+      const name = parent?.name;
+      if (name && name !== "Object" && name !== "EventEmitter") {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         fn = parent;
       } else {
