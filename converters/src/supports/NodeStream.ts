@@ -1,11 +1,39 @@
-import { Writable, Readable } from "stream";
+import type { Writable, Readable } from "stream";
+
+export function isNodeJSReadableStream(
+  stream: unknown
+): stream is NodeJS.ReadableStream {
+  return (
+    typeof stream === "object" &&
+    typeof (stream as NodeJS.ReadableStream).read === "function" &&
+    (stream as NodeJS.ReadableStream).readable
+  );
+}
 
 export function isReadable(stream: unknown): stream is Readable {
-  return stream != null && stream instanceof Readable && stream.readable;
+  return (
+    isNodeJSReadableStream(stream) &&
+    typeof (stream as Readable).destroy === "function" &&
+    (stream as Readable).readable
+  );
+}
+
+export function isNodeJSWritableStream(
+  stream: unknown
+): stream is NodeJS.WritableStream {
+  return (
+    typeof stream === "object" &&
+    typeof (stream as NodeJS.WritableStream).write === "function" &&
+    (stream as NodeJS.WritableStream).writable
+  );
 }
 
 export function isWritable(stream: unknown): stream is Writable {
-  return stream != null && stream instanceof Writable && stream.writable;
+  return (
+    isNodeJSWritableStream(stream) &&
+    typeof (stream as Writable).destroy === "function" &&
+    (stream as Writable).writable
+  );
 }
 
 export function pipe(readable: Readable, writable: Writable) {
@@ -17,6 +45,8 @@ export function pipe(readable: Readable, writable: Writable) {
   });
 }
 
+let _Writable: typeof Writable | undefined;
+
 export async function handleReadable(
   readable: Readable,
   onData: (chunk: Buffer) => void
@@ -25,7 +55,11 @@ export async function handleReadable(
     return;
   }
 
-  const writable = new Writable({
+  if (!_Writable) {
+    _Writable = (await import("stream")).Writable;
+  }
+
+  const writable = new _Writable({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     write(chunk: any, _: string, next: (error?: Error | null) => void): void {
       try {

@@ -32,3 +32,15 @@ export function dataUrlToBase64(dataUrl: string) {
   }
   return dataUrl;
 }
+
+export function getType(src: unknown): string {
+  const type = typeof src;
+  switch (type) {
+    case "function":
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      return (src as Function).name;
+    case "object":
+      return (src as object).constructor.name;
+  }
+  return type;
+}

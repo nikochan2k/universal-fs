@@ -1,5 +1,8 @@
 import { AbstractHandler, SliceOptions } from "../core.js";
-import { closeStream, handleReadableStream } from "../supports/WebStream.js";
+import {
+  closeReadableStream,
+  handleReadableStream,
+} from "../supports/WebStream.js";
 
 const EMPTY_UINT8_ARRAY = new Uint8Array(0);
 
@@ -46,11 +49,11 @@ export function createPartialReadableStream(
       }
       controller.close();
       reader.releaseLock();
-      closeStream(src);
+      closeReadableStream(src);
     },
     cancel: (e) => {
       reader.releaseLock();
-      closeStream(src, e);
+      closeReadableStream(src, e);
     },
   });
 }
@@ -94,7 +97,7 @@ class ReadableStreamHandler extends AbstractHandler<
             controller.error(e);
             for (let j = i; j < end; j++) {
               const s = src[j] as ReadableStream<Uint8Array>;
-              closeStream(s);
+              closeReadableStream(s);
             }
           });
       } else {

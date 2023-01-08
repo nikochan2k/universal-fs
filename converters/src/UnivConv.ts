@@ -1,3 +1,4 @@
+import type { Readable, Writable } from "stream";
 import {
   Converter,
   ConvertOptions,
@@ -6,8 +7,17 @@ import {
   Handler,
   SliceOptions,
   Variant,
+  Writer,
 } from "./core.js";
-import { DEFAULT_BUFFER_SIZE } from "./util.js";
+import { isReadable, isWritable } from "./supports/NodeStream.js";
+import { ReadableOfReadableStream } from "./supports/ReadableOfReadableStream.js";
+import { createReadableStreamOfReadable } from "./supports/ReadableStreamOfReadable.js";
+import {
+  handleReadableStream,
+  isReadableStream,
+  isWritableStream,
+} from "./supports/WebStream.js";
+import { DEFAULT_BUFFER_SIZE, getType } from "./util.js";
 
 const converterMap: { [key: string]: Converter<Variant, Variant> | null } = {};
 const handlerMap: { [key: string]: Handler<Variant> | null } = {};
@@ -18,26 +28,6 @@ interface MergeOptions {
 }
 
 class UnivConv {
-  convert<T extends Variant>(
-    src: string,
-    dstType: FunctionType<T>,
-    options?: ConvertOptions
-  ): Promise<T>;
-  convert<T extends Variant>(
-    src: string,
-    dstType: string,
-    options?: ConvertOptions
-  ): Promise<T>;
-  convert<T extends Variant>(
-    src: ExcludeString,
-    dstType: FunctionType<T>,
-    options?: ConvertOptions
-  ): Promise<T>;
-  convert<T extends Variant>(
-    src: ExcludeString,
-    dstType: string,
-    options?: ConvertOptions
-  ): Promise<T>;
   async convert<T extends Variant>(
     src: Variant,
     dstType: string | FunctionType<T>,
@@ -119,6 +109,20 @@ class UnivConv {
     const handler = await this.getHandler(type != null ? type : src);
     const sliced = await handler.slice(src, options);
     return sliced as Promise<T>;
+  }
+
+  async writeAll<T extends Variant>(
+    src: T,
+    dst: Writer,
+    options?: ConvertOptions
+  ) {
+    if (isWritableStream(dst)) {
+      await this.writeAllToWritableStream(src, dst, options);
+    } else if (isWritable(dst)) {
+      await this.writeAllToWritable(src, dst, options);
+    } else {
+      throw TypeError("Illegal dst type: " + getType(dst));
+    }
   }
 
   protected getHandler<T extends Variant>(v: T): Promise<Handler<T>>;
@@ -211,6 +215,67 @@ class UnivConv {
       }
     }
     return types;
+  }
+
+  protected pipeNodeStream(
+    readable: NodeJS.ReadableStream,
+    writable: NodeJS.WritableStream
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      readable.once("error", reject);
+      writable.once("error", reject);
+      writable.once("finish", resolve);
+      readable.pipe(writable);
+    });
+  }
+
+  protected async pipeWebStream(
+    readable: ReadableStream<Uint8Array>,
+    writable: WritableStream<Uint8Array>
+  ) {
+    if (typeof readable.pipeTo === "function") {
+      await readable.pipeTo(writable);
+    } else {
+      const writer = writable.getWriter();
+      await handleReadableStream(readable, async (chunk) => {
+        await writer.write(chunk);
+        return true;
+      });
+    }
+  }
+
+  protected async writeAllToWritable<T extends Variant>(
+    src: T,
+    dst: Writable,
+    options?: ConvertOptions
+  ) {
+    let readable: Readable;
+    if (isReadableStream(src)) {
+      readable = new ReadableOfReadableStream(src);
+    } else if (isReadable(src)) {
+      readable = src;
+    } else {
+      const u8 = await this.convert(src, Uint8Array, options);
+      readable = await this.convert(u8, "reader", options);
+    }
+    await this.pipeNodeStream(readable, dst);
+  }
+
+  protected async writeAllToWritableStream<T extends Variant>(
+    src: T,
+    dst: WritableStream<Uint8Array>,
+    options?: ConvertOptions
+  ) {
+    let rs: ReadableStream<Uint8Array>;
+    if (isReadableStream(src)) {
+      rs = src;
+    } else if (isReadable(src)) {
+      rs = createReadableStreamOfReadable(src);
+    } else {
+      const u8 = await this.convert(src, Uint8Array, options);
+      rs = await this.convert(u8, "readablestream", options);
+    }
+    await this.pipeWebStream(rs, dst);
   }
 }
 

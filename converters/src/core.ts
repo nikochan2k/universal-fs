@@ -1,7 +1,11 @@
+import type { Readable, Writable } from "stream";
 import { DEFAULT_BUFFER_SIZE } from "./util.js";
 
 export type Variant = object | number | boolean | bigint | string;
+export type Reader = Readable | ReadableStream;
+export type Writer = Writable | WritableStream;
 export type ExcludeString = object | number | boolean | bigint;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FunctionType<T> = new (...args: any[]) => T;
 export type VariantOrNull = Variant | null;
 
