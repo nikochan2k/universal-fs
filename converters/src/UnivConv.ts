@@ -34,6 +34,20 @@ class UnivConv {
     } else {
       dstTypes = [dstType];
     }
+
+    // Check the same type
+    for (const st of srcTypes) {
+      const srcType = st.toLowerCase();
+      for (const dt of dstTypes) {
+        const dstType = dt.toLowerCase();
+        if (srcType === dstType) {
+          return src as T;
+        }
+      }
+    }
+
+    srcTypes.push("any");
+    dstTypes.push("any");
     for (const st of srcTypes) {
       const srcType = st.toLowerCase();
       for (const dt of dstTypes) {
@@ -144,6 +158,7 @@ class UnivConv {
         types = this.getTypes(v.constructor);
         break;
     }
+
     for (const type of types) {
       const key = type.toLowerCase();
       let handler = handlerMap[key];

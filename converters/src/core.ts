@@ -21,7 +21,6 @@ export interface ConvertOptions {
 }
 
 export interface Converter<ST extends Variant, DT extends Variant> {
-  _convert(src: ST, bufferSize?: number): Promise<DT>;
   convert(src: ST, options?: ConvertOptions): Promise<DT>;
 }
 

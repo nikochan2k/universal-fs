@@ -1,17 +1,10 @@
-import { ConvertOptions } from "../../core.js";
-import UNIV_CONV, { AbstractConverter } from "../../UnivConv.js";
+import { Converter, ConvertOptions } from "../../core.js";
+import UNIV_CONV from "../../UnivConv.js";
 import u2r from "../uint8array/readablestream.js";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-class Any_ReadableStream extends AbstractConverter<
-  any,
-  ReadableStream<Uint8Array>
-> {
-  public _convert(): Promise<ReadableStream<Uint8Array>> {
-    throw new Error("Method not implemented.");
-  }
-
-  public override async convert(
+class Any_ReadableStream implements Converter<any, ReadableStream<Uint8Array>> {
+  public async convert(
     src: any,
     options?: ConvertOptions | undefined
   ): Promise<ReadableStream<Uint8Array>> {

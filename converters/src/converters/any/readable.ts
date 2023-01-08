@@ -1,15 +1,11 @@
 import { Readable } from "stream";
-import { ConvertOptions } from "../../core.js";
-import UNIV_CONV, { AbstractConverter } from "../../UnivConv.js";
+import { Converter, ConvertOptions } from "../../core.js";
+import UNIV_CONV from "../../UnivConv.js";
 import u2r from "../uint8array/readable.js";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-class Any_Readable extends AbstractConverter<any, Readable> {
-  public _convert(): Promise<Readable> {
-    throw new Error("Method not implemented.");
-  }
-
-  public override async convert(
+class Any_Readable implements Converter<any, Readable> {
+  public async convert(
     src: any,
     options?: ConvertOptions | undefined
   ): Promise<Readable> {
