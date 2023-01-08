@@ -36,21 +36,15 @@ export function closeWritableStream(stream: WritableStream, reason?: unknown) {
 
 export async function handleReadableStream(
   stream: ReadableStream<Uint8Array>,
-  onData: (chunk: Uint8Array) => Promise<boolean>
+  onData: (chunk: Uint8Array) => Promise<void>
 ): Promise<void> {
   const reader = stream.getReader();
   try {
-    let res: ReadableStreamReadResult<unknown>;
-    do {
+    let res = await reader.read();
+    while (!res.done) {
+      await onData(res.value);
       res = await reader.read();
-      const chunk = res.value as Uint8Array;
-      if (chunk) {
-        const result = await onData(chunk);
-        if (!result) {
-          break;
-        }
-      }
-    } while (!res.done);
+    }
     reader.releaseLock();
     closeReadableStream(stream);
   } catch (e) {

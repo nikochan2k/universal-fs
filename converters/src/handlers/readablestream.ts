@@ -90,7 +90,7 @@ class ReadableStreamHandler extends AbstractHandler<
         const stream = src[i] as ReadableStream<Uint8Array>;
         handleReadableStream(stream, (chunk) => {
           controller.enqueue(chunk);
-          return Promise.resolve(true);
+          return Promise.resolve();
         })
           .then(() => process(controller, ++i))
           .catch((e) => {

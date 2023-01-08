@@ -4,9 +4,9 @@ import { handleReadableStream } from "../../supports/WebStream.js";
 
 const toBuffer = async (rs: ReadableStream<Uint8Array>) => {
   const chunks: Uint8Array[] = [];
-  await handleReadableStream(rs, async (chunk) => {
+  await handleReadableStream(rs, (chunk) => {
     chunks.push(chunk);
-    return Promise.resolve(true);
+    return Promise.resolve();
   });
   const u8 = await uh.merge(chunks);
   return u8;

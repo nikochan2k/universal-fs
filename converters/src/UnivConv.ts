@@ -239,7 +239,6 @@ class UnivConv {
       const writer = writable.getWriter();
       await handleReadableStream(readable, async (chunk) => {
         await writer.write(chunk);
-        return true;
       });
     }
   }

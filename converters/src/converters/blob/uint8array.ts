@@ -42,11 +42,9 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
     if (hasStreamOnBlob) {
       const readable = src.stream();
       const chunks: Uint8Array[] = [];
-      let index = 0;
       await handleReadableStream(readable, (u8) => {
         chunks.push(u8);
-        index += u8.byteLength;
-        return Promise.resolve(index < size);
+        return Promise.resolve();
       });
       if (!this.u8h) {
         this.u8h = (await import("../../handlers/uint8array.js")).default;
