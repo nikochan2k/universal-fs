@@ -25,6 +25,17 @@ export function newBuffer(input: number | number[] | ArrayBufferLike) {
   }
 }
 
+export function toBuffer(input: Uint8Array): Buffer {
+  if (input instanceof Buffer) {
+    return input;
+  }
+  const ab = input.buffer.slice(
+    input.byteOffset,
+    input.byteOffset + input.byteLength
+  );
+  return Buffer.from(ab);
+}
+
 export function isNodeJSReadableStream(
   stream: unknown
 ): stream is NodeJS.ReadableStream {

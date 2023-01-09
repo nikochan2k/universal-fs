@@ -1,20 +1,15 @@
-import type {
-  convert,
-  ConvertArrayBufferOptions,
-  Encoding,
-} from "encoding-japanese";
-import type * as iconv from "iconv-lite";
+import type { ConvertArrayBufferOptions, Encoding } from "encoding-japanese";
 import { Converter, ConvertOptions } from "../../core.js";
 import { hasBuffer } from "../../supports/Environment.js";
-
-const BUFFER_ENCODINGS = ["ascii", "utf8", "utf16le", "ucs2", "latin1"];
-const EJ_ENCODINGS = ["utf32", "utf16be", "jis", "eucjp", "sjis"];
+import {
+  BUFFER_ENCODINGS,
+  EJ_ENCODINGS,
+  getEncodingJapanese,
+  getIconv,
+  getTextEncoder,
+} from "../../supports/StringUtil.js";
 
 class String_Uint8Array implements Converter<string, Uint8Array> {
-  private _encoder?: TextEncoder;
-  private _convert?: typeof convert | null;
-  private _iconv?: typeof iconv | null;
-
   async convert(src: string, options: ConvertOptions): Promise<Uint8Array> {
     const dstTextEncoding = options.dstTextEncoding ?? "utf8";
     if (hasBuffer && 0 <= BUFFER_ENCODINGS.indexOf(dstTextEncoding)) {
@@ -23,10 +18,7 @@ class String_Uint8Array implements Converter<string, Uint8Array> {
     }
 
     if (dstTextEncoding === "utf8") {
-      if (!this._encoder) {
-        this._encoder = new TextEncoder();
-      }
-      return this._encoder.encode(src);
+      return getTextEncoder().encode(src);
     }
 
     if (dstTextEncoding === "utf16le") {
@@ -39,37 +31,25 @@ class String_Uint8Array implements Converter<string, Uint8Array> {
     }
 
     if (0 <= EJ_ENCODINGS.indexOf(dstTextEncoding)) {
-      if (typeof this._convert === "undefined") {
-        try {
-          this._convert = (await import("encoding-japanese")).convert;
-        } catch {
-          this._convert = null;
-        }
-      }
-      if (this._convert) {
+      const ej = await getEncodingJapanese();
+      if (ej) {
         const opts: ConvertArrayBufferOptions = {
           to: dstTextEncoding.toUpperCase() as Encoding,
           type: "arraybuffer",
         };
-        const ab = this._convert(src, opts);
+        const ab = ej.convert(src, opts);
         return new Uint8Array(ab);
       }
     }
 
-    if (typeof this._iconv === "undefined") {
-      try {
-        this._iconv = await import("iconv-lite");
-      } catch {
-        this._iconv = null;
-      }
-    }
-    if (this._iconv) {
-      if (this._iconv.encodingExists(dstTextEncoding)) {
-        return this._iconv.encode(src, dstTextEncoding);
+    const iconv = await getIconv();
+    if (iconv) {
+      if (iconv.encodingExists(dstTextEncoding)) {
+        return iconv.encode(src, dstTextEncoding);
       }
     }
 
-    throw new Error("Not supported encoding: " + dstTextEncoding);
+    throw new Error("Not supported dstTextEncoding: " + dstTextEncoding);
   }
 }
 
