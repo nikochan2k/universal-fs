@@ -1,10 +1,12 @@
 import { Converter, ConvertOptions } from "../../core.js";
 import { handleFileReader, hasTextOnBlob } from "../../supports/Blob.js";
+import UNIV_CONV from "../../UnivConv.js";
 import { DEFAULT_BUFFER_SIZE } from "../../util.js";
-import u2s from "../uint8array/string.js";
-import b2u from "./uint8array.js";
+import type b2u from "./uint8array.js";
 
 class Blob_String implements Converter<Blob, string> {
+  private b2u?: typeof b2u;
+
   async convert(
     src: Blob,
     options?: ConvertOptions | undefined
@@ -20,11 +22,14 @@ class Blob_String implements Converter<Blob, string> {
       );
     }
 
-    const u8 = await b2u._convert(
+    if (!this.b2u) {
+      this.b2u = (await import("./uint8array.js")).default;
+    }
+    const u8 = await this.b2u._convert(
       src,
       options?.bufferSize ?? DEFAULT_BUFFER_SIZE
     );
-    return await u2s.convert(u8, options);
+    return await UNIV_CONV.convert(u8, "string", options);
   }
 }
 

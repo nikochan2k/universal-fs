@@ -1,4 +1,3 @@
-import type b2u from "../../converters/base64/uint8array.js";
 import type u8h from "../../manipulators/uint8array.js";
 import {
   handleFileReader,
@@ -8,11 +7,10 @@ import {
 } from "../../supports/Blob.js";
 import { newBuffer } from "../../supports/Environment.js";
 import { handleReadableStream } from "../../supports/WebStream.js";
-import { AbstractConverter } from "../../UnivConv.js";
+import UNIV_CONV, { AbstractConverter } from "../../UnivConv.js";
 import type b2b from "./base64.js";
 
 class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
-  private b2u?: typeof b2u;
   private u8h?: typeof u8h;
   private b2b?: typeof b2b;
 
@@ -56,12 +54,7 @@ class Blob_Uint8Array extends AbstractConverter<Blob, Uint8Array> {
       this.b2b = (await import("./base64.js")).default;
     }
     const base64 = await this.b2b._convert(src, bufferSize);
-    if (!this.b2u) {
-      this.b2u = (
-        await import("../../converters/base64/uint8array.js")
-      ).default;
-    }
-    return await this.b2u._convert(base64);
+    return await UNIV_CONV.convert(base64, Uint8Array);
   }
 }
 
