@@ -7,7 +7,7 @@ class Any_String implements Converter<any, string> {
   public async convert(src: any, options: ConvertOptions): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const u8 = await UNIV_CONV.convert(src, Uint8Array, options);
-    return await u2s.convert(u8);
+    return await UNIV_CONV.convert(u8, "string", options);
   }
 }
 

@@ -11,7 +11,7 @@ import {
 
 class String_Uint8Array implements Converter<string, Uint8Array> {
   async convert(src: string, options: ConvertOptions): Promise<Uint8Array> {
-    const dstTextEncoding = options.dstTextEncoding ?? "utf8";
+    const dstTextEncoding = options.dstTextEncoding || "utf8";
     if (hasBuffer && 0 <= BUFFER_ENCODINGS.indexOf(dstTextEncoding)) {
       // eslint-disable-next-line
       return Buffer.from(src, dstTextEncoding as any);

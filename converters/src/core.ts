@@ -19,6 +19,7 @@ export interface ConvertOptions {
   srcTextEncoding?: string;
   dstType?: string | FunctionType<Variant>;
   dstTextEncoding?: string;
+  fetchRequestInit?: RequestInit;
 }
 
 export interface Converter<ST extends Variant, DT extends Variant> {
