@@ -12,8 +12,7 @@ class BASE64_Binary extends AbstractConverter<string, string> {
       this.b2u = (await import("./uint8array.js")).default;
     }
     const u8 = await this.b2u.convert(src);
-    const binary: string = await UNIV_CONV.convert(u8, "binary");
-    return binary;
+    return await UNIV_CONV.convert(u8, "binary");
   }
 }
 

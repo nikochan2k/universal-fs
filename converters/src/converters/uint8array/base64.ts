@@ -6,8 +6,7 @@ class Uint8Array_BASE64 extends AbstractConverter<Uint8Array, string> {
       src.byteOffset,
       src.byteOffset + src.byteLength
     );
-    const base64: string = await UNIV_CONV.convert(ab, "base64");
-    return base64;
+    return await UNIV_CONV.convert(ab, "base64");
   }
 }
 

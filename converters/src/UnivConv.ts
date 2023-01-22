@@ -133,7 +133,7 @@ class UnivConv {
 
   private createKey(type: string) {
     type = type.toLowerCase();
-    type = type.replace(/[a-z0-9]/, "");
+    type = type.replaceAll(/[^a-z0-9]/g, "");
     return type;
   }
 

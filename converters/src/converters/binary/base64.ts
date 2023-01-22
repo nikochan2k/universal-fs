@@ -12,8 +12,7 @@ class Binary_BASE64 extends AbstractConverter<string, string> {
       this.b2a = (await import("./arraybuffer.js")).default;
     }
     const ab = await this.b2a._convert(src);
-    const base64: string = await UNIV_CONV.convert(ab, "base64");
-    return base64;
+    return await UNIV_CONV.convert(ab, "base64");
   }
 }
 

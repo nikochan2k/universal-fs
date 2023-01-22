@@ -31,8 +31,7 @@ class Blob_Binary extends AbstractConverter<Blob, string> {
       this.b2u = (await import("./uint8array.js")).default;
     }
     const u8 = await this.b2u._convert(src, bufferSize);
-    const binary: string = await UNIV_CONV.convert(u8, "binary");
-    return binary;
+    return await UNIV_CONV.convert(u8, "binary");
   }
 }
 
